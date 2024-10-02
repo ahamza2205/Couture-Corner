@@ -1,0 +1,54 @@
+type Query {
+    products(first: Int!): ProductConnection
+}
+
+# Connection type for pagination
+type ProductConnection {
+    edges: [ProductEdge]
+}
+
+# Edge type for pagination
+type ProductEdge {
+    node: Product
+}
+
+# Define the Product type
+type Product {
+    id: ID!
+    title: String!
+    description: String
+    handle: String
+    images(first: Int!): ImageConnection
+    variants(first: Int!): VariantConnection
+}
+
+# Connection type for images
+type ImageConnection {
+    edges: [ImageEdge]
+}
+
+# Edge type for images
+type ImageEdge {
+    node: Image
+}
+
+# Define the Image type
+type Image {
+    src: String!
+}
+
+# Connection type for variants
+type VariantConnection {
+    edges: [VariantEdge]
+}
+
+# Edge type for variants
+type VariantEdge {
+    node: Variant
+}
+
+# Define the Variant type
+type Variant {
+    price: String!
+    sku: String
+}

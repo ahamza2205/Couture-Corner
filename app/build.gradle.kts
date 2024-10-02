@@ -1,6 +1,14 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    id("com.apollographql.apollo3").version("3.7.3")
+}
+
+apollo {
+
+    packageName.set("com.graphql") // Set your package name here
+    generateKotlinModels.set(true)
+
 }
 
 android {
@@ -42,9 +50,34 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(libs.androidx.navigation.ui.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    // Material Design Components
+    implementation (libs.material)
+    implementation ("androidx.navigation:navigation-fragment-ktx:2.5.3")
+    implementation ("androidx.navigation:navigation-ui-ktx:2.5.3")
+    implementation ("com.google.android.material:material:1.9.0")
+
+    implementation ("androidx.lifecycle:lifecycle-extensions:2.2.0")
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1")
+
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
+
+    implementation ("androidx.activity:activity-ktx:1.5.0")
+    implementation ("androidx.fragment:fragment-ktx:1.6.2")
+
+    implementation("com.apollographql.apollo3:apollo-runtime:3.7.3") // Check for the latest version
+    // implementation("com.apollographql.apollo3:apollo-coroutines-support:3.7.3")
+
+    ///  implementation("com.apollographql.apollo3:apollo-runtime:3.7.3")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1")
+
+    implementation("com.google.dagger:hilt-android:2.42")
+    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+    implementation("com.squareup.okhttp3:okhttp:4.9.3")
 
 
 
