@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Couture Corner</string>
+    <string name="DonthaveanccountSignUp">لست مسجل حساب؟ سجل</string>
+    <string name="Orsigninwith">أو تسجيل الدخول باستخدام</string>
+    <string name="SignIn">تسجيل الدخول</string>
+    <string name="ForgotPassword">نسيت كلمة المرور؟</string>
+    <string name="Email">البريد الالكتروني</string>
+    <string name="Password">كلمة المرور</string>
+    <string name="HWelcomebackyouvebeenmissed">مرحبا بكم في Couture Corner</string>
+
+</resources>
