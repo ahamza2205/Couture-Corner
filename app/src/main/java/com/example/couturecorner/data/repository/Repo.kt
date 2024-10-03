@@ -2,6 +2,7 @@ package com.example.couturecorner.data.repository
 
 import com.apollographql.apollo3.api.ApolloResponse
 import com.example.couturecorner.data.remote.IremoteData
+import com.graphql.GetCuponCodesQuery
 import com.graphql.GetProductsQuery
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -30,5 +31,9 @@ class Repo
 
     override fun getProducts(): Flow<ApolloResponse<GetProductsQuery.Data>> {
         return remoteData.getProducts()
+    }
+
+    override fun getCupones(): Flow<ApolloResponse<GetCuponCodesQuery.Data>> {
+        return remoteData.getCupones()
     }
 }

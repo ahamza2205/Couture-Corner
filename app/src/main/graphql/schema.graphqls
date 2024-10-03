@@ -1,10 +1,13 @@
 type Query {
+    codeDiscountNodes(first: Int!): CodeDiscountNodeConnection
     products(first: Int!): ProductConnection
+
 }
 
 # Connection type for pagination
 type ProductConnection {
     edges: [ProductEdge]
+
 }
 
 # Edge type for pagination
@@ -52,3 +55,34 @@ type Variant {
     price: String!
     sku: String
 }
+# Type for CodesCount
+type CodesCount {
+    count: Int!
+}
+
+# Type for DiscountCodeBasic
+type DiscountCodeBasic {
+    title: String!
+    summary: String!
+}
+
+# Type for DiscountCodeBxgy
+type DiscountCodeBxgy {
+    title: String!
+    codesCount: CodesCount!
+}
+
+# Union type for DiscountCode
+union DiscountCode = DiscountCodeBasic | DiscountCodeBxgy
+
+# Type for CodeDiscountNode
+type CodeDiscountNode {
+    id: ID!
+    codeDiscount: DiscountCode!
+}
+
+# Type for CodeDiscountNode connection
+type CodeDiscountNodeConnection {
+    nodes: [CodeDiscountNode]
+}
+
