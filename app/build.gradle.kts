@@ -91,5 +91,7 @@ dependencies {
     // Dagger Hilt
     implementation ("com.google.dagger:hilt-android:2.48")
     kapt ("com.google.dagger:hilt-compiler:2.48")
+    //gild
+    implementation ("com.github.bumptech.glide:glide:4.16.0'")
 
 }
