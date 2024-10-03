@@ -1,4 +1,4 @@
-package com.example.couturecorner.model.remote
+package com.example.couturecorner.network
 
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.network.okHttpClient
@@ -14,8 +14,7 @@ object ApolloClient {
                     .addInterceptor { chain ->
                         val original = chain.request()
                         val request = original.newBuilder()
-                            // place the line of token here
-                            .method(original.method, original.body)
+                            //put your token here
                             .build()
                         chain.proceed(request)
                     }
@@ -23,7 +22,6 @@ object ApolloClient {
             )
             .build()
 
-//    val service = apolloClient.query(GetProductsQuery())
 
 
 }

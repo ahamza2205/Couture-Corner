@@ -1,9 +1,9 @@
 package com.example.couturecorner.di
 
-import com.example.couturecorner.model.remote.IremoteData
-import com.example.couturecorner.model.remote.RemoteData
-import com.example.couturecorner.model.repository.Irepo
-import com.example.couturecorner.model.repository.Repo
+import com.example.couturecorner.data.remote.IremoteData
+import com.example.couturecorner.data.remote.RemoteData
+import com.example.couturecorner.data.repository.Irepo
+import com.example.couturecorner.data.repository.Repo
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

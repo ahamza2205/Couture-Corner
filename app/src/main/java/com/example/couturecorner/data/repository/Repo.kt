@@ -1,7 +1,7 @@
-package com.example.couturecorner.model.repository
+package com.example.couturecorner.data.repository
 
 import com.apollographql.apollo3.api.ApolloResponse
-import com.example.couturecorner.model.remote.IremoteData
+import com.example.couturecorner.data.remote.IremoteData
 import com.graphql.GetProductsQuery
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
