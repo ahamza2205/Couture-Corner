@@ -1,11 +1,8 @@
 package com.example.couturecorner.view
-
 import android.os.Bundle
 import android.util.Log
-import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
@@ -14,20 +11,16 @@ import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
 import com.example.couturecorner.R
 import com.example.couturecorner.model.ApiState
-import com.example.couturecorner.model.Repo
-import com.example.couturecorner.model.remote.RemoteData
 import com.example.couturecorner.viewModel.MainViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-
-    lateinit var factory: MainViewModelFactory
-    lateinit var viewModel: MainViewModel
-
+     val  viewModel: MainViewModel by  viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContentView(R.layout.activity_main)
 
         val navHostFragment = supportFragmentManager
@@ -38,10 +31,6 @@ class MainActivity : AppCompatActivity() {
         bottomNav.setupWithNavController(navController)
 
         NavigationUI.setupActionBarWithNavController(this, navController)
-
-        factory = MainViewModelFactory(Repo.getInstance(RemoteData()))
-        viewModel = ViewModelProvider(this,factory).get(MainViewModel::class.java)
-
 
         viewModel.getProducts()
 
@@ -64,6 +53,7 @@ class MainActivity : AppCompatActivity() {
         }
 
     }
+
 
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment)
