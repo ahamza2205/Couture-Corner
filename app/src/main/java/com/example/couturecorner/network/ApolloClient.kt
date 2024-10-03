@@ -14,7 +14,6 @@ object ApolloClient {
                     .addInterceptor { chain ->
                         val original = chain.request()
                         val request = original.newBuilder()
-                            //put your token here
                             .build()
                         chain.proceed(request)
                     }

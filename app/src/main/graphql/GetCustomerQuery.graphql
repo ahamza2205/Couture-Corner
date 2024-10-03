@@ -1,0 +1,9 @@
+query GetCustomer($email: String!) {
+    customerByEmail(email: $email) {
+        id
+        email
+        firstName
+        lastName
+        tags
+    }
+}

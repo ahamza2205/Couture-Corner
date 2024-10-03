@@ -1,5 +1,7 @@
 type Query {
     products(first: Int!): ProductConnection
+    customer(id: ID!): Customer
+    customerByEmail(email: String!): Customer
 }
 
 # Connection type for pagination
@@ -52,3 +54,37 @@ type Variant {
     price: String!
     sku: String
 }
+# Define the Customer type
+type Mutation {
+    customerCreate(input: CustomerInput!): CustomerCreatePayload
+}
+
+input CustomerInput {
+    email: String!
+    firstName: String!
+    lastName: String!
+    tags: [String!]
+}
+
+type CustomerCreatePayload {
+    customer: Customer
+    userErrors: [UserError!]!
+}
+
+type Customer {
+    id: ID!
+    email: String!
+    firstName: String
+    lastName: String
+    tags: [String]
+}
+
+type UserError {
+    field: [String]
+    message: String!
+}
+
+
+
+
+

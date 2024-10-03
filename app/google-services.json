@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "983432677555",
+    "project_id": "couture-corner",
+    "storage_bucket": "couture-corner.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:983432677555:android:697e7ae01d0d579c1648c6",
+        "android_client_info": {
+          "package_name": "com.example.couturecorner"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBtUWZ5EhPkSecqF6x41ZupX3rRUKabhsE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
