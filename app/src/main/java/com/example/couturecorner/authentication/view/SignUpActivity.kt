@@ -1,13 +1,20 @@
-package com.example.couturecorner.authentication
+package com.example.couturecorner.authentication.view
 
+import android.content.Intent
+import android.graphics.Paint
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.apollographql.apollo3.api.Optional
 import com.example.couturecorner.R
+import com.example.couturecorner.authentication.viewmodel.SignUpViewModel
+import com.example.couturecorner.databinding.ActivitySignUpBinding
+import com.example.couturecorner.home.ui.MainActivity
 import com.example.couturecorner.network.ApolloClient
 import com.google.firebase.auth.FirebaseAuth
 import com.graphql.CreateCustomerMutation
@@ -16,40 +23,45 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SignUpActivity : AppCompatActivity() {
 
-    private lateinit var auth: FirebaseAuth // Firebase Authentication instance
+    private val viewModel: SignUpViewModel by viewModels()
+    private lateinit var auth: FirebaseAuth
+    private lateinit var binding: ActivitySignUpBinding // Binding instance for view binding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_sign_up)
+        binding = ActivitySignUpBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        auth = FirebaseAuth.getInstance() // Initialize Firebase Auth
+        binding.textView2.paintFlags = binding.textView2.paintFlags or Paint.UNDERLINE_TEXT_FLAG
+        // Set onClickListener to navigate to SignInActivity
+        binding.textView2.setOnClickListener {
+            // Start SignInActivity when the text is clicked
+            val intent = Intent(this, LoginActivity::class.java) // Replace with your actual SignInActivity
+            startActivity(intent)
+        }
 
-        // Get references to UI elements
-        val signUpButton = findViewById<Button>(R.id.btnSignUp)
-        val emailEditText = findViewById<EditText>(R.id.etEmail)
-        val passwordEditText = findViewById<EditText>(R.id.etPassword)
+        auth = FirebaseAuth.getInstance()
 
-        // Set click listener for the sign-up button
-        signUpButton.setOnClickListener {
-            val email = emailEditText.text.toString() // Get email input
-            val password = passwordEditText.text.toString() // Get password input
+        binding.btnSignUp.setOnClickListener {
+            val email = binding.etEmail.text.toString() // Get email input
+            val password = binding.etPassword.text.toString() // Get password input
 
-            // Check if email and password are not empty
+
             if (email.isNotEmpty() && password.isNotEmpty()) {
-                // Create user in Firebase with email and password
                 auth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
                             Toast.makeText(this, "Account created successfully!", Toast.LENGTH_SHORT).show()
+                            viewModel.saveUserLoggedIn(true) // Save login state
 
-                            // Log Firebase User ID
                             val userId = auth.currentUser?.uid
-
                             if (userId != null) {
-                                createShopifyUser(email) // Pass the email to createShopifyUser
+                                createShopifyUser(email)
                             }
                         } else {
                             Toast.makeText(this, "Error: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
@@ -69,7 +81,7 @@ class SignUpActivity : AppCompatActivity() {
         // Create mutation to add the customer to Shopify
         val mutation = CreateCustomerMutation(
             email = email,
-            firstName = "ِAbdulrahman",
+            firstName = "Abdulrahman",
             lastName = "Hamza",
             tags = Optional.Present(listOf(userId)) // Passing Firebase userId as Shopify tag
         )
@@ -92,9 +104,10 @@ class SignUpActivity : AppCompatActivity() {
                         // Ensure both User IDs are logged properly
                         Log.d("User Info", "Firebase ID: $userId")
                         Log.d("User Info", "Shopify ID: $shopifyUserId")
-
+                        startActivity(Intent(this@SignUpActivity, MainActivity::class.java))
+                        finish()
                         // Fetch the customer from Shopify to verify
-                        fetchShopifyCustomer(email)
+                    // fetchShopifyCustomer(email)
                     }
                 }
             } catch (e: Exception) {
@@ -103,7 +116,7 @@ class SignUpActivity : AppCompatActivity() {
         }
     }
 
-    // Function to fetch a customer from Shopify using their email
+/*    // Function to fetch a customer from Shopify using their email
     private fun fetchShopifyCustomer(email: String) {
         val query = GetCustomerQuery(email = email) // Create query for fetching customer
 
@@ -122,6 +135,8 @@ class SignUpActivity : AppCompatActivity() {
 
                             if (customer.tags!!.contains(auth.currentUser?.uid)) {
                                 Log.d("Shopify", "Firebase User ID is linked successfully!")
+
+
                             } else {
                                 Log.d("Shopify", "Firebase User ID is NOT linked.")
                             }
@@ -134,5 +149,5 @@ class SignUpActivity : AppCompatActivity() {
                 Log.e("Shopify", "Query failed: ${e.message}")
             }
         }
-    }
+    }*/
 }

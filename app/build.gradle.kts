@@ -1,3 +1,4 @@
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
@@ -6,6 +7,7 @@ plugins {
     id("dagger.hilt.android.plugin")
     id("com.apollographql.apollo3").version("3.7.3")
     alias(libs.plugins.google.gms.google.services)
+
 }
 
 apollo {
@@ -47,7 +49,9 @@ android {
     kapt {
         correctErrorTypes = true
     }
-
+    buildFeatures {
+        viewBinding = true
+    }
 
 }
 

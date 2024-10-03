@@ -8,5 +8,6 @@
     <string name="Email">البريد الالكتروني</string>
     <string name="Password">كلمة المرور</string>
     <string name="HWelcomebackyouvebeenmissed">مرحبا بكم في Couture Corner</string>
+    <string name="SignUp">" تسجيل الدخول"</string>
 
 </resources>

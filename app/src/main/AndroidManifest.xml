@@ -19,17 +19,13 @@
 
         <!-- SignUpActivity -->
         <activity
-            android:name=".authentication.SignUpActivity"
+            android:name=".authentication.view.SignUpActivity"
             android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
         <!-- LoginActivity -->
         <activity
-            android:name=".authentication.LoginActivity"
+            android:name=".authentication.view.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -41,10 +37,6 @@
         <activity
             android:name=".home.ui.MainActivity"
             android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
     </application>

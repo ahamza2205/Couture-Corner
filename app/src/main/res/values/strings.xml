@@ -1,10 +1,13 @@
 <resources>
     <string name="app_name">Couture Corner</string>
-    <string name="DonthaveanccountSignUp">Don\'t have an account? Sign Up</string>
+    <string name="DonthaveanccountSignUp">Don\'t have an account ?</string>
     <string name="Orsigninwith">Or sign in with</string>
     <string name="SignIn">Sign In</string>
     <string name="ForgotPassword">Forgot Password?</string>
     <string name="Email">Email</string>
     <string name="Password">Password</string>
     <string name="HWelcomebackyouvebeenmissed">Hi! Welcome back, you\'ve been missed</string>
+    <string name="SignUp">" Sign Up"</string>
+    <string name="alreadyhaveacc">"Already have account ? "</string>
+    <string name="signIn">Sign In</string>
 </resources>
