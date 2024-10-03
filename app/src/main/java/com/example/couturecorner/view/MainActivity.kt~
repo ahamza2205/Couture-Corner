@@ -9,9 +9,6 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.NavigationUI
-import androidx.navigation.ui.setupWithNavController
 import com.example.couturecorner.R
 import com.example.couturecorner.model.ApiState
 import com.example.couturecorner.model.Repo
