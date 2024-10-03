@@ -1,4 +1,4 @@
-package com.example.couturecorner.view
+package com.example.couturecorner.category.ui
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

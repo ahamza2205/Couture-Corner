@@ -1,4 +1,4 @@
-package com.example.couturecorner.model.repository
+package com.example.couturecorner.data.repository
 
 import com.apollographql.apollo3.api.ApolloResponse
 import com.graphql.GetProductsQuery
