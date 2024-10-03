@@ -1,15 +1,17 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    id("kotlin-kapt")
+    id("dagger.hilt.android.plugin")
     id("com.apollographql.apollo3").version("3.7.3")
 }
 
 apollo {
-
-    packageName.set("com.graphql") // Set your package name here
+    packageName.set("com.graphql")
     generateKotlinModels.set(true)
 
 }
+
 
 android {
     namespace = "com.example.couturecorner"
@@ -41,6 +43,11 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    kapt {
+        correctErrorTypes = true
+    }
+
+
 }
 
 dependencies {
@@ -79,6 +86,10 @@ dependencies {
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
     implementation("com.squareup.okhttp3:okhttp:4.9.3")
 
+    implementation ("androidx.navigation:navigation-fragment-ktx:2.5.3")
 
+    // Dagger Hilt
+    implementation ("com.google.dagger:hilt-android:2.48")
+    kapt ("com.google.dagger:hilt-compiler:2.48")
 
 }

@@ -1,25 +1,27 @@
-package com.example.couturecorner.model
+package com.example.couturecorner.model.repository
 
 import com.apollographql.apollo3.api.ApolloResponse
 import com.example.couturecorner.model.remote.IremoteData
 import com.graphql.GetProductsQuery
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-class Repo(
-    private var remoteData: IremoteData
-):Irepo {
+class Repo
+    @Inject constructor(
+    private val remoteData: IremoteData
+) : Irepo {
 
 
     companion object
     {
         private var instance : Repo? = null
 
-        fun getInstance(remoteData : IremoteData):Repo
+        fun getInstance(remoteData : IremoteData): Repo
         {
             return instance ?: synchronized(this)
             {
                 val temp = Repo(remoteData)
-                instance=temp
+                instance =temp
                 temp
             }
         }
