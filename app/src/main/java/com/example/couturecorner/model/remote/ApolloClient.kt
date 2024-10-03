@@ -11,7 +11,7 @@ object ApolloClient {
                     .addInterceptor { chain ->
                         val original = chain.request()
                         val request = original.newBuilder()
-                            .header("X-Shopify-Access-Token", "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")                            .method(original.method, original.body)
+                            //added token
                             .build()
                         chain.proceed(request)
                     }
