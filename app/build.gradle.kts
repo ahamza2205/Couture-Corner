@@ -47,8 +47,11 @@ android {
         correctErrorTypes = true
     }
 
-
+    buildFeatures {
+        viewBinding = true
+    }
 }
+
 
 dependencies {
 
