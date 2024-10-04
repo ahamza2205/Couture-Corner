@@ -11,10 +11,10 @@
         android:icon="@drawable/favorite"
         android:title="Favorite" />
 
-    <item
-        android:id="@+id/categoryFragment"
-        android:icon="@drawable/category"
-        android:title="Category" />
+<!--    <item-->
+<!--        android:id="@+id/categoryFragment"-->
+<!--        android:icon="@drawable/category"-->
+<!--        android:title="Category" />-->
 
     <item
         android:id="@+id/settingsFragment"

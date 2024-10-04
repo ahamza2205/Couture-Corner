@@ -6,4 +6,5 @@
     <string name="product">Product</string>
     <string name="product_title">product Title</string>
     <string name="flash_sale">Flash Sale</string>
+    <string name="category">Category</string>
 </resources>

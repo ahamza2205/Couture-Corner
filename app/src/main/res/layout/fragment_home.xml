@@ -1,11 +1,136 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+<!--<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    xmlns:tools="http://schemas.android.com/tools"-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="match_parent"-->
 
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".home.ui.HomeFragment">
+<!--    xmlns:app="http://schemas.android.com/apk/res-auto"-->
+<!--    tools:context=".home.ui.HomeFragment">-->
+
+
+
+
+<!--    <ScrollView-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent">-->
+
+<!--        <LinearLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:orientation="vertical" >-->
+
+
+<!--            <ProgressBar-->
+<!--                android:id="@+id/progressBar"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_centerInParent="true"-->
+<!--                android:visibility="gone" />-->
+
+
+<!--            <androidx.cardview.widget.CardView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:id="@+id/RandomMealCardView"-->
+<!--                android:layout_margin="8dp"-->
+<!--                android:elevation="4dp"-->
+<!--                app:cardCornerRadius="10dp"-->
+<!--                android:layout_gravity="center"-->
+<!--                android:layout_marginTop="20dp"-->
+<!--                android:layout_marginBottom="20dp"-->
+<!--                >-->
+
+<!--                <RelativeLayout-->
+<!--                    android:layout_width="250dp"-->
+<!--                    android:layout_height="200dp">-->
+
+<!--                    &lt;!&ndash; Title on top of the image &ndash;&gt;-->
+<!--                    <ImageView-->
+<!--                        android:id="@+id/AddsImageView"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="200dp"-->
+<!--                        android:background="@drawable/rounded_image"-->
+<!--                        android:scaleType="centerCrop"-->
+<!--                        android:src="@drawable/shoz10" />-->
+
+<!--                    <TextView-->
+<!--                        android:id="@+id/addsTitleTextView"-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_alignParentBottom="true"-->
+<!--                        android:background="#80000000"-->
+<!--                        android:gravity="center"-->
+<!--                        android:padding="8dp"-->
+<!--                        android:text="@string/product_title"-->
+<!--                        android:textColor="#FFFFFF"-->
+<!--                        android:textSize="16sp"-->
+<!--                        android:textStyle="bold" />-->
+
+<!--                    &lt;!&ndash; Favorite button in the top-right corner &ndash;&gt;-->
+<!--                    <ImageButton-->
+<!--                        android:id="@+id/favoriteAddsButton"-->
+<!--                        android:layout_width="50dp"-->
+<!--                        android:layout_height="50dp"-->
+<!--                        android:layout_alignParentEnd="true"-->
+<!--                        android:layout_alignParentRight="true"-->
+<!--                        android:layout_margin="8dp"-->
+<!--                        android:background="@android:color/transparent"-->
+<!--                        android:contentDescription="@string/product"-->
+<!--                        android:src="@drawable/baseline_favorite_border_24" />-->
+
+<!--                </RelativeLayout>-->
+<!--            </androidx.cardview.widget.CardView>-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/TitleCategory"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginStart="5dp"-->
+<!--                android:layout_marginTop="5dp"-->
+<!--                android:layout_weight="1"-->
+<!--                android:text="@string/brands"-->
+<!--                android:textColor="@color/black"-->
+<!--                android:textSize="24dp"-->
+<!--                android:textStyle="bold" />-->
+
+<!--            <androidx.recyclerview.widget.RecyclerView-->
+<!--                android:id="@+id/BrandsRecycle"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent" />-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/FlashText"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginStart="5dp"-->
+<!--                android:layout_marginTop="5dp"-->
+<!--                android:layout_weight="1"-->
+<!--                android:text="@string/flash_sale"-->
+<!--                android:textColor="@color/black"-->
+<!--                android:textSize="24dp"-->
+<!--                android:textStyle="bold" />-->
+
+<!--            <androidx.recyclerview.widget.RecyclerView-->
+<!--                android:id="@+id/productsRecycel"-->
+<!--                android:paddingHorizontal="4dp"-->
+<!--                app:spanCount="2"-->
+<!--                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"-->
+<!--                android:orientation="vertical"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent" />-->
+
+
+
+
+<!--        </LinearLayout>-->
+
+<!--    </ScrollView>-->
+<!--</FrameLayout>-->
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        xmlns:tools="http://schemas.android.com/tools">
 
 
 
@@ -18,6 +143,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical" >
+
+
+
+
 
 
             <androidx.cardview.widget.CardView
@@ -74,6 +203,24 @@
             </androidx.cardview.widget.CardView>
 
             <TextView
+                android:id="@+id/Category"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_weight="1"
+                android:text="@string/category"
+                android:textColor="@color/black"
+                android:textSize="24dp"
+                android:textStyle="bold" />
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/CategoryRecycel"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <TextView
                 android:id="@+id/TitleCategory"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -84,6 +231,7 @@
                 android:textColor="@color/black"
                 android:textSize="24dp"
                 android:textStyle="bold" />
+
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/BrandsRecycle"
@@ -102,6 +250,16 @@
                 android:textSize="24dp"
                 android:textStyle="bold" />
 
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+              android:indeterminateTint="@color/colorPrimary"
+               android:layout_gravity="center"
+                android:visibility="gone"
+               />
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/productsRecycel"
                 android:paddingHorizontal="4dp"
@@ -117,140 +275,7 @@
         </LinearLayout>
 
     </ScrollView>
-</FrameLayout>
-    <!--<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
-    <!--    xmlns:app="http://schemas.android.com/apk/res-auto"-->
-    <!--    android:layout_width="match_parent"-->
-    <!--    android:layout_height="match_parent"-->
-    <!--    xmlns:tools="http://schemas.android.com/tools">-->
-
-    <!--    <ProgressBar-->
-    <!--        android:id="@+id/progressBar"-->
-    <!--        android:layout_width="wrap_content"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_centerInParent="true"-->
-    <!--        android:visibility="gone"-->
-    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintTop_toTopOf="parent"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"/>-->
-
-
-    <!--    <androidx.cardview.widget.CardView-->
-    <!--        android:id="@+id/RandomMealCardView"-->
-    <!--        android:layout_width="wrap_content"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_gravity="center"-->
-    <!--        android:layout_margin="8dp"-->
-    <!--        android:elevation="4dp"-->
-    <!--        app:cardCornerRadius="10dp"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toTopOf="parent">-->
-
-    <!--        <RelativeLayout-->
-    <!--            android:layout_width="250dp"-->
-    <!--            android:layout_height="200dp">-->
-
-    <!--            &lt;!&ndash; Title on top of the image &ndash;&gt;-->
-
-    <!--            <ImageView-->
-    <!--                android:id="@+id/AddsImageView"-->
-    <!--                android:layout_width="match_parent"-->
-    <!--                android:layout_height="200dp"-->
-    <!--                android:background="@drawable/rounded_image"-->
-    <!--                android:scaleType="centerCrop"-->
-    <!--                android:src="@drawable/shoz10" />-->
-
-    <!--            <TextView-->
-    <!--                android:id="@+id/addsTitleTextView"-->
-    <!--                android:layout_width="match_parent"-->
-    <!--                android:layout_height="wrap_content"-->
-    <!--                android:layout_alignParentBottom="true"-->
-    <!--                android:background="#80000000"-->
-    <!--                android:gravity="center"-->
-    <!--                android:padding="8dp"-->
-    <!--                android:text="@string/product_title"-->
-    <!--                android:textColor="#FFFFFF"-->
-    <!--                android:textSize="16sp"-->
-    <!--                android:textStyle="bold" />-->
-
-    <!--            &lt;!&ndash; Favorite button in the top-right corner &ndash;&gt;-->
-    <!--            <ImageButton-->
-    <!--                android:id="@+id/favoriteAddsButton"-->
-    <!--                android:layout_width="50dp"-->
-    <!--                android:layout_height="50dp"-->
-    <!--                android:layout_alignParentEnd="true"-->
-    <!--                android:layout_alignParentRight="true"-->
-    <!--                android:layout_margin="8dp"-->
-    <!--                android:background="@android:color/transparent"-->
-    <!--                android:contentDescription="@string/product"-->
-    <!--                android:src="@drawable/baseline_favorite_border_24" />-->
-
-    <!--        </RelativeLayout>-->
-    <!--    </androidx.cardview.widget.CardView>-->
-
-
-    <!--    <TextView-->
-    <!--        android:id="@+id/TitleCategory"-->
-    <!--        android:layout_width="wrap_content"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:layout_marginStart="5dp"-->
-    <!--        android:layout_marginTop="16dp"-->
-    <!--        android:layout_weight="1"-->
-    <!--        android:text="@string/brands"-->
-    <!--        android:textColor="@color/black"-->
-    <!--        android:textSize="24dp"-->
-    <!--        android:textStyle="bold"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintHorizontal_bias="0.0"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toBottomOf="@id/RandomMealCardView" />-->
-
-    <!--    <androidx.recyclerview.widget.RecyclerView-->
-    <!--        android:id="@+id/BrandsRecycle"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="0dp"-->
-    <!--        android:layout_marginTop="4dp"-->
-    <!--        android:clipToPadding="false"-->
-    <!--        android:padding="8dp"-->
-    <!--        android:scrollbars="vertical"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toBottomOf="@id/TitleCategory" />-->
 
 
 
-    <!--                <TextView-->
-    <!--                    android:id="@+id/FlashText"-->
-    <!--                    android:layout_width="wrap_content"-->
-    <!--                    android:layout_height="wrap_content"-->
-    <!--                    android:layout_marginStart="5dp"-->
-    <!--                    android:layout_marginTop="5dp"-->
-    <!--                    android:layout_weight="1"-->
-    <!--                    android:text="@string/flash_sale"-->
-    <!--                    android:textColor="@color/black"-->
-    <!--                    android:textSize="24dp"-->
-    <!--                    app:layout_constraintEnd_toEndOf="parent"-->
-    <!--                    app:layout_constraintHorizontal_bias="0.0"-->
-    <!--                    app:layout_constraintStart_toStartOf="parent"-->
-    <!--                    app:layout_constraintTop_toBottomOf="@id/BrandsRecycle"-->
-    <!--                    android:textStyle="bold" />-->
-
-    <!--    &lt;!&ndash; Forecast RecyclerView &ndash;&gt;-->
-    <!--    <androidx.recyclerview.widget.RecyclerView-->
-    <!--        android:id="@+id/productsRecycel"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="0dp"-->
-    <!--        android:layout_marginTop="4dp"-->
-    <!--        android:clipToPadding="false"-->
-    <!--        android:padding="8dp"-->
-    <!--        app:spanCount="2"-->
-    <!--        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"-->
-    <!--        android:orientation="vertical"-->
-    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toBottomOf="@id/FlashText" />-->
-
-    <!--</androidx.constraintlayout.widget.ConstraintLayout>-->
+    </androidx.constraintlayout.widget.ConstraintLayout>
