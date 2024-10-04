@@ -7,13 +7,9 @@ query GetCuponCodes {
                     title
                     summary
                 }
-                ... on DiscountCodeBxgy {
-                    title
-                    codesCount {
-                        count
-                    }
-                }
+
             }
         }
     }
 }
+
