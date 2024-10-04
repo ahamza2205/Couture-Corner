@@ -63,6 +63,7 @@ input CustomerInput {
     email: String!
     firstName: String!
     lastName: String!
+    phone: String
     tags: [String!]
 }
 
@@ -76,7 +77,7 @@ type Customer {
     email: String!
     firstName: String
     lastName: String
-    tags: [String]
+    phone: String
 }
 
 type UserError {

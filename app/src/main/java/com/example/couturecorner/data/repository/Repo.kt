@@ -1,10 +1,17 @@
 package com.example.couturecorner.data.repository
 
+import android.util.Log
 import com.apollographql.apollo3.api.ApolloResponse
+import com.apollographql.apollo3.api.Optional
 import com.example.couturecorner.data.local.SharedPreference
 import com.example.couturecorner.data.remote.IremoteData
+import com.example.couturecorner.network.ApolloClient
+import com.google.firebase.auth.FirebaseAuth
+import com.graphql.CustomerCreateMutation
 import com.graphql.GetProductsQuery
+import com.graphql.type.CustomerInput
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -30,5 +37,37 @@ class Repo
     override fun logoutUser() {
         sharedPreference.logoutUser()
     }
+
+
+    // --------------------------- shopify registration -------------------------------
+    suspend fun registerUser(email: String, password: String, firstName: String, lastName: String, phoneNumber: String) {
+        val auth = FirebaseAuth.getInstance()
+        val firebaseUserId = auth.createUserWithEmailAndPassword(email, password).await()
+
+        if (firebaseUserId.user != null) {
+            val client = ApolloClient.apolloClient
+            val mutation = CustomerCreateMutation(
+                input = CustomerInput(
+                    email = email,
+                    firstName = firstName,
+                    lastName = lastName,
+                    phone = Optional.Present(phoneNumber)
+                )
+            )
+
+            Log.d("UserRegistration", "Attempting to create Shopify user: $firstName $lastName, Email: $email, Phone: $phoneNumber")
+
+            val response = client.mutation(mutation).execute()
+
+            if (response.hasErrors()) {
+                Log.e("UserRegistration", "Error creating Shopify user: ${response.errors}")
+                throw Exception("Error creating Shopify user: ${response.errors}")
+            } else {
+                val shopifyUserId = response.data?.customerCreate?.customer?.id // احصل على الـ User ID من الاستجابة
+                Log.d("UserRegistration", "User successfully created on Shopify: $firstName $lastName, Shopify User ID: $shopifyUserId")
+            }
+        }
+    }
+
 
 }

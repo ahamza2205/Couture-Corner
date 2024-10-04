@@ -15,7 +15,6 @@ apollo {
     generateKotlinModels.set(true)
 }
 
-
 android {
     namespace = "com.example.couturecorner"
     compileSdk = 34

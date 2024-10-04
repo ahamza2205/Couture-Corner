@@ -1,17 +1,15 @@
-mutation CreateCustomer($email: String!, $firstName: String!, $lastName: String!, $tags: [String!]) {
-    customerCreate(input: {
-        email: $email,
-        firstName: $firstName,
-        lastName: $lastName,
-        tags: $tags
-    }) {
+mutation CustomerCreate($input: CustomerInput!) {
+    customerCreate(input: $input) {
         customer {
             id
+            firstName
+            lastName
             email
+            phone
         }
         userErrors {
-            field
             message
+            field
         }
     }
 }
