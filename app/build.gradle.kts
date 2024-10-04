@@ -51,7 +51,12 @@ android {
     buildFeatures {
         viewBinding = true
     }
-
+    packaging {
+        resources {
+            excludes += "**/META-INF/NOTICE.md"
+            excludes += "**/META-INF/LICENSE.md"
+        }
+    }
 }
 
 dependencies {
@@ -99,5 +104,11 @@ dependencies {
     kapt ("com.google.dagger:hilt-compiler:2.48")
     //gild
     implementation( "com.github.bumptech.glide:glide:4.16.0")
+
+    implementation ("com.sun.mail:android-mail:1.6.7")
+    implementation ("com.sun.mail:android-activation:1.6.7")
+    implementation ("com.google.firebase:firebase-auth")
+
+
 
 }

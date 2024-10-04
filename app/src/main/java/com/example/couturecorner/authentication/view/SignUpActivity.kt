@@ -9,7 +9,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.example.couturecorner.authentication.viewmodel.SignUpViewModel
 import com.example.couturecorner.databinding.ActivitySignUpBinding
-import com.example.couturecorner.home.ui.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -37,7 +36,8 @@ class SignUpActivity : AppCompatActivity() {
             val password = binding.etPassword.text.toString()
 
             if (firstName.isNotEmpty() && lastName.isNotEmpty() && phoneNumber.isNotEmpty() &&
-                email.isNotEmpty() && password.isNotEmpty()) {
+                email.isNotEmpty() && password.isNotEmpty()
+            ) {
 
                 viewModel.registerUser(email, password, firstName, lastName, phoneNumber)
                 Toast.makeText(this, "Registration in progress...", Toast.LENGTH_SHORT).show()
@@ -45,15 +45,41 @@ class SignUpActivity : AppCompatActivity() {
                 Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show()
             }
         }
+
+        binding.btnSignUp.setOnClickListener {
+            val firstName = binding.etFirstName.text.toString()
+            val lastName = binding.etLastName.text.toString()
+            val phoneNumber = binding.etPhoneNumber.text.toString()
+            val email = binding.etEmail.text.toString()
+            val password = binding.etPassword.text.toString()
+
+            if (firstName.isNotEmpty() && lastName.isNotEmpty() && phoneNumber.isNotEmpty() &&
+                email.isNotEmpty() && password.isNotEmpty()
+            ) {
+                viewModel.registerUserWithEmailVerification(
+                    email,
+                    password,
+                    firstName,
+                    lastName,
+                    phoneNumber
+                )
+                Toast.makeText(this, "Registration in progress...", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show()
+            }
+        }
+
         viewModel.registrationStatus.observe(this, Observer { isSuccess ->
             if (isSuccess) {
-                Toast.makeText(this, "Registration completed successfully", Toast.LENGTH_SHORT).show()
-                val intent = Intent(this, MainActivity::class.java)
+                val intent = Intent(this, VerifyCodeActivity::class.java)
                 startActivity(intent)
                 finish()
             } else {
-                Toast.makeText(this, "Registration failed. Please try again.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Registration failed. Please try again.", Toast.LENGTH_SHORT)
+                    .show()
             }
         })
+
     }
 }
+
