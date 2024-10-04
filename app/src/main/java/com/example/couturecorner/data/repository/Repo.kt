@@ -9,7 +9,9 @@ import com.example.couturecorner.network.ApolloClient
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.graphql.CustomerCreateMutation
+import com.graphql.GetCustomerByIdQuery
 import com.graphql.GetProductsQuery
+import com.graphql.type.Customer
 import com.graphql.type.CustomerInput
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -42,38 +44,65 @@ class Repo
 
 
     // --------------------------- shopify registration -------------------------------
-    suspend fun registerUser(email: String, password: String, firstName: String, lastName: String, phoneNumber: String) {
+    suspend fun registerUser(email: String, password: String, firstName: String, lastName: String, phoneNumber: String): String? {
         val auth = FirebaseAuth.getInstance()
-        val firebaseUserId = auth.createUserWithEmailAndPassword(email, password).await()
+        try {
+            val firebaseUserId = auth.createUserWithEmailAndPassword(email, password).await()
 
-        firebaseUserId.user?.sendEmailVerification()?.await()
-
-        if (firebaseUserId.user != null) {
-
-
-            val client = ApolloClient.apolloClient
-            val mutation = CustomerCreateMutation(
-                input = CustomerInput(
-                    email = email,
-                    firstName = firstName,
-                    lastName = lastName,
-                    phone = Optional.Present(phoneNumber)
+            if (firebaseUserId.user != null) {
+                val client = ApolloClient.apolloClient
+                val mutation = CustomerCreateMutation(
+                    input = CustomerInput(
+                        email = email,
+                        firstName = firstName,
+                        lastName = lastName,
+                        phone = Optional.Present(phoneNumber)
+                    )
                 )
-            )
+                val response = client.mutation(mutation).execute()
 
-            Log.d("UserRegistration", "Attempting to create Shopify user: $firstName $lastName, Email: $email, Phone: $phoneNumber")
+                if (response.hasErrors()) {
+                    throw Exception("Error creating Shopify user: ${response.errors}")
+                } else {
+                    val shopifyUserId = response.data?.customerCreate?.customer?.id
+                    Log.d("UserRegistration", "User successfully created on Shopify: $firstName $lastName, Shopify User ID: $shopifyUserId")
 
-            val response = client.mutation(mutation).execute()
-
-            if (response.hasErrors()) {
-                Log.e("UserRegistration", "Error creating Shopify user: ${response.errors}")
-                throw Exception("Error creating Shopify user: ${response.errors}")
+                    // Save the Shopify User ID in shared preferences
+                    sharedPreference.saveShopifyUserId(shopifyUserId ?: "")
+                    if (shopifyUserId != null) {
+                        getCustomerById(shopifyUserId)
+                    }
+                    return shopifyUserId
+                }
             } else {
-                val shopifyUserId = response.data?.customerCreate?.customer?.id
-                Log.d("UserRegistration", "User successfully created on Shopify: $firstName $lastName, Shopify User ID: $shopifyUserId")
+                throw Exception("Failed to create Firebase user")
             }
+        } catch (e: Exception) {
+            Log.e("UserRegistration", "Error in registration process: ${e.message}")
+            throw e
         }
     }
 
+    suspend fun getCustomerById(customerId: String): GetCustomerByIdQuery.Customer? {
+        val client = ApolloClient.apolloClient
+        val response = client.query(GetCustomerByIdQuery(id = customerId)).execute()
 
+        if (response.hasErrors()) {
+            throw Exception("Error fetching customer: ${response.errors}")
+        }
+
+        response.data?.customer?.let { customer ->
+            return GetCustomerByIdQuery.Customer(
+                id = customer.id,
+                displayName = customer.displayName ?: "",
+                email = customer.email,
+                firstName = customer.firstName,
+                lastName = customer.lastName,
+                phone = customer.phone,
+                createdAt = customer.createdAt,
+                updatedAt = customer.updatedAt
+            )
+        }
+        return null
+    }
 }

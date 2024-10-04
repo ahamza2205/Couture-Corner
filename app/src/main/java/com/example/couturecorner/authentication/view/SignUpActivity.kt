@@ -3,12 +3,14 @@ package com.example.couturecorner.authentication.view
 import android.content.Intent
 import android.graphics.Paint
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.example.couturecorner.authentication.viewmodel.SignUpViewModel
 import com.example.couturecorner.databinding.ActivitySignUpBinding
+import com.example.couturecorner.home.ui.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -56,7 +58,7 @@ class SignUpActivity : AppCompatActivity() {
             if (firstName.isNotEmpty() && lastName.isNotEmpty() && phoneNumber.isNotEmpty() &&
                 email.isNotEmpty() && password.isNotEmpty()
             ) {
-                viewModel.registerUserWithEmailVerification(
+                viewModel.registerUser(
                     email,
                     password,
                     firstName,
@@ -68,17 +70,38 @@ class SignUpActivity : AppCompatActivity() {
                 Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show()
             }
         }
-
         viewModel.registrationStatus.observe(this, Observer { isSuccess ->
             if (isSuccess) {
-                val intent = Intent(this, VerifyCodeActivity::class.java)
-                startActivity(intent)
-                finish()
+                // Fetch customer data after successful registration
+                viewModel.getCustomerData()
+
+                // Observe the customer data to log it
+                viewModel.customerData.observe(this) { customer ->
+                    if (customer != null) {
+                        Log.d("HamzaData", "Customer Data: " +
+                                "ID: ${customer.id}, " +
+                                "Display Name: ${customer.displayName}, " +
+                                "Email: ${customer.email}, " +
+                                "First Name: ${customer.firstName}, " +
+                                "Last Name: ${customer.lastName}, " +
+                                "Phone: ${customer.phone}, " +
+                                "Created At: ${customer.createdAt}, " +
+                                "Updated At: ${customer.updatedAt}")
+
+                        val intent = Intent(this, MainActivity::class.java)
+                        startActivity(intent)
+                        finish()
+                    } else {
+                        Log.e("HamzaData", "Customer data is null")
+                    }
+                }
             } else {
                 Toast.makeText(this, "Registration failed. Please try again.", Toast.LENGTH_SHORT)
                     .show()
             }
         })
+
+
 
     }
 }

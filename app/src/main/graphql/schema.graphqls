@@ -1,7 +1,6 @@
 type Query {
     products(first: Int!): ProductConnection
     customer(id: ID!): Customer
-    customerByEmail(email: String!): Customer
 }
 
 # Connection type for pagination
@@ -71,15 +70,19 @@ type CustomerCreatePayload {
     customer: Customer
     userErrors: [UserError!]!
 }
-
 type Customer {
     id: ID!
     email: String!
     firstName: String
     lastName: String
     phone: String
+    address: String
+    createdAt: String
+    updatedAt: String
+    displayName: String
+    preferredContactMethod: String
+    marketingOptIn: Boolean
 }
-
 type UserError {
     field: [String]
     message: String!

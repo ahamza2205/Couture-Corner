@@ -2,8 +2,9 @@ package com.example.couturecorner.data.local
 
 import android.content.Context
 import android.content.SharedPreferences
+import javax.inject.Inject
 
-class SharedPreference(context: Context) {
+class SharedPreference @Inject constructor(context: Context) {
 
     private val sharedPreferences: SharedPreferences =
         context.getSharedPreferences("UserPreferences", Context.MODE_PRIVATE)
@@ -19,4 +20,14 @@ class SharedPreference(context: Context) {
     fun logoutUser() {
         sharedPreferences.edit().remove("isLoggedIn").apply()
     }
+
+    // Shopify User ID
+    fun saveShopifyUserId(shopifyUserId: String) {
+        sharedPreferences.edit().putString("shopifyUserId", shopifyUserId).apply()
+    }
+
+    fun getShopifyUserId(): String? {
+        return sharedPreferences.getString("shopifyUserId", null)
+    }
+
 }

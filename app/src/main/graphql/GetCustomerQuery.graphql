@@ -1,8 +1,12 @@
-query GetCustomer($email: String!) {
-    customerByEmail(email: $email) {
-        id
+query GetCustomerById($id: ID!) {
+    customer(id: $id) {
+        createdAt
+        displayName
         email
         firstName
+        id
         lastName
+        phone
+        updatedAt
     }
 }
