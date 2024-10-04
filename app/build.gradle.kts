@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     id("kotlin-kapt")
     id("dagger.hilt.android.plugin")
+    id ("androidx.navigation.safeargs.kotlin")
     id("com.apollographql.apollo3").version("3.7.3")
 }
 
@@ -26,7 +27,9 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
-
+    buildFeatures {
+        viewBinding = true
+    }
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -93,5 +96,7 @@ dependencies {
     kapt ("com.google.dagger:hilt-compiler:2.48")
     //gild
     implementation( "com.github.bumptech.glide:glide:4.16.0")
+
+    implementation ("de.hdodenhof:circleimageview:3.1.0")
 
 }

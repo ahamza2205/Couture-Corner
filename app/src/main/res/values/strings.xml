@@ -2,4 +2,8 @@
     <string name="app_name">Couture Corner</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="brands">Brands</string>
+    <string name="product">Product</string>
+    <string name="product_title">product Title</string>
+    <string name="flash_sale">Flash Sale</string>
 </resources>
