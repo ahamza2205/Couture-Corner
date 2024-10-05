@@ -92,3 +92,117 @@ type UserError {
 
 
 
+# Type for CodesCount
+type CodesCount {
+    count: Int!
+}
+
+# Type for DiscountCodeBasic
+type DiscountCodeBasic {
+    title: String!
+    summary: String!
+}
+
+# Type for DiscountCodeBxgy
+type DiscountCodeBxgy {
+    title: String!
+    codesCount: CodesCount!
+}
+
+# Union type for DiscountCode
+union DiscountCode = DiscountCodeBasic | DiscountCodeBxgy
+
+# Type for CodeDiscountNode
+type CodeDiscountNode {
+    id: ID!
+    codeDiscount: DiscountCode!
+}
+
+# Type for CodeDiscountNode connection
+type CodeDiscountNodeConnection {
+    nodes: [CodeDiscountNode]
+}
+
+
+
+# The input type for metafields
+input MetafieldInput {
+    namespace: String!
+    key: String!
+    value: String!
+}
+
+# The input type for addresses
+input AddressInput {
+    address1: String!
+    address2: String!
+    city: String!
+    phone: String!
+}
+
+# The metafield type
+type Metafield {
+    id: ID!
+    namespace: String!
+    key: String!
+    value: String!
+}
+
+# Define Edge type for metafields
+type MetafieldEdge {
+    node: Metafield!
+}
+
+# Define Connection type for metafields
+type MetafieldConnection {
+    edges: [MetafieldEdge!]!
+}
+# The input type for updating a customer
+input CustomerInput {
+    id: ID!
+    metafields: [MetafieldInput!]  # List of metafields to update
+    addresses: [MailingAddressInput!]      # List of addresses to update
+}
+
+# The input type for Mailing Address
+input MailingAddressInput {
+    address1: String!
+    address2: String!
+    city: String!
+    phone: String!
+}
+
+
+
+# The address type
+type Address {
+    address1: String!
+    address2: String!
+    city: String!
+    phone: String!
+}
+
+# The customer type
+type Customer {
+    id: ID!
+    metafields(first: Int): MetafieldConnection!  # Use the connection type
+    addresses: [Address!]!
+}
+
+# User errors type
+type UserError {
+    message: String!
+    field: String
+}
+
+# The payload for the customer update mutation
+type CustomerUpdatePayload {
+    customer: Customer
+    userErrors: [UserError!]!
+}
+
+# The mutation type
+type Mutation {
+    customerUpdate(input: CustomerInput!): CustomerUpdatePayload!
+}
+

@@ -2,18 +2,11 @@ package com.example.couturecorner.data.repository
 
 import android.util.Log
 import com.apollographql.apollo3.api.ApolloResponse
-import com.apollographql.apollo3.api.Optional
-import com.example.couturecorner.data.local.SharedPreference
 import com.example.couturecorner.data.remote.IremoteData
-import com.example.couturecorner.network.ApolloClient
-import com.google.firebase.auth.FirebaseAuth
-import com.graphql.CustomerCreateMutation
-import com.graphql.GetCustomerByIdQuery
+import com.graphql.GetCuponCodesQuery
 import com.graphql.GetProductsQuery
-import com.graphql.HomeProductsQuery
-import com.graphql.type.Customer
+import com.graphql.UpdateCustomerMetafieldsMutation
 import com.graphql.type.CustomerInput
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
@@ -23,6 +16,8 @@ class Repo
     @Inject constructor(
     private val remoteData: IremoteData,
     private val sharedPreference: SharedPreference
+
+                private val remoteData: IremoteData
 ) : Irepo {
 
     override fun getProducts(): Flow<ApolloResponse<GetProductsQuery.Data>> {
@@ -108,5 +103,12 @@ class Repo
             )
         }
         return null
+    }
+
+    override fun getCupones(): Flow<ApolloResponse<GetCuponCodesQuery.Data>> {
+        return remoteData.getCupones()
+    }
+    override fun updateCustomer(input: CustomerInput): Flow<ApolloResponse<UpdateCustomerMetafieldsMutation.Data>> {
+        return remoteData.updateCustomer(input)
     }
 }

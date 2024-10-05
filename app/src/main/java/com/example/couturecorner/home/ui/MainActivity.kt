@@ -1,6 +1,7 @@
 package com.example.couturecorner.home.ui
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -15,18 +16,20 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-     val  viewModel: MainViewModel by  viewModels()
+    val viewModel: MainViewModel by viewModels()
+    private lateinit var bottomNav: BottomNavigationView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        bottomNav = findViewById(R.id.bottom_navigation)
 
         val navHostFragment = supportFragmentManager
             .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         val navController = navHostFragment.navController
-
-        val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_navigation)
         bottomNav.setupWithNavController(navController)
 
         NavigationUI.setupActionBarWithNavController(this, navController)
@@ -34,28 +37,38 @@ class MainActivity : AppCompatActivity() {
         viewModel.getProducts()
 
         lifecycleScope.launch {
-            viewModel.productsApollo.collect{
-                when(it){
-                    is ApiState.Loading->{}
-                    is ApiState.Success->{
+            viewModel.productsApollo.collect {
+                when (it) {
+                    is ApiState.Loading -> {}
+                    is ApiState.Success -> {
                         val products = it.data.data?.products?.edges
                         products?.forEach { edge ->
                             val product = edge?.node
-                            Log.d("AmrApollo", "Product: ${product?.title}, Description: ${product?.description}")
+                            Log.d(
+                                "AmrApollo",
+                                "Product: ${product?.title}, Description: ${product?.description}"
+                            )
                         }
                     }
-                    is ApiState.Error->{
+
+                    is ApiState.Error -> {
                         Log.d("AmrApollo", "${it.message} ")
                     }
                 }
             }
         }
-
     }
+        fun hideBottomNavigation() {
+            bottomNav.setVisibility(View.GONE)
+        }
+
+        fun showBottomNavigation() {
+            bottomNav.setVisibility(View.VISIBLE)
+        }
 
 
-    override fun onSupportNavigateUp(): Boolean {
-        val navController = findNavController(R.id.nav_host_fragment)
-        return navController.navigateUp() || super.onSupportNavigateUp()
-    }
+        override fun onSupportNavigateUp(): Boolean {
+            val navController = findNavController(R.id.nav_host_fragment)
+            return navController.navigateUp() || super.onSupportNavigateUp()
+        }
 }
