@@ -14,8 +14,6 @@
 
    <androidx.recyclerview.widget.RecyclerView
        android:paddingTop="20dp"
-       android:paddingStart="20dp"
-
        android:paddingEnd="10dp"
        android:id="@+id/cartRecyclerView"
        android:layout_width="match_parent"
@@ -25,37 +23,10 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="2"
+        android:layout_weight="1.5"
         android:paddingStart="20dp"
+        android:layout_marginTop="20dp"
         android:paddingEnd="10dp">
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textInputLayout"
-            android:layout_width="220dp"
-            android:layout_height="80dp"
-            app:boxBackgroundMode="outline"
-            app:boxCornerRadiusBottomEnd="15dp"
-            app:boxCornerRadiusBottomStart="15dp"
-            app:boxCornerRadiusTopEnd="15dp"
-            app:boxCornerRadiusTopStart="15dp"
-            app:boxStrokeColor="@color/colorPrimary"
-            app:boxStrokeWidth="1dp"
-            app:endIconDrawable="@drawable/check"
-            app:endIconMode="custom"
-            app:endIconTint="@color/colorPrimary"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.62"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" >
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/text_cuponcode"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:hint="Enter  Coupon Code"
-                android:textColorHint="@color/colorPrimary" />
-        </com.google.android.material.textfield.TextInputLayout>
-
 
         <TextView
             android:id="@+id/textViewSubtotalLabel"
@@ -68,7 +39,7 @@
             app:layout_constraintHorizontal_bias="0.045"
             app:layout_constraintHorizontal_chainStyle="spread_inside"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textInputLayout" />
+            tools:ignore="MissingConstraints" />
 
         <TextView
             android:id="@+id/textViewSubtotalValue"
