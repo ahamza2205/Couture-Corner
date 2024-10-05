@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="NONE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="e031b430-23c1-4756-9a90-62c6797e9940" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/google-services.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/graphql/CreateCustomerMutation.graphql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/graphql/GetCustomerQuery.graphql" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/couturecorner/authentication/view/LoginActivity.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/couturecorner/authentication/view/SignUpActivity.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/couturecorner/authentication/view/VerifyCodeActivity.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/couturecorner/authentication/viewmodel/LoginViewModel.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/couturecorner/authentication/viewmodel/SignUpViewModel.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/example/couturecorner/data/local/SharedPreference.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/res/drawable/eye.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/res/drawable/facebook_svgrepo_com.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/res/drawable/google_svgrepo_com.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/res/drawable/linkedin_1_svgrepo_com.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/res/drawable/rounded_edittext.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/res/layout/activity_login.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/res/layout/activity_sign_up.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/res/layout/activity_verify_code.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/res/values-ar-rEG/strings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/deploymentTargetSelector.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/deploymentTargetSelector.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/AndroidManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/graphql/schema.graphqls" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/graphql/schema.graphqls" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/couturecorner/data/repository/Irepo.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/couturecorner/data/repository/Irepo.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/couturecorner/data/repository/Repo.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/couturecorner/data/repository/Repo.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/couturecorner/di/AppModule.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/couturecorner/di/AppModule.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/couturecorner/di/MyApplication.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/couturecorner/di/MyApplication.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/res/values/colors.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/values/colors.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/values/strings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/../build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../gradle/libs.versions.toml" beforeDir="false" afterPath="$PROJECT_DIR$/../gradle/libs.versions.toml" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ClangdSettings">
+    <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 2
+}]]></component>
+  <component name="ProjectId" id="2n134ZFhFH5qsoifft1PaF0fPOH" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "RunOnceActivity.readMode.enableVisualFormatting": "true",
+    "android.gradle.sync.needed": "true",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "com.codeium.enabled": "true",
+    "dart.analysis.tool.window.visible": "false",
+    "kotlin-language-version-configured": "true",
+    "show.migrate.to.gradle.popup": "false"
+  }
+}]]></component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="e031b430-23c1-4756-9a90-62c6797e9940" name="Changes" comment="" />
+      <created>1728126564008</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1728126564008</updated>
+    </task>
+    <servers />
+  </component>
+</project>
