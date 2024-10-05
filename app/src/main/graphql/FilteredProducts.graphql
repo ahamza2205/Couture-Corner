@@ -5,6 +5,7 @@ query FilteredProducts($query: String!){
                 id
                 title
                 handle
+                tags
                 images(first: 1) {
                     edges {
                         node {

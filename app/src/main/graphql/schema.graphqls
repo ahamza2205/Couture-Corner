@@ -19,6 +19,7 @@ type Product {
     id: ID!
     title: String!
     description: String
+    tags: [String]
     handle: String
     images(first: Int!): ImageConnection
     variants(first: Int!): VariantConnection

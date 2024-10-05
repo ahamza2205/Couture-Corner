@@ -59,10 +59,11 @@ class CategoryFragment : Fragment() {
                         val products = it.data.data?.products?.edges
                         categoryAdapter.submitList(products)
                         showLoading(false)
-                        products?.forEach { edge ->
-                            val product = edge?.node
-                            Log.d("AmrCategoryApollo", "Product: ${product?.title}, Description: ")
-                        }
+//                        products?.forEach { edge ->
+//                            val productTag = edge?.node?.tags
+//                            productTag?.forEach { tag -> Log.d("AmrCategoryApollo", "tag: ${tag}, Description: ") }
+////                            Log.d("AmrCategoryApollo", "Product: ${product?.tags?.}, Description: ")
+//                        }
                     }
                     is ApiState.Error->{
                         showLoading(false)
