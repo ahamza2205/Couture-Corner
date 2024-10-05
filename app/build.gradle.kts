@@ -2,9 +2,10 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     id("kotlin-kapt")
-    id("dagger.hilt.android.plugin")
     id ("androidx.navigation.safeargs.kotlin")
+    id("dagger.hilt.android.plugin")
     id("com.apollographql.apollo3").version("3.7.3")
+    alias(libs.plugins.google.gms.google.services)
 }
 
 apollo {
@@ -30,6 +31,7 @@ android {
     buildFeatures {
         viewBinding = true
     }
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -50,6 +52,13 @@ android {
         correctErrorTypes = true
     }
 
+    packaging {
+        resources {
+            excludes += "**/META-INF/NOTICE.md"
+            excludes += "**/META-INF/LICENSE.md"
+        }
+    }
+
 
 }
 
@@ -65,6 +74,7 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    implementation(libs.firebase.auth)
     // Material Design Components
     implementation (libs.material)
     implementation ("androidx.navigation:navigation-fragment-ktx:2.5.3")
@@ -98,5 +108,10 @@ dependencies {
     implementation( "com.github.bumptech.glide:glide:4.16.0")
 
     implementation ("de.hdodenhof:circleimageview:3.1.0")
+
+
+    implementation ("com.sun.mail:android-mail:1.6.7")
+    implementation ("com.sun.mail:android-activation:1.6.7")
+    implementation ("com.google.firebase:firebase-auth")
 
 }

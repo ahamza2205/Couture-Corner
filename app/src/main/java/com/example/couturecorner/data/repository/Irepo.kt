@@ -8,4 +8,10 @@ import kotlinx.coroutines.flow.Flow
 interface Irepo {
      fun getProducts(): Flow<ApolloResponse<GetProductsQuery.Data>>
      fun getHomeProducts(): Flow<ApolloResponse<HomeProductsQuery.Data>>
+
+     // --------------- shared preference  -------------------------
+
+     fun saveUserLoggedIn(isLoggedIn: Boolean)
+     fun isUserLoggedIn(): Boolean
+     fun logoutUser()
 }

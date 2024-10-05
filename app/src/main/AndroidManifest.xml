@@ -4,6 +4,7 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <application
         android:name=".di.MyApplication"
         android:allowBackup="true"
@@ -15,16 +16,25 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CoutureCorner"
         tools:targetApi="31">
-
         <activity
-            android:name=".home.ui.MainActivity"
+            android:name=".authentication.view.VerifyCodeActivity"
+            android:exported="false" />
+        <!-- SignUpActivity -->
+        <activity
+            android:name=".authentication.view.SignUpActivity"
+            android:exported="true"></activity> <!-- LoginActivity -->
+        <activity
+            android:name=".authentication.view.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-
+        </activity> <!-- MainActivity -->
+        <activity
+            android:name=".home.ui.MainActivity"
+            android:exported="true"></activity>
     </application>
 
 </manifest>
