@@ -17,5 +17,8 @@
     <string name="category">الفئة</string>
     <string name="alreadyhaveacc">"هل لديك حساب بالفعل؟ "</string>
     <string name="signIn">دخول</string>
+    <string name="t_shirts">ت-شيرتات</string>
+    <string name="shoesUpper">الأحذية</string>
+    <string name="accessories">اكسسوارات</string>
 
 </resources>

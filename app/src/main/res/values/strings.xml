@@ -16,5 +16,8 @@
     <string name="SignUp">" Sign Up"</string>
     <string name="alreadyhaveacc">"Already have account ? "</string>
     <string name="signIn">Sign In</string>
+    <string name="t_shirts">T-shirts</string>
+    <string name="shoesUpper">SHOES</string>
+    <string name="accessories">ACCESSORIES</string>
 
 </resources>
