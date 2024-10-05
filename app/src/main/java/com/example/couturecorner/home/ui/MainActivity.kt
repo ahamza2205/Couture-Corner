@@ -24,7 +24,7 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-    val viewModel: MainViewModel by viewModels()
+    private val viewModel: MainViewModel by viewModels()
     private lateinit var productAdapter: ProductAdapter
     private lateinit var recyclerView: RecyclerView
 
@@ -44,28 +44,39 @@ class MainActivity : AppCompatActivity() {
 
         NavigationUI.setupActionBarWithNavController(this, navController)
 
-        // Initialize RecyclerView
+        // Initialize the RecyclerView
         recyclerView = findViewById(R.id.recyclerView)
-        productAdapter = ProductAdapter(emptyList())
+        productAdapter = ProductAdapter(emptyList()) { productId ->
+            // Store the selected product ID in the ViewModel
+            viewModel.selectedProductId = productId
+            // Navigate to ProductDetailsFragment directly
+            navController.navigate(R.id.productDetailsFragment)
+        }
         recyclerView.adapter = productAdapter
         recyclerView.layoutManager = LinearLayoutManager(this)
 
-        // Start with the RecyclerView hidden
+        // Hide the RecyclerView initially
         recyclerView.visibility = View.GONE
 
         viewModel.getProducts()
 
         lifecycleScope.launch {
-            viewModel.productsApollo.collect {
-                when (it) {
-                    is ApiState.Loading -> { }
+            viewModel.productsApollo.collect { apiState ->
+                when (apiState) {
+                    is ApiState.Loading -> {
+                        // Handle loading state if needed
+                    }
                     is ApiState.Success -> {
-                        val products = it.data.data?.products?.edges
-                        productAdapter = ProductAdapter(products ?: emptyList())
+                        val products = apiState.data.data?.products?.edges
+                        productAdapter = ProductAdapter(products ?: emptyList()) { productId ->
+                            viewModel.selectedProductId = productId
+                            navController.navigate(R.id.productDetailsFragment)
+                        }
                         recyclerView.adapter = productAdapter
+                        // Keep the RecyclerView hidden until search is performed
                     }
                     is ApiState.Error -> {
-                        Log.d("AmrApollo", "${it.message} ")
+                        Log.d("MainActivity", "${apiState.message}")
                     }
                 }
             }
@@ -82,18 +93,16 @@ class MainActivity : AppCompatActivity() {
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                // Handle search query submission
                 return false
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                if (newText.isNullOrEmpty()) {
-                    recyclerView.visibility = View.GONE
+                if (!newText.isNullOrEmpty()) {
+                    recyclerView.visibility = View.VISIBLE // Show when there's text
+                    productAdapter.filter(newText)
                 } else {
-                    recyclerView.visibility = View.VISIBLE
+                    recyclerView.visibility = View.GONE // Hide when no text
                 }
-
-                productAdapter.filter(newText ?: "")
                 return true
             }
         })

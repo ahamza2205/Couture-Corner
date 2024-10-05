@@ -1,6 +1,7 @@
 type Query {
     products(first: Int!,query: String): ProductConnection
     customer(id: ID!): Customer
+    product(id: ID!): Product
 }
 
 # Connection type for pagination
@@ -14,14 +15,17 @@ type ProductEdge {
 }
 
 # Define the Product type
+# Define the Product type
 type Product {
     id: ID!
     title: String!
     description: String
     handle: String
+    vendor: String
     images(first: Int!): ImageConnection
     variants(first: Int!): VariantConnection
 }
+
 
 # Connection type for images
 type ImageConnection {
@@ -49,10 +53,13 @@ type VariantEdge {
 }
 
 # Define the Variant type
+# Define the Variant type
 type Variant {
     price: String!
     sku: String
+    displayName: String
 }
+
 # Define the Customer type
 type Mutation {
     customerCreate(input: CustomerInput!): CustomerCreatePayload

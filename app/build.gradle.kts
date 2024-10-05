@@ -114,4 +114,7 @@ dependencies {
     implementation ("com.sun.mail:android-activation:1.6.7")
     implementation ("com.google.firebase:firebase-auth")
 
+    implementation ("com.google.android.material:material:1.8.0")
+
+
 }

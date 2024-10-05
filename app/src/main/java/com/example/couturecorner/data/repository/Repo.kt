@@ -4,17 +4,21 @@ import android.util.Log
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Optional
 import com.example.couturecorner.data.local.SharedPreference
+import com.example.couturecorner.data.model.ApiState
 import com.example.couturecorner.data.remote.IremoteData
 import com.example.couturecorner.network.ApolloClient
+import com.example.couturecorner.network.ApolloClient.apolloClient
 import com.google.firebase.auth.FirebaseAuth
 import com.graphql.CustomerCreateMutation
 import com.graphql.GetCustomerByIdQuery
 import com.graphql.GetProductsQuery
 import com.graphql.HomeProductsQuery
+import com.graphql.ProductQuery
 import com.graphql.type.Customer
 import com.graphql.type.CustomerInput
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -108,5 +112,15 @@ class Repo
             )
         }
         return null
+    }
+
+    // ----------------------------------- product details --------------------------------
+    fun getProductDetails(productId: String): Flow<ApiState<ProductQuery.Data>> = flow {
+        try {
+            val response = apolloClient.query(ProductQuery(productId)).execute()
+            emit(ApiState.Success(response.data!!))
+        } catch (e: Exception) {
+            emit(ApiState.Error(e.message ?: "Unknown Error"))
+        }
     }
 }

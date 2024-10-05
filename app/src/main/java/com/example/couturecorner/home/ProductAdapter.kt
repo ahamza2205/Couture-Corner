@@ -10,7 +10,7 @@ import com.bumptech.glide.Glide
 import com.example.couturecorner.R
 import com.graphql.GetProductsQuery
 
-class ProductAdapter(private val productList: List<GetProductsQuery.Edge?>) :
+class ProductAdapter(private val productList: List<GetProductsQuery.Edge?>, private val onProductClick: (String) -> Unit) :
     RecyclerView.Adapter<ProductAdapter.ProductViewHolder>() {
     private var filteredList = productList.toMutableList()
     fun filter(query: String) {
@@ -28,6 +28,12 @@ class ProductAdapter(private val productList: List<GetProductsQuery.Edge?>) :
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
         val product = filteredList[position]?.node // Get the Node from the Edge
         holder.bind(product)
+        // Set click listener
+        holder.itemView.setOnClickListener {
+            product?.let {
+                onProductClick(it.id)
+            }
+        }
     }
     override fun getItemCount() = filteredList.size
     class ProductViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -42,3 +48,4 @@ class ProductAdapter(private val productList: List<GetProductsQuery.Edge?>) :
         }
     }
 }
+
