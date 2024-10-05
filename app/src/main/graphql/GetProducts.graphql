@@ -1,5 +1,5 @@
 query GetProducts {
-    products(first: 10) {
+    products(first: 50,query: null) {
         edges {
             node {
                 id

@@ -21,9 +21,6 @@ class MainViewModel @Inject constructor(
         ApiState.Loading)
     val productsApollo : StateFlow<ApiState<ApolloResponse<GetProductsQuery.Data>>> =_productsApollo
 
-
-
-
     fun getProducts(){
         viewModelScope.launch {
             repo.getProducts().collect{
