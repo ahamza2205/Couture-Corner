@@ -9,5 +9,13 @@
     <string name="Password">كلمة المرور</string>
     <string name="HWelcomebackyouvebeenmissed">مرحبا بكم في Couture Corner</string>
     <string name="SignUp">" تسجيل الدخول"</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="brands">الماركات</string>
+    <string name="product">المنتج</string>
+    <string name="product_title">عنوان المنتج</string>
+    <string name="flash_sale">بيع سريع</string>
+    <string name="category">الفئة</string>
+    <string name="alreadyhaveacc">"هل لديك حساب بالفعل؟ "</string>
+    <string name="signIn">دخول</string>
 
 </resources>

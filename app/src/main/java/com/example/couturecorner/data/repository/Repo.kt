@@ -7,10 +7,10 @@ import com.example.couturecorner.data.local.SharedPreference
 import com.example.couturecorner.data.remote.IremoteData
 import com.example.couturecorner.network.ApolloClient
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.graphql.CustomerCreateMutation
 import com.graphql.GetCustomerByIdQuery
 import com.graphql.GetProductsQuery
+import com.graphql.HomeProductsQuery
 import com.graphql.type.Customer
 import com.graphql.type.CustomerInput
 import kotlinx.coroutines.delay
@@ -27,6 +27,10 @@ class Repo
 
     override fun getProducts(): Flow<ApolloResponse<GetProductsQuery.Data>> {
         return remoteData.getProducts()
+    }
+
+    override fun getHomeProducts(): Flow<ApolloResponse<HomeProductsQuery.Data>> {
+        return remoteData.getHomeProducts()
     }
 
 // ---------------------------- shared preference ------------------------------------

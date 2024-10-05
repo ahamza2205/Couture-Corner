@@ -1,11 +1,14 @@
 <resources>
     <string name="app_name">Couture Corner</string>
+<<<<<<< HEAD
+    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="brands">Brands</string>
     <string name="product">Product</string>
     <string name="product_title">product Title</string>
     <string name="flash_sale">Flash Sale</string>
     <string name="category">Category</string>
+=======
     <string name="DonthaveanccountSignUp">Don\'t have an account ?</string>
     <string name="Orsigninwith">Or sign in with</string>
     <string name="SignIn">Sign In</string>
@@ -16,5 +19,5 @@
     <string name="SignUp">" Sign Up"</string>
     <string name="alreadyhaveacc">"Already have account ? "</string>
     <string name="signIn">Sign In</string>
-
+>>>>>>> devolpment
 </resources>

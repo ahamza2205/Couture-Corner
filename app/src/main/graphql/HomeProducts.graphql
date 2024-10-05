@@ -1,0 +1,25 @@
+query HomeProducts {
+    products(first: 30) {
+        edges {
+            node {
+                id
+                title
+                handle
+                images(first: 1) {
+                    edges {
+                        node {
+                            src
+                        }
+                    }
+                }
+                variants(first: 1) {
+                    edges {
+                        node {
+                            price
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

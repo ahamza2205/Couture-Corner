@@ -1,4 +1,4 @@
-package com.example.couturecorner.category.ui
+package com.example.couturecorner.home.ui
 
 import android.os.Bundle
 import android.util.Log
@@ -9,16 +9,21 @@ import android.view.ViewGroup
 import com.example.couturecorner.R
 
 
-class CategoryFragment : Fragment() {
+class BrandsFragment : Fragment() {
 
-    private var category: String? = null
+    private var brandName: String? = null
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        category = arguments?.getString("category")
-        Log.d("CategoryArgsTest", "$category: ")
-        return inflater.inflate(R.layout.fragment_category, container, false)
+
+        brandName = arguments?.getString("brand")
+        Log.d("BrandArgsTest", "$brandName: ")
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_brands, container, false)
     }
+
+
 }

@@ -1,19 +1,19 @@
-
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     id("kotlin-kapt")
-    kotlin("kapt")
+    id ("androidx.navigation.safeargs.kotlin")
     id("dagger.hilt.android.plugin")
     id("com.apollographql.apollo3").version("3.7.3")
     alias(libs.plugins.google.gms.google.services)
-
 }
 
 apollo {
     packageName.set("com.graphql")
     generateKotlinModels.set(true)
+
 }
+
 
 android {
     namespace = "com.example.couturecorner"
@@ -27,6 +27,9 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+    buildFeatures {
+        viewBinding = true
     }
 
     buildTypes {
@@ -48,15 +51,15 @@ android {
     kapt {
         correctErrorTypes = true
     }
-    buildFeatures {
-        viewBinding = true
-    }
+
     packaging {
         resources {
             excludes += "**/META-INF/NOTICE.md"
             excludes += "**/META-INF/LICENSE.md"
         }
     }
+
+
 }
 
 dependencies {
@@ -68,16 +71,15 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
-    implementation(libs.firebase.auth)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    implementation(libs.firebase.auth)
     // Material Design Components
     implementation (libs.material)
     implementation ("androidx.navigation:navigation-fragment-ktx:2.5.3")
     implementation ("androidx.navigation:navigation-ui-ktx:2.5.3")
     implementation ("com.google.android.material:material:1.9.0")
-    implementation("com.apollographql.apollo3:apollo-runtime:3.7.3")
 
     implementation ("androidx.lifecycle:lifecycle-extensions:2.2.0")
     implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1")
@@ -87,7 +89,7 @@ dependencies {
     implementation ("androidx.activity:activity-ktx:1.5.0")
     implementation ("androidx.fragment:fragment-ktx:1.6.2")
 
-    implementation("com.apollographql.apollo3:apollo-runtime:3.7.3")// Check for the latest version
+    implementation("com.apollographql.apollo3:apollo-runtime:3.7.3") // Check for the latest version
     // implementation("com.apollographql.apollo3:apollo-coroutines-support:3.7.3")
 
     ///  implementation("com.apollographql.apollo3:apollo-runtime:3.7.3")
@@ -105,10 +107,11 @@ dependencies {
     //gild
     implementation( "com.github.bumptech.glide:glide:4.16.0")
 
+    implementation ("de.hdodenhof:circleimageview:3.1.0")
+
+
     implementation ("com.sun.mail:android-mail:1.6.7")
     implementation ("com.sun.mail:android-activation:1.6.7")
     implementation ("com.google.firebase:firebase-auth")
-
-
 
 }
