@@ -8,6 +8,7 @@ import com.example.couturecorner.data.remote.IremoteData
 import com.example.couturecorner.network.ApolloClient
 import com.google.firebase.auth.FirebaseAuth
 import com.graphql.CustomerCreateMutation
+import com.graphql.FilteredProductsQuery
 import com.graphql.GetCustomerByIdQuery
 import com.graphql.GetProductsQuery
 import com.graphql.HomeProductsQuery
@@ -33,7 +34,11 @@ class Repo
         return remoteData.getHomeProducts()
     }
 
-// ---------------------------- shared preference ------------------------------------
+    override fun getFilterdProducts(vendor: String): Flow<ApolloResponse<FilteredProductsQuery.Data>> {
+        return remoteData.getFilterdProducts(vendor)
+    }
+
+    // ---------------------------- shared preference ------------------------------------
     override fun saveUserLoggedIn(isLoggedIn: Boolean) {
     sharedPreference.saveUserLoggedIn(isLoggedIn)
 }

@@ -44,9 +44,9 @@
         tools:layout="@layout/fragment_settings" />
     <fragment
         android:id="@+id/brandsFragment"
-        android:name="com.example.couturecorner.home.ui.BrandsFragment"
-        android:label="fragment_brands"
-        tools:layout="@layout/fragment_brands" >
+        android:name="com.example.couturecorner.brand.ui.BrandsFragment"
+        android:label="Brands"
+        tools:layout="@layout/fragment_brands">
         <action
             android:id="@+id/action_brandsFragment_to_homeFragment"
             app:destination="@id/homeFragment" />

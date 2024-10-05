@@ -1,5 +1,6 @@
 type Query {
-    products(first: Int!): ProductConnection
+#    products(first: Int!): ProductConnection
+    products(first: Int!, query: String): ProductConnection
     customer(id: ID!): Customer
 }
 

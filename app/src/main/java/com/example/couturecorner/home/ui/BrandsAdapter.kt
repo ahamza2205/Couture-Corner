@@ -11,14 +11,14 @@ import com.example.couturecorner.databinding.BrandItemBinding
 class BrandsAdapter(
     val myListener:(String) -> Unit
 ):RecyclerView.Adapter<BrandsAdapter.BrandsViewHolder>() {
-    var brands: ArrayList<String> = arrayListOf("VANS", "PALLADIUM", "ASICS TIGER", "PUMA",
-        "SUPRA", "ADIDAS", "TIMBERLAND", "NIKE", "DR MARTENS", "CONVERSE", "HERSCHEL", "FLEX FIT")
+    var brands: ArrayList<String> = arrayListOf("vans", "palladium", "asics tiger", "puma",
+        "supra", "adidas", "timberland", "nike", "dr martens", "converse", "herschel", "flex fit")
 
-    val brandLogos: Map<String, Int> = mapOf("VANS" to R.drawable.vans_logo, "PALLADIUM" to R.drawable.palladium_logo,
-        "ASICS TIGER" to R.drawable.asics_tiger_logo, "PUMA" to R.drawable.puma_logo, "SUPRA" to R.drawable.supra_logo,
-        "ADIDAS" to R.drawable.adidas_logo, "TIMBERLAND" to R.drawable.timberland_logo, "NIKE" to R.drawable.nike,
-        "DR MARTENS" to R.drawable.dr_martins_logo, "CONVERSE" to R.drawable.converse_logo,
-        "HERSCHEL" to R.drawable.herschel_logo ,"FLEX FIT" to R.drawable.flexfit_logo)
+    val brandLogos: Map<String, Int> = mapOf("vans" to R.drawable.vans_logo, "palladium" to R.drawable.palladium_logo,
+        "asics tiger" to R.drawable.asics_tiger_logo, "puma" to R.drawable.puma_logo, "supra" to R.drawable.supra_logo,
+        "adidas" to R.drawable.adidas_logo, "timberland" to R.drawable.timberland_logo, "nike" to R.drawable.nike,
+        "dr martens" to R.drawable.dr_martins_logo, "converse" to R.drawable.converse_logo,
+        "herschel" to R.drawable.herschel_logo ,"flex fit" to R.drawable.flexfit_logo)
 
     lateinit var binding: BrandItemBinding
     class BrandsViewHolder(var binding: BrandItemBinding):ViewHolder(binding.root)
