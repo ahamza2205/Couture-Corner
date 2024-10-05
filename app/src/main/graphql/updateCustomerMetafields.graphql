@@ -16,9 +16,6 @@ mutation updateCustomerMetafields($input: CustomerInput!) {
                 address1
                 address2
                 city
-
-                latitude
-                longitude
                 phone
             }
         }

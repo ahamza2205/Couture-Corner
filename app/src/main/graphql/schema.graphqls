@@ -86,12 +86,7 @@ type CodeDiscountNodeConnection {
     nodes: [CodeDiscountNode]
 }
 
-# The input type for updating a customer
-input CustomerInput {
-    id: ID!
-    metafields: [MetafieldInput!]  # List of metafields to update
-    addresses: [AddressInput!]      # List of addresses to update
-}
+
 
 # The input type for metafields
 input MetafieldInput {
@@ -102,12 +97,10 @@ input MetafieldInput {
 
 # The input type for addresses
 input AddressInput {
-    address1: String
-    address2: String
-    city: String
-    latitude: Float
-    longitude: Float
-    phone: String
+    address1: String!
+    address2: String!
+    city: String!
+    phone: String!
 }
 
 # The metafield type
@@ -127,15 +120,29 @@ type MetafieldEdge {
 type MetafieldConnection {
     edges: [MetafieldEdge!]!
 }
+# The input type for updating a customer
+input CustomerInput {
+    id: ID!
+    metafields: [MetafieldInput!]  # List of metafields to update
+    addresses: [MailingAddressInput!]      # List of addresses to update
+}
+
+# The input type for Mailing Address
+input MailingAddressInput {
+    address1: String!
+    address2: String!
+    city: String!
+    phone: String!
+}
+
+
 
 # The address type
 type Address {
-    address1: String
-    address2: String
-    city: String
-    latitude: Float
-    longitude: Float
-    phone: String
+    address1: String!
+    address2: String!
+    city: String!
+    phone: String!
 }
 
 # The customer type

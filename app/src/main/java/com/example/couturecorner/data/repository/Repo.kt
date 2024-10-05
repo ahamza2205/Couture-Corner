@@ -4,12 +4,15 @@ import com.apollographql.apollo3.api.ApolloResponse
 import com.example.couturecorner.data.remote.IremoteData
 import com.graphql.GetCuponCodesQuery
 import com.graphql.GetProductsQuery
+import com.graphql.UpdateCustomerMetafieldsMutation
+import com.graphql.type.CustomerInput
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class Repo
     @Inject constructor(
-    private val remoteData: IremoteData
+
+                private val remoteData: IremoteData
 ) : Irepo {
 
 
@@ -35,5 +38,8 @@ class Repo
 
     override fun getCupones(): Flow<ApolloResponse<GetCuponCodesQuery.Data>> {
         return remoteData.getCupones()
+    }
+    override fun updateCustomer(input: CustomerInput): Flow<ApolloResponse<UpdateCustomerMetafieldsMutation.Data>> {
+        return remoteData.updateCustomer(input)
     }
 }
