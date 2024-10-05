@@ -6,7 +6,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.couturecorner.R
 import com.example.couturecorner.adapter.CartItemAdapter
 import com.example.couturecorner.databinding.FragmentCartBinding
 import com.example.couturecorner.setting.viewmodel.CartViewModel
@@ -54,7 +56,10 @@ class CartFragment : Fragment() {
         })
         binding.textViewDeliveryFeeValue.text = "$5.00"
         binding.textViewDiscountValue.text= "$5.00"
+binding.applyButton.setOnClickListener {
+    findNavController().navigate(R.id.action_cartFragment_to_checkOutFragment)
 
+}
 
     }
 }
