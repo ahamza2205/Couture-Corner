@@ -35,7 +35,6 @@ class MainActivity : AppCompatActivity() {
         NavigationUI.setupActionBarWithNavController(this, navController)
 
         viewModel.getProducts()
-
         lifecycleScope.launch {
             viewModel.productsApollo.collect {
                 when (it) {

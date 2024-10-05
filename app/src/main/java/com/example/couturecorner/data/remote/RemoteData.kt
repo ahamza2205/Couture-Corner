@@ -2,8 +2,11 @@ package com.example.couturecorner.data.remote
 
 import com.apollographql.apollo3.api.ApolloResponse
 import com.example.couturecorner.network.ApolloClient
+import com.graphql.GetCuponCodesQuery
 import com.graphql.GetProductsQuery
 import com.graphql.HomeProductsQuery
+import com.graphql.UpdateCustomerMetafieldsMutation
+import com.graphql.type.CustomerInput
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject

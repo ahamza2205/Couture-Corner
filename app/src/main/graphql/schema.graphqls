@@ -1,6 +1,8 @@
 type Query {
     products(first: Int!): ProductConnection
     customer(id: ID!): Customer
+    codeDiscountNodes(first: Int!): CodeDiscountNodeConnection
+    HomeProducts(first: Int!): ProductConnection
 }
 
 # Connection type for pagination
@@ -55,15 +57,20 @@ type Variant {
 }
 # Define the Customer type
 type Mutation {
-    customerCreate(input: CustomerInput!): CustomerCreatePayload
+    customerCreate(input: CustomerInput!): CustomerCreatePayload!
+    customerUpdate(input: CustomerInput!): CustomerUpdatePayload!
+
 }
 
 input CustomerInput {
-    email: String!
-    firstName: String!
-    lastName: String!
+    email: String
+    firstName: String
+    lastName: String
     phone: String
-    tags: [String!]
+    tags: [String]
+    id: ID
+    metafields: [MetafieldInput]
+    addresses: [MailingAddressInput]
 }
 
 type CustomerCreatePayload {
@@ -82,6 +89,8 @@ type Customer {
     displayName: String
     preferredContactMethod: String
     marketingOptIn: Boolean
+    metafields(first: Int): MetafieldConnection!
+    addresses: [Address!]!
 }
 type UserError {
     field: [String]
@@ -157,12 +166,7 @@ type MetafieldEdge {
 type MetafieldConnection {
     edges: [MetafieldEdge!]!
 }
-# The input type for updating a customer
-input CustomerInput {
-    id: ID!
-    metafields: [MetafieldInput!]  # List of metafields to update
-    addresses: [MailingAddressInput!]      # List of addresses to update
-}
+
 
 # The input type for Mailing Address
 input MailingAddressInput {
@@ -182,18 +186,9 @@ type Address {
     phone: String!
 }
 
-# The customer type
-type Customer {
-    id: ID!
-    metafields(first: Int): MetafieldConnection!  # Use the connection type
-    addresses: [Address!]!
-}
 
-# User errors type
-type UserError {
-    message: String!
-    field: String
-}
+
+
 
 # The payload for the customer update mutation
 type CustomerUpdatePayload {
@@ -201,8 +196,5 @@ type CustomerUpdatePayload {
     userErrors: [UserError!]!
 }
 
-# The mutation type
-type Mutation {
-    customerUpdate(input: CustomerInput!): CustomerUpdatePayload!
-}
+
 
