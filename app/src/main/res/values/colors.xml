@@ -16,6 +16,8 @@
         <color name="purple_200">#BB86FC</color>
         <color name="purple_700">#3700B3</color>
         <color name="teal_200">#03DAC5</color>
+        <color name="colorDefault">#FFFFFF</color>
+        <color name="colorHighlight">#FF000000</color>
 
 
 </resources>

@@ -1,4 +1,4 @@
-package com.example.couturecorner.home
+package com.example.couturecorner.home.ui
 
 import android.view.LayoutInflater
 import android.view.View
@@ -31,6 +31,7 @@ class ProductAdapter(private val productList: List<GetProductsQuery.Edge?>, priv
         // Set click listener
         holder.itemView.setOnClickListener {
             product?.let {
+                (holder.itemView.context as MainActivity).findViewById<RecyclerView>(R.id.recyclerView).visibility = View.GONE
                 onProductClick(it.id)
             }
         }

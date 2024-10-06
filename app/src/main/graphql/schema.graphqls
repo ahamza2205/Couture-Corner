@@ -15,13 +15,14 @@ type ProductEdge {
 }
 
 # Define the Product type
-# Define the Product type
 type Product {
     id: ID!
     title: String!
     description: String
     handle: String
     vendor: String
+    productType: String
+    totalInventory: Int
     images(first: Int!): ImageConnection
     variants(first: Int!): VariantConnection
 }

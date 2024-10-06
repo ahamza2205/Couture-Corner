@@ -59,12 +59,13 @@
     </fragment>
     <fragment
         android:id="@+id/productDetailsFragment"
-        android:name="com.example.couturecorner.productdetails.ProductDetailsFragment"
+        android:name="com.example.couturecorner.productdetails.view.ProductDetailsFragment"
         android:label="Product Details"
         tools:layout="@layout/fragment_product_details" >
         <argument
             android:name="productId"
-            app:argType="string" />
+            app:argType="string"
+            android:defaultValue="" />
         <action
             android:id="@+id/action_productDetailsFragment_to_homeFragment"
             app:destination="@id/homeFragment" />

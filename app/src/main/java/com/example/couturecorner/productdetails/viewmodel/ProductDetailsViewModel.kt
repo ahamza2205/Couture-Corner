@@ -1,4 +1,4 @@
-package com.example.couturecorner.productdetails
+package com.example.couturecorner.productdetails.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

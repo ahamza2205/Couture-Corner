@@ -1,114 +1,246 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:padding="16dp">
 
-
-
-    <!-- Product Image -->
-    <ImageView
-        android:id="@+id/productImage"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:scaleType="centerCrop"
-        android:contentDescription="Product Image" />
+        android:layout_height="wrap_content">
 
-    <!-- Product Images Carousel -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/imagesRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:orientation="horizontal"
-        android:padding="8dp"
-        android:clipToPadding="false" />
+        <!-- Product Image -->
+        <ImageView
+            android:id="@+id/productImage"
+            android:layout_width="0dp"
+            android:layout_height="300dp"
+            android:contentDescription="Product Image"
+            android:scaleType="centerCrop"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Product Title -->
-    <TextView
-        android:id="@+id/productTitle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Light Brown Jacket"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        android:paddingTop="8dp" />
+        <!-- Product Images Carousel -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/imagesRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:layout_marginTop="15dp"
+            android:clipToPadding="false"
+            android:padding="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/productImage" />
 
-    <!-- Product Rating -->
-    <TextView
-        android:id="@+id/productRating"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="4.5 ★"
-        android:textSize="14sp"
-        android:textColor="@android:color/holo_orange_dark"
-        android:layout_gravity="end" />
+        <!-- Product Title -->
+        <TextView
+            android:id="@+id/productTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:paddingTop="8dp"
+            android:text="Light Brown Jacket"
+            android:textColor="@color/colorPrimary"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/imagesRecyclerView" />
 
-    <!-- Product Description -->
-    <TextView
-        android:id="@+id/productDescription"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit..."
-        android:textSize="14sp"
-        android:paddingTop="8dp" />
+        <!-- Product Rating -->
 
-    <!-- Select Size Label -->
-    <TextView
-        android:id="@+id/selectSizeLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Select Size"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:paddingTop="8dp" />
+        <!-- Product Description -->
 
+        <TextView
+            android:id="@+id/productRating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="140dp"
+            android:layout_marginTop="44dp"
+            android:layout_marginEnd="15dp"
+            android:text="4.5 ★"
+            android:textColor="@android:color/holo_orange_dark"
+            android:textSize="32sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@+id/productTypeValue"
+            app:layout_constraintTop_toBottomOf="@+id/productDescription" />
 
-    <!-- Select Color Label -->
-    <TextView
-        android:id="@+id/selectColorLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Select Color"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:paddingTop="8dp" />
+        <TextView
+            android:id="@+id/productDescription"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:paddingTop="8dp"
+            android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit..."
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/productTitle" />
 
+        <!-- Product Type -->
+        <TextView
+            android:id="@+id/productType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:paddingTop="8dp"
+            android:text="Product Type : "
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/productDescription" />
 
+        <!-- Product Type Value -->
+        <TextView
+            android:id="@+id/productTypeValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="25dp"
+            android:text="Jacket"
+            android:textSize="18sp"
+            app:layout_constraintStart_toEndOf="@id/productType"
+            app:layout_constraintTop_toBottomOf="@id/productDescription" />
 
-    <!-- Total Price -->
-    <TextView
-        android:id="@+id/totalPriceLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Total Price:"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:paddingTop="8dp" />
+        <!-- Stock Status -->
+        <TextView
+            android:id="@+id/stockStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:paddingTop="4dp"
+            android:text="Still in stock : "
+            android:textColor="@android:color/holo_green_dark"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/productType" />
 
-    <!-- Price Value -->
-    <TextView
-        android:id="@+id/priceValue"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="$83.97"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:layout_gravity="start" />
+        <!-- Stock Count -->
+        <TextView
+            android:id="@+id/stockCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="20dp"
+            android:text="5 items available"
+            android:textColor="@android:color/holo_green_dark"
+            android:textSize="18sp"
+            app:layout_constraintStart_toEndOf="@id/stockStatus"
+            app:layout_constraintTop_toBottomOf="@id/productType" />
 
-    <!-- Add to Cart Button -->
-    <Button
-        android:id="@+id/btnAddToCart"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:backgroundTint="#6F4E37"
-        android:drawableLeft="@drawable/baseline_shopping_cart_checkout_24"
-        android:padding="16dp"
-        android:text="Add to Cart"
-        android:textColor="#FFFFFF"
-        android:textSize="16sp" />
+        <!-- Total Price Label -->
 
-</LinearLayout>
+        <!-- Price Value -->
+
+        <!-- Add to Cart Button (Revised Position) -->
+
+        <TextView
+            android:id="@+id/totalPriceLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:paddingTop="8dp"
+            android:text="Total Price "
+            android:textSize="28sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/stockStatus" />
+
+        <TextView
+            android:id="@+id/priceValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="44dp"
+            android:layout_marginTop="8dp"
+            android:text="$83.97"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/totalPriceLabel" />
+
+        <!-- Dummy Items -->
+
+        <Button
+            android:id="@+id/btnAddToCart"
+            android:layout_width="180dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="69dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="10dp"
+            android:backgroundTint="@color/colorPrimary"
+            android:drawableLeft="@drawable/baseline_shopping_cart_checkout_24"
+            android:padding="16dp"
+            android:text="Add to Cart"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@+id/totalPriceLabel"
+            app:layout_constraintTop_toBottomOf="@+id/stockCount" />
+
+        <TextView
+            android:id="@+id/dummyText1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="."
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btnAddToCart" />
+
+        <TextView
+            android:id="@+id/dummyText2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="."
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/dummyText1" />
+
+        <TextView
+            android:id="@+id/dummyText3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="."
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/dummyText2" />
+
+        <TextView
+            android:id="@+id/dummyText4"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="."
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/dummyText3" />
+
+        <TextView
+            android:id="@+id/dummyText5"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="."
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/dummyText4" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

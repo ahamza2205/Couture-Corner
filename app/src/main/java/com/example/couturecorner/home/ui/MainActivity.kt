@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.couturecorner.R
 import com.example.couturecorner.data.model.ApiState
-import com.example.couturecorner.home.ProductAdapter
 import com.example.couturecorner.home.viewmodel.MainViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
