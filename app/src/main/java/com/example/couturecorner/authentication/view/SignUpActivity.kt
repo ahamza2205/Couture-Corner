@@ -7,11 +7,11 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
 import com.example.couturecorner.authentication.viewmodel.SignUpViewModel
 import com.example.couturecorner.databinding.ActivitySignUpBinding
 import com.example.couturecorner.home.ui.MainActivity
 import dagger.hilt.android.AndroidEntryPoint
+
 
 @AndroidEntryPoint
 class SignUpActivity : AppCompatActivity() {
@@ -26,56 +26,38 @@ class SignUpActivity : AppCompatActivity() {
 
         binding.textView2.paintFlags = binding.textView2.paintFlags or Paint.UNDERLINE_TEXT_FLAG
         binding.textView2.setOnClickListener {
-            val intent = Intent(this, LoginActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, LoginActivity::class.java))
         }
 
         binding.btnSignUp.setOnClickListener {
-            val firstName = binding.etFirstName.text.toString()
-            val lastName = binding.etLastName.text.toString()
-            val phoneNumber = binding.etPhoneNumber.text.toString()
-            val email = binding.etEmail.text.toString()
-            val password = binding.etPassword.text.toString()
-
-            if (firstName.isNotEmpty() && lastName.isNotEmpty() && phoneNumber.isNotEmpty() &&
-                email.isNotEmpty() && password.isNotEmpty()
-            ) {
-
-                viewModel.registerUser(email, password, firstName, lastName, phoneNumber)
-                Toast.makeText(this, "Registration in progress...", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show()
-            }
+            registerUser()
         }
 
-        binding.btnSignUp.setOnClickListener {
-            val firstName = binding.etFirstName.text.toString()
-            val lastName = binding.etLastName.text.toString()
-            val phoneNumber = binding.etPhoneNumber.text.toString()
-            val email = binding.etEmail.text.toString()
-            val password = binding.etPassword.text.toString()
+        observeViewModel()
+    }
 
-            if (firstName.isNotEmpty() && lastName.isNotEmpty() && phoneNumber.isNotEmpty() &&
-                email.isNotEmpty() && password.isNotEmpty()
-            ) {
-                viewModel.registerUser(
-                    email,
-                    password,
-                    firstName,
-                    lastName,
-                    phoneNumber
-                )
-                Toast.makeText(this, "Registration in progress...", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show()
-            }
+    private fun registerUser() {
+        val firstName = binding.etFirstName.text.toString()
+        val lastName = binding.etLastName.text.toString()
+        val phoneNumber = binding.etPhoneNumber.text.toString()
+        val email = binding.etEmail.text.toString()
+        val password = binding.etPassword.text.toString()
+
+        if (firstName.isNotEmpty() && lastName.isNotEmpty() && phoneNumber.isNotEmpty() &&
+            email.isNotEmpty() && password.isNotEmpty()
+        ) {
+            viewModel.registerUser(email, password, firstName, lastName, phoneNumber)
+            Toast.makeText(this, "Registration in progress...", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show()
         }
-        viewModel.registrationStatus.observe(this, Observer { isSuccess ->
+    }
+    private fun observeViewModel() {
+        viewModel.registrationStatus.observe(this) { isSuccess ->
             if (isSuccess) {
                 // Fetch customer data after successful registration
-                viewModel.getCustomerData()
-
-                // Observe the customer data to log it
+                val email = binding.etEmail.text.toString()
+                viewModel.getCustomerData(email)
                 viewModel.customerData.observe(this) { customer ->
                     if (customer != null) {
                         Log.d("HamzaData", "Customer Data: " +
@@ -88,21 +70,23 @@ class SignUpActivity : AppCompatActivity() {
                                 "Created At: ${customer.createdAt}, " +
                                 "Updated At: ${customer.updatedAt}")
 
-                        val intent = Intent(this, MainActivity::class.java)
-                        startActivity(intent)
-                        finish()
+                        // Show a Toast message indicating successful registration
+                        Toast.makeText(this, "Registration successful!", Toast.LENGTH_SHORT).show()
+
+                        binding.root.postDelayed({
+                            startActivity(Intent(this, MainActivity::class.java))
+                            finish()
+                        }, 1500) // Delay for 1.5 seconds
                     } else {
                         Log.e("HamzaData", "Customer data is null")
                     }
                 }
             } else {
-                Toast.makeText(this, "Registration failed. Please try again.", Toast.LENGTH_SHORT)
-                    .show()
+                Toast.makeText(this, "Registration failed. Please try again.", Toast.LENGTH_SHORT).show()
             }
-        })
-
-
-
+        }
     }
+
 }
+
 

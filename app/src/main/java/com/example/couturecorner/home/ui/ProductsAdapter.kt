@@ -47,8 +47,16 @@ class ProductsAdapter(
             .load(product?.images?.edges?.get(0)?.node?.src)
             .into(holder.binding.ProductImageView)
 
+        //  Set click listener for  add to favorite
+        holder.binding.favoriteAddsButton.setOnClickListener {
+            product?.id?.let { productId ->
+                listener.onFavoriteClick(productId)
+            }
+        }
+       // Set click listener for the item
         holder.itemView.setOnClickListener {
             listener.onItemClick(product)
         }
     }
 }
+

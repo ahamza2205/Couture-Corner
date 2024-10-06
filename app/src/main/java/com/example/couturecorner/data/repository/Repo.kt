@@ -9,8 +9,11 @@ import com.example.couturecorner.data.remote.IremoteData
 import com.example.couturecorner.network.ApolloClient
 import com.example.couturecorner.network.ApolloClient.apolloClient
 import com.google.firebase.auth.FirebaseAuth
+import com.google.gson.Gson
+import com.graphql.AddFavoriteProductMutation
 import com.graphql.CustomerCreateMutation
 import com.graphql.GetCustomerByIdQuery
+import com.graphql.GetFavoriteProductsQuery
 import com.graphql.GetProductsQuery
 import com.graphql.HomeProductsQuery
 import com.graphql.ProductQuery
@@ -37,10 +40,10 @@ class Repo
         return remoteData.getHomeProducts()
     }
 
-// ---------------------------- shared preference ------------------------------------
+    // ---------------------------- shared preference ------------------------------------
     override fun saveUserLoggedIn(isLoggedIn: Boolean) {
-    sharedPreference.saveUserLoggedIn(isLoggedIn)
-}
+        sharedPreference.saveUserLoggedIn(isLoggedIn)
+    }
 
     override fun isUserLoggedIn(): Boolean {
         return sharedPreference.isUserLoggedIn()
@@ -50,9 +53,14 @@ class Repo
         sharedPreference.logoutUser()
     }
 
-
     // --------------------------- shopify registration -------------------------------
-    suspend fun registerUser(email: String, password: String, firstName: String, lastName: String, phoneNumber: String): String? {
+    suspend fun registerUser(
+        email: String,
+        password: String,
+        firstName: String,
+        lastName: String,
+        phoneNumber: String
+    ): String? {
         val auth = FirebaseAuth.getInstance()
         try {
             val firebaseUserId = auth.createUserWithEmailAndPassword(email, password).await()
@@ -73,13 +81,11 @@ class Repo
                     throw Exception("Error creating Shopify user: ${response.errors}")
                 } else {
                     val shopifyUserId = response.data?.customerCreate?.customer?.id
-                    Log.d("UserRegistration", "User successfully created on Shopify: $firstName $lastName, Shopify User ID: $shopifyUserId")
+                    Log.d(
+                        "UserRegistration",
+                        "User successfully created on Shopify: $firstName $lastName, Shopify User ID: $shopifyUserId"
+                    )
 
-                    // Save the Shopify User ID in shared preferences
-                    sharedPreference.saveShopifyUserId(shopifyUserId ?: "")
-                    if (shopifyUserId != null) {
-                        getCustomerById(shopifyUserId)
-                    }
                     return shopifyUserId
                 }
             } else {
@@ -91,6 +97,8 @@ class Repo
         }
     }
 
+    // --------------------------- get customer data --------------------------------
+
     suspend fun getCustomerById(customerId: String): GetCustomerByIdQuery.Customer? {
         val client = ApolloClient.apolloClient
         val response = client.query(GetCustomerByIdQuery(id = customerId)).execute()
@@ -98,7 +106,6 @@ class Repo
         if (response.hasErrors()) {
             throw Exception("Error fetching customer: ${response.errors}")
         }
-
         response.data?.customer?.let { customer ->
             return GetCustomerByIdQuery.Customer(
                 id = customer.id,
@@ -123,4 +130,68 @@ class Repo
             emit(ApiState.Error(e.message ?: "Unknown Error"))
         }
     }
+
+    // ------------------------ get & save shopify user id --------------------------------
+    override fun getShopifyUserId(email: String): String? {
+        return sharedPreference.getShopifyUserId(email)
+    }
+
+    override fun saveShopifyUserId(email: String, userId: String) {
+        sharedPreference.saveShopifyUserId(email, userId)
+    }
+
+
+// --------------------------- Add product to favorite --------------------------------
+    override suspend fun addProductToFavorites(customerId: String, productId: String) {
+        try {
+            val currentFavorites = getCurrentFavorites(customerId) ?: listOf()
+            val updatedFavorites = (currentFavorites + productId).distinct() // distinct avoid duplicates
+            val jsonProductIds = Gson().toJson(updatedFavorites)
+            val mutation = AddFavoriteProductMutation(
+                customerId = customerId,
+                productIds = jsonProductIds // Convert the list to a JSON string
+            )
+            val response = apolloClient.mutation(mutation).execute()
+            // Check for errors
+            if (response.data?.customerUpdate?.userErrors?.isNotEmpty() == true) {
+                for (error in response.data!!.customerUpdate?.userErrors!!) {
+                    Log.e("AddFavorite", "User Error: ${error.message} for field ${error.field}")
+                }
+                return
+            }
+            // Check for successful operation
+            if (response.hasErrors()) {
+                throw Exception("Error adding product to favorites: ${response.errors}")
+            } else {
+                Log.d("AddFavorite", "Product added to favorites successfully")
+            }
+        } catch (e: Exception) {
+            Log.e("AddFavorite", "Error: ${e.message}")
+        }
+    }
+
+    // Function to fetch current favorites
+    private suspend fun getCurrentFavorites(customerId: String): List<String>? {
+        Log.d("GetFavorites", "Fetching current favorites for customerId: $customerId") // Log the start of the fetching process
+
+        val query = GetFavoriteProductsQuery(customerId = customerId)
+        val response = apolloClient.query(query).execute()
+
+        if (response.hasErrors()) {
+            Log.e("GetFavorites", "Error fetching current favorites: ${response.errors}") // Log any errors
+            throw Exception("Error fetching current favorites: ${response.errors}")
+        }
+
+        val favoriteProducts = response.data?.customer?.metafields?.edges?.let { edges ->
+            edges.flatMap {
+                val value = it?.node?.value
+                Log.d("GetFavorites", "Found value: $value") // Log each product's value
+                value?.split(",")?.map { it.trim() } ?: listOf()
+            }
+        } ?: listOf()
+
+        Log.d("GetFavorites", "Current favorites: $favoriteProducts") // Log the current favorites list
+        return favoriteProducts
+    }
+
 }

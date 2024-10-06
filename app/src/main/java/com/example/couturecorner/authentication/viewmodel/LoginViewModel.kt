@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.couturecorner.data.local.SharedPreference
 import com.example.couturecorner.data.repository.Repo
+import com.google.firebase.auth.FirebaseAuth
 import com.graphql.GetCustomerByIdQuery
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -26,23 +27,29 @@ class LoginViewModel @Inject constructor(
         return repo.isUserLoggedIn()
     }
 
-    fun getCustomerData() {
-        val customerId = sharedPreference.getShopifyUserId()
-
+    fun getCustomerData(customerId: String) {
         viewModelScope.launch {
-            if (customerId != null) {
-                try {
-                    val customer = repo.getCustomerById(customerId)
-                    _customerData.postValue(customer)
-                } catch (e: Exception) {
-                    _customerData.postValue(null)
-                    Log.e("LoginViewModel", "Error fetching customer data: ${e.message}")
-                }
-            } else {
-                Log.e("LoginViewModel", "Customer ID is null")
+            try {
+                val customer = repo.getCustomerById(customerId)
+                _customerData.postValue(customer)
+            } catch (e: Exception) {
                 _customerData.postValue(null)
+                Log.e("LoginViewModel", "Error fetching customer data: ${e.message}")
             }
         }
     }
+
+    fun getCustomerDataFromFirebaseAuth(email: String) {
+        viewModelScope.launch {
+            // Get Shopify user ID from shared preferences
+            val customerId = sharedPreference.getShopifyUserId(email)
+            if (customerId != null) {
+                getCustomerData(customerId)
+            } else {
+                Log.e("LoginViewModel", "No Shopify User ID found for email: $email")
+            }
+        }
+    }
+
 
 }

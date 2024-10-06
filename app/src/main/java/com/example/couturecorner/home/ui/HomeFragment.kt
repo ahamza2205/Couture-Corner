@@ -90,6 +90,12 @@ class HomeFragment : Fragment(), OnItemClickListener {
         findNavController().navigate(action)
     }
 
+    // Handle favorite click
+    override fun onFavoriteClick(productId: String) {
+        Log.d("HomeFragment", "Favorite clicked for product ID: $productId")
+        // Call the ViewModel to add product to favorites
+        viewModel.addProductToFavorites(productId)
+    }
     fun showLoading(isLoading:Boolean)
     {
         if (isLoading)

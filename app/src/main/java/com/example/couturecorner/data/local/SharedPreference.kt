@@ -21,13 +21,12 @@ class SharedPreference @Inject constructor(context: Context) {
         sharedPreferences.edit().remove("isLoggedIn").apply()
     }
 
-    // Shopify User ID
-    fun saveShopifyUserId(shopifyUserId: String) {
-        sharedPreferences.edit().putString("shopifyUserId", shopifyUserId).apply()
-    }
 
-    fun getShopifyUserId(): String? {
-        return sharedPreferences.getString("shopifyUserId", null)
+    // ---------------------- shopify user id -----------------------------
+    fun saveShopifyUserId(email: String, userId: String) {
+        sharedPreferences.edit().putString(email, userId).apply()
     }
-
+    fun getShopifyUserId(email: String): String? {
+        return sharedPreferences.getString(email, null)
+    }
 }

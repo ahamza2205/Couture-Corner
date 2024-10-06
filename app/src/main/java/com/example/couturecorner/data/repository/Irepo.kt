@@ -14,4 +14,9 @@ interface Irepo {
      fun saveUserLoggedIn(isLoggedIn: Boolean)
      fun isUserLoggedIn(): Boolean
      fun logoutUser()
+     fun getShopifyUserId(email: String): String?
+     fun saveShopifyUserId(email: String, userId: String)
+
+     // -------------- add product to favorite ------------------------
+     suspend fun addProductToFavorites(customerId: String, productId: String)
 }

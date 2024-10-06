@@ -25,7 +25,6 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
         binding.textView2.paintFlags = binding.textView2.paintFlags or Paint.UNDERLINE_TEXT_FLAG
         // Set onClickListener to navigate to SignInActivity
         binding.textView2.setOnClickListener {
@@ -43,8 +42,8 @@ class LoginActivity : AppCompatActivity() {
                 auth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
-                            viewModel.saveUserLoggedIn(true)
-                            viewModel.getCustomerData()
+                            // Fetch Shopify user data after logging in
+                            viewModel.getCustomerDataFromFirebaseAuth(email)
                             viewModel.customerData.observe(this) { customer ->
                                 if (customer != null) {
                                     Log.d("HamzaData", "Customer Data: " +
@@ -56,13 +55,18 @@ class LoginActivity : AppCompatActivity() {
                                             "Phone: ${customer.phone}, " +
                                             "Created At: ${customer.createdAt}, " +
                                             "Updated At: ${customer.updatedAt}")
+
+                                    // Save the login state
+                                    viewModel.saveUserLoggedIn(true)
+
+                                    // Start the MainActivity
+                                    startActivity(Intent(this, MainActivity::class.java))
+                                    finish()
                                 } else {
                                     Log.e("HamzaData", "Customer data is null")
+                                    Toast.makeText(this, "Unable to fetch customer data.", Toast.LENGTH_SHORT).show()
                                 }
                             }
-                            Toast.makeText(this, "Login successful!", Toast.LENGTH_SHORT).show()
-                            startActivity(Intent(this, MainActivity::class.java))
-                            finish()
                         } else {
                             Toast.makeText(this, "Error: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
                         }
@@ -71,10 +75,11 @@ class LoginActivity : AppCompatActivity() {
                 Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show()
             }
         }
-
+        // Check if user is already logged in
         if (viewModel.isUserLoggedIn()) {
             startActivity(Intent(this, MainActivity::class.java))
             finish()
         }
     }
 }
+

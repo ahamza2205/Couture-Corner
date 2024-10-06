@@ -1,5 +1,6 @@
+# Existing schema
 type Query {
-    products(first: Int!,query: String): ProductConnection
+    products(first: Int!, query: String): ProductConnection
     customer(id: ID!): Customer
     product(id: ID!): Product
 }
@@ -27,7 +28,6 @@ type Product {
     variants(first: Int!): VariantConnection
 }
 
-
 # Connection type for images
 type ImageConnection {
     edges: [ImageEdge]
@@ -54,7 +54,6 @@ type VariantEdge {
 }
 
 # Define the Variant type
-# Define the Variant type
 type Variant {
     price: String!
     sku: String
@@ -62,8 +61,49 @@ type Variant {
 }
 
 # Define the Customer type
+type Customer {
+    id: ID!
+    email: String!
+    firstName: String
+    lastName: String
+    phone: String
+    address: String
+    createdAt: String
+    updatedAt: String
+    displayName: String
+    preferredContactMethod: String
+    marketingOptIn: Boolean
+    metafields(first: Int): MetafieldConnection  # تغيير هنا
+}
+
+# Connection type for Metafields
+type MetafieldConnection {
+    edges: [MetafieldEdge]
+}
+
+type MetafieldEdge {
+    node: Metafield
+}
+
+# New fields for Metafields
+type Metafield {
+    namespace: String!
+    key: String!
+    value: String!
+    type: String!
+}
+
+input MetafieldInput {
+    namespace: String!
+    key: String!
+    value: String!
+    type: String!
+}
+
+# Mutations
 type Mutation {
     customerCreate(input: CustomerInput!): CustomerCreatePayload
+    customerUpdate(input: CustomerUpdateInput!): CustomerUpdatePayload  # Added update mutation
 }
 
 input CustomerInput {
@@ -78,25 +118,18 @@ type CustomerCreatePayload {
     customer: Customer
     userErrors: [UserError!]!
 }
-type Customer {
+
+input CustomerUpdateInput {
     id: ID!
-    email: String!
-    firstName: String
-    lastName: String
-    phone: String
-    address: String
-    createdAt: String
-    updatedAt: String
-    displayName: String
-    preferredContactMethod: String
-    marketingOptIn: Boolean
+    metafields: [MetafieldInput!]  # Input for updating customer metafields
 }
+
+type CustomerUpdatePayload {
+    customer: Customer
+    userErrors: [UserError!]!
+}
+
 type UserError {
     field: [String]
     message: String!
 }
-
-
-
-
-

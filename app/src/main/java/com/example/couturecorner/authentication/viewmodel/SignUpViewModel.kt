@@ -46,7 +46,7 @@ class SignUpViewModel @Inject constructor(
 
                 if (shopifyUserId != null) {
                     // Save the Shopify User ID in shared preferences
-                    sharedPreference.saveShopifyUserId(shopifyUserId)
+                    sharedPreference.saveShopifyUserId(email, shopifyUserId)
 
                     _registrationStatus.postValue(true)
                     Log.d("SignUpViewModel", "Shopify user created successfully: $shopifyUserId")
@@ -61,22 +61,18 @@ class SignUpViewModel @Inject constructor(
             }
         }
     }
-    fun getCustomerData() {
-        val customerId = sharedPreference.getShopifyUserId()
 
+    // ---- --------------- get customer data -----------------
+    fun getCustomerData(customerId: String) {
         viewModelScope.launch {
-            if (customerId != null) {
-                try {
-                    val customer = repo.getCustomerById(customerId)
-                    _customerData.postValue(customer)
-                } catch (e: Exception) {
-                    _customerData.postValue(null)
-                    Log.e("SignUpViewModel", "Error fetching customer data: ${e.message}")
-                }
-            } else {
-                Log.e("SignUpViewModel", "Customer ID is null")
+            try {
+                val customer = repo.getCustomerById(customerId)
+                _customerData.postValue(customer)
+            } catch (e: Exception) {
                 _customerData.postValue(null)
+                Log.e("SignUpViewModel", "Error fetching customer data: ${e.message}")
             }
         }
     }
+
 }
