@@ -40,7 +40,6 @@ class HomeViewModel@Inject constructor(
             }
         }
     }
-
     // Method to add a product to favorites
     fun addProductToFavorites(productId: String) {
         viewModelScope.launch {

@@ -122,7 +122,7 @@ class Repo
     }
 
     // ----------------------------------- product details --------------------------------
-    fun getProductDetails(productId: String): Flow<ApiState<ProductQuery.Data>> = flow {
+    override fun getProductDetails(productId: String): Flow<ApiState<ProductQuery.Data>> = flow {
         try {
             val response = apolloClient.query(ProductQuery(productId)).execute()
             emit(ApiState.Success(response.data!!))
@@ -140,57 +140,53 @@ class Repo
         sharedPreference.saveShopifyUserId(email, userId)
     }
 
-
 // --------------------------- Add product to favorite --------------------------------
-    override suspend fun addProductToFavorites(customerId: String, productId: String) {
-        try {
-            val currentFavorites = getCurrentFavorites(customerId) ?: listOf()
-            val updatedFavorites = (currentFavorites + productId).distinct() // distinct avoid duplicates
-            val jsonProductIds = Gson().toJson(updatedFavorites)
-            val mutation = AddFavoriteProductMutation(
-                customerId = customerId,
-                productIds = jsonProductIds // Convert the list to a JSON string
-            )
-            val response = apolloClient.mutation(mutation).execute()
-            // Check for errors
-            if (response.data?.customerUpdate?.userErrors?.isNotEmpty() == true) {
-                for (error in response.data!!.customerUpdate?.userErrors!!) {
-                    Log.e("AddFavorite", "User Error: ${error.message} for field ${error.field}")
-                }
-                return
+override suspend fun addProductToFavorites(customerId: String, productId: String) {
+    try {
+        val currentFavorites = getCurrentFavorites(customerId) ?: listOf()
+        val updatedFavorites = (currentFavorites + productId).distinct() // distinct avoid duplicates
+        val jsonProductIds = Gson().toJson(updatedFavorites)
+        val mutation = AddFavoriteProductMutation(
+            customerId = customerId,
+            productIds = jsonProductIds // Convert the list to a JSON string
+        )
+        val response = apolloClient.mutation(mutation).execute()
+        // Check for errors
+        if (response.data?.customerUpdate?.userErrors?.isNotEmpty() == true) {
+            for (error in response.data!!.customerUpdate?.userErrors!!) {
+                Log.e("AddFavorite", "User Error: ${error.message} for field ${error.field}")
             }
-            // Check for successful operation
-            if (response.hasErrors()) {
-                throw Exception("Error adding product to favorites: ${response.errors}")
-            } else {
-                Log.d("AddFavorite", "Product added to favorites successfully")
-            }
-        } catch (e: Exception) {
-            Log.e("AddFavorite", "Error: ${e.message}")
+            return
         }
+        // Check for successful operation
+        if (response.hasErrors()) {
+            throw Exception("Error adding product to favorites: ${response.errors}")
+        } else {
+            Log.d("AddFavorite", "Product added to favorites successfully")
+        }
+    } catch (e: Exception) {
+        Log.e("AddFavorite", "Error: ${e.message}")
     }
+}
 
-    // Function to fetch current favorites
-    private suspend fun getCurrentFavorites(customerId: String): List<String>? {
-        Log.d("GetFavorites", "Fetching current favorites for customerId: $customerId") // Log the start of the fetching process
-
+    suspend fun getCurrentFavorites(customerId: String): List<String>? {
         val query = GetFavoriteProductsQuery(customerId = customerId)
         val response = apolloClient.query(query).execute()
-
         if (response.hasErrors()) {
-            Log.e("GetFavorites", "Error fetching current favorites: ${response.errors}") // Log any errors
             throw Exception("Error fetching current favorites: ${response.errors}")
         }
-
         val favoriteProducts = response.data?.customer?.metafields?.edges?.let { edges ->
             edges.flatMap {
                 val value = it?.node?.value
-                Log.d("GetFavorites", "Found value: $value") // Log each product's value
-                value?.split(",")?.map { it.trim() } ?: listOf()
+                Log.d("GetFavorites", "Found value: $value") // Log the raw value
+                // Clean up the string by removing unwanted characters and extra brackets
+                val cleanedValue = value?.replace("""[\[\]\\""]""".toRegex(), "") // Remove unwanted characters
+                // Split the string by commas to get the product IDs
+                cleanedValue?.split(",")?.map { it.trim() } ?: listOf()
             }
         } ?: listOf()
 
-        Log.d("GetFavorites", "Current favorites: $favoriteProducts") // Log the current favorites list
+        Log.d("GetFavorites", "Current favorites: $favoriteProducts")
         return favoriteProducts
     }
 

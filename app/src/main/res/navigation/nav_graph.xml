@@ -23,7 +23,7 @@
 
     <fragment
         android:id="@+id/favoriteFragment"
-        android:name="com.example.couturecorner.favorite.ui.FavoriteFragment"
+        android:name="com.example.couturecorner.favorite.ui.view.FavoriteFragment"
         android:label="Favorite"
         tools:layout="@layout/fragment_favorite" />
 

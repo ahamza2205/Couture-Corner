@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -68,7 +69,7 @@ class HomeFragment : Fragment(), OnItemClickListener {
                 when (state) {
                     is ApiState.Loading -> showLoading(true)
                     is ApiState.Success -> {
-                        val products = state.data.data?.products?.edges
+                        val products = state.data?.data?.products?.edges
                         productsAdapter.submitList(products) // Use the initialized adapter here
                         showLoading(false)
                         products?.forEach { edge ->
@@ -89,12 +90,9 @@ class HomeFragment : Fragment(), OnItemClickListener {
         val action = HomeFragmentDirections.actionHomeFragmentToProductDetailsFragment(product?.id.toString())
         findNavController().navigate(action)
     }
-
-    // Handle favorite click
     override fun onFavoriteClick(productId: String) {
-        Log.d("HomeFragment", "Favorite clicked for product ID: $productId")
-        // Call the ViewModel to add product to favorites
         viewModel.addProductToFavorites(productId)
+        Toast.makeText(requireContext(), "Added to favorites", Toast.LENGTH_SHORT).show()
     }
     fun showLoading(isLoading:Boolean)
     {
