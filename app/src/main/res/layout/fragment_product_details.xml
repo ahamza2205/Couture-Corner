@@ -10,28 +10,38 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <!-- Product Image -->
-        <ImageView
-            android:id="@+id/productImage"
+        <!-- CardView with Product Image -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/productCard"
             android:layout_width="0dp"
             android:layout_height="300dp"
-            android:contentDescription="Product Image"
-            android:scaleType="centerCrop"
+            android:layout_margin="8dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <!-- Product Image -->
+            <ImageView
+                android:id="@+id/productImage"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="Product Image"
+                android:scaleType="centerCrop" />
+        </androidx.cardview.widget.CardView>
 
         <!-- Product Images Carousel -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/imagesRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="120dp"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="10dp"
             android:clipToPadding="false"
             android:padding="8dp"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/productCard"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/productImage" />
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <!-- Product Title -->
         <TextView
@@ -39,26 +49,33 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
-            android:paddingTop="8dp"
             android:text="Light Brown Jacket"
             android:textColor="@color/colorPrimary"
             android:textSize="18sp"
             android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/imagesRecyclerView"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/imagesRecyclerView" />
-
-        <!-- Product Rating -->
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <!-- Product Description -->
+        <TextView
+            android:id="@+id/productDescription"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit..."
+            android:textSize="14sp"
+            app:layout_constraintTop_toBottomOf="@id/productTitle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <TextView
             android:id="@+id/productRating"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="140dp"
-            android:layout_marginTop="44dp"
-            android:layout_marginEnd="15dp"
+            android:layout_marginTop="25dp"
+            android:layout_marginEnd="20dp"
             android:text="4.5 ★"
             android:textColor="@android:color/holo_orange_dark"
             android:textSize="32sp"
@@ -66,57 +83,44 @@
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toEndOf="@+id/productTypeValue"
             app:layout_constraintTop_toBottomOf="@+id/productDescription" />
-
-        <TextView
-            android:id="@+id/productDescription"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:paddingTop="8dp"
-            android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit..."
-            android:textSize="14sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/productTitle" />
-
         <!-- Product Type -->
         <TextView
             android:id="@+id/productType"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
-            android:paddingTop="8dp"
             android:text="Product Type : "
             android:textSize="18sp"
             android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/productDescription" />
+            app:layout_constraintTop_toBottomOf="@id/productDescription"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <!-- Product Type Value -->
+
+        <!-- Stock Status -->
+
         <TextView
             android:id="@+id/productTypeValue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="25dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="15dp"
             android:text="Jacket"
             android:textSize="18sp"
             app:layout_constraintStart_toEndOf="@id/productType"
             app:layout_constraintTop_toBottomOf="@id/productDescription" />
 
-        <!-- Stock Status -->
         <TextView
             android:id="@+id/stockStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
-            android:paddingTop="4dp"
             android:text="Still in stock : "
             android:textColor="@android:color/holo_green_dark"
             android:textSize="18sp"
             android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/productType" />
+            app:layout_constraintTop_toBottomOf="@id/productType"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <!-- Stock Count -->
         <TextView
@@ -124,14 +128,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="15dp"
             android:text="5 items available"
             android:textColor="@android:color/holo_green_dark"
             android:textSize="18sp"
-            app:layout_constraintStart_toEndOf="@id/stockStatus"
-            app:layout_constraintTop_toBottomOf="@id/productType" />
-
-        <!-- Total Price Label -->
+            app:layout_constraintTop_toBottomOf="@id/productType"
+            app:layout_constraintStart_toEndOf="@id/stockStatus" />
 
         <!-- Price Value -->
 
@@ -241,6 +243,5 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/dummyText4" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
