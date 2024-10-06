@@ -1,5 +1,4 @@
 package com.example.couturecorner.authentication.view
-
 import android.content.Intent
 import android.graphics.Paint
 import android.os.Bundle
@@ -47,17 +46,29 @@ class LoginActivity : AppCompatActivity() {
                             viewModel.getCustomerData()
                             viewModel.customerData.observe(this) { customer ->
                                 if (customer != null) {
+                                        if (   customer.defaultAddress==null ){
+
+
+                                        }else{
+                                            viewModel.haveAddress()
+
+                                        }
+
+
                                     Log.d("HamzaData", "Customer Data: " +
                                             "ID: ${customer.id}, " +
-                                            "Display Name: ${customer.displayName}, " +
-                                            "Email: ${customer.email}, " +
-                                            "First Name: ${customer.firstName}, " +
-                                            "Last Name: ${customer.lastName}, " +
-                                            "Phone: ${customer.phone}, " +
-                                            "Created At: ${customer.createdAt}, " +
-                                            "Updated At: ${customer.updatedAt}")
+                                            "Address: ${customer.defaultAddress}, " +
+                                        "Address1: ${customer.defaultAddress?.address1}, " +
+                                        "Address2: ${customer.defaultAddress?.address2}, " +
+                                        "City: ${customer.defaultAddress?.city}, " +
+                                        "Phone: ${customer.defaultAddress?.phone}"
+
+
+                                    )
+
+
                                 } else {
-                                    Log.e("HamzaData", "Customer data is null")
+                                    Log.e("HamzaData", "Customer data is null"+customer)
                                 }
                             }
                             Toast.makeText(this, "Login successful!", Toast.LENGTH_SHORT).show()
@@ -73,6 +84,7 @@ class LoginActivity : AppCompatActivity() {
         }
 
         if (viewModel.isUserLoggedIn()) {
+
             startActivity(Intent(this, MainActivity::class.java))
             finish()
         }

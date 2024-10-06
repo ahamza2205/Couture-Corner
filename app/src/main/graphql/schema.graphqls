@@ -89,8 +89,17 @@ type Customer {
     displayName: String
     preferredContactMethod: String
     marketingOptIn: Boolean
-    metafields(first: Int): MetafieldConnection!
-    addresses: [Address!]!
+    metafields(first: Int): MetafieldConnection
+    addresses: [Address]
+    defaultAddress: MailingAddress
+}
+# The type for Mailing Address
+type MailingAddress {
+    formattedArea: String!
+    address1: String!
+    address2: String
+    city: String
+    phone: String
 }
 type UserError {
     field: [String]

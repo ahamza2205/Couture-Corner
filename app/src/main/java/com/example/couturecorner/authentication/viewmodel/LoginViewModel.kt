@@ -26,6 +26,10 @@ class LoginViewModel @Inject constructor(
         return repo.isUserLoggedIn()
     }
 
+    fun haveAddress() {
+        repo.saveAddressState(true)
+    }
+
     fun getCustomerData() {
         val customerId = sharedPreference.getShopifyUserId()
 

@@ -47,6 +47,18 @@ class Repo
     }
 
 
+    override fun saveAddressState(haveAddress: Boolean){
+        sharedPreference.saveAddressState(haveAddress) }
+
+
+    override fun getAddressState(): Boolean {
+        return sharedPreference.getAddressState()
+    }
+
+    override fun getShopifyUserId(): String {
+        return sharedPreference.getShopifyUserId() ?: ""
+    }
+
     // --------------------------- shopify registration -------------------------------
     suspend fun registerUser(email: String, password: String, firstName: String, lastName: String, phoneNumber: String): String? {
         val auth = FirebaseAuth.getInstance()
@@ -57,7 +69,6 @@ class Repo
                 val client = ApolloClient.apolloClient
                 val mutation = CustomerCreateMutation(
                     input = CustomerInput(
-
                         email = Optional.Present(email),
                         firstName = Optional.present(firstName),
                         lastName = Optional.Present(lastName),
@@ -96,19 +107,26 @@ class Repo
             throw Exception("Error fetching customer: ${response.errors}")
         }
 
-        response.data?.customer?.let { customer ->
-            return GetCustomerByIdQuery.Customer(
+        return response.data?.customer?.let { customer ->
+            GetCustomerByIdQuery.Customer(
                 id = customer.id,
-                displayName = customer.displayName ?: "",
+                displayName = customer.displayName ?: "", // Handle nullable fields
                 email = customer.email,
                 firstName = customer.firstName,
                 lastName = customer.lastName,
                 phone = customer.phone,
                 createdAt = customer.createdAt,
-                updatedAt = customer.updatedAt
+                updatedAt = customer.updatedAt,
+                defaultAddress = customer.defaultAddress?.let { address ->
+                    GetCustomerByIdQuery.DefaultAddress( // Correctly reference the nested DefaultAddress class
+                        address1 = address.address1 ?: "", // Handle nullable fields
+                        address2 = address.address2 ?: "",
+                        city = address.city ?: "",
+                        phone = address.phone ?: ""
+                    )
+                }
             )
         }
-        return null
     }
 
     override fun getCupones(): Flow<ApolloResponse<GetCuponCodesQuery.Data>> {

@@ -71,7 +71,11 @@
         android:id="@+id/addAdressFragment"
         android:name="com.example.couturecorner.setting.ui.AddAdressFragment"
         android:label="fragment_add_adress"
-        tools:layout="@layout/fragment_add_adress" />
+        tools:layout="@layout/fragment_add_adress" >
+        <action
+            android:id="@+id/action_addAdressFragment_to_checkOutFragment"
+            app:destination="@id/checkOutFragment" />
+    </fragment>
     <fragment
         android:id="@+id/checkOutFragment"
         android:name="com.example.couturecorner.setting.ui.CheckOutFragment"

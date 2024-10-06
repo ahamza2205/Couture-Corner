@@ -21,4 +21,7 @@ interface Irepo {
      fun saveUserLoggedIn(isLoggedIn: Boolean)
      fun isUserLoggedIn(): Boolean
      fun logoutUser()
+     fun saveAddressState(haveAddress: Boolean)
+     fun getAddressState(): Boolean
+     fun getShopifyUserId(): String
 }
