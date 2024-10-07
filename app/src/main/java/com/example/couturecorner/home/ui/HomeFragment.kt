@@ -7,7 +7,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -19,8 +18,8 @@ import com.example.couturecorner.category.ui.CategoryAdapter
 import com.example.couturecorner.data.model.ApiState
 import com.example.couturecorner.databinding.FragmentHomeBinding
 import com.example.couturecorner.home.viewmodel.HomeViewModel
-import com.graphql.HomeProductsQuery
 import com.google.android.material.chip.Chip
+import com.graphql.FilteredProductsQuery
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -55,7 +54,7 @@ class HomeFragment : Fragment(), OnItemClickListener {
         binding.BrandsRecycle.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
 
         // Initialize productsAdapter
-        productsAdapter = ProductsAdapter(this) // Pass this instance
+        productsAdapter = ProductsAdapter(this)
         binding.productsRecycel.adapter = productsAdapter
 
         // Initialize categoryAdapter
@@ -93,7 +92,7 @@ class HomeFragment : Fragment(), OnItemClickListener {
     }
 
     // Implement the onItemClick method from the interface
-    override fun onItemClick(product: HomeProductsQuery.Node?) {
+    override fun onItemClick(product: FilteredProductsQuery.Node?) {
         val action = HomeFragmentDirections.actionHomeFragmentToProductDetailsFragment(product?.id.toString())
         findNavController().navigate(action)
     }

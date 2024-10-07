@@ -1,8 +1,8 @@
 package com.example.couturecorner.home.ui
 
-import com.graphql.HomeProductsQuery
+import com.graphql.FilteredProductsQuery
 
 interface OnItemClickListener {
     fun onFavoriteClick(productId: String)
-    fun onItemClick(product: HomeProductsQuery.Node?)
+    fun onItemClick(product: FilteredProductsQuery.Node?)
 }

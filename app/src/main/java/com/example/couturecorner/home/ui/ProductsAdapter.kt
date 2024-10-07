@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
 import com.example.couturecorner.databinding.ProductItemBinding
 import com.graphql.FilteredProductsQuery
-import com.graphql.HomeProductsQuery
 
 
 class productdiifUtill():DiffUtil.ItemCallback<FilteredProductsQuery.Edge>() {

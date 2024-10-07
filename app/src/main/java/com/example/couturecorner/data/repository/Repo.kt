@@ -75,15 +75,16 @@ class Repo
         try {
             // Create Firebase user
             val firebaseUserId = auth.createUserWithEmailAndPassword(email, password).await()
-
+            val user = FirebaseAuth.getInstance().currentUser
+            val userEmail = user?.email
             if (firebaseUserId.user != null) {
                 // Proceed with Shopify registration
                 val client = ApolloClient.apolloClient
                 val mutation = CustomerCreateMutation(
                     input = CustomerInput(
-                        email = email,
-                        firstName = firstName,
-                        lastName = lastName,
+                        email = Optional.Present(email),
+                        firstName = Optional.Present(firstName),
+                        lastName = Optional.Present(lastName),
                         phone = Optional.Present(phoneNumber)
                     )
                 )
@@ -98,7 +99,9 @@ class Repo
                     Log.d("UserRegistration", "User successfully created on Shopify: $firstName $lastName, Shopify User ID: $shopifyUserId")
 
                     // Save the Shopify User ID in shared preferences
-                    sharedPreference.saveShopifyUserId(shopifyUserId ?: "")
+                    if (userEmail != null) {
+                        sharedPreference.saveShopifyUserId( userEmail , shopifyUserId ?: "")
+                    }
                     if (shopifyUserId != null) {
                         getCustomerById(shopifyUserId)
                     }

@@ -64,13 +64,6 @@ type Variant {
     displayName: String
 }
 
-# Define the Customer type
-type Mutation {
-    customerCreate(input: CustomerInput!): CustomerCreatePayload!
-    customerUpdate(input: CustomerInput!): CustomerUpdatePayload!
-
-}
-
 input CustomerInput {
     email: String
     firstName: String
@@ -82,10 +75,6 @@ input CustomerInput {
     addresses: [MailingAddressInput]
 }
 
-type CustomerCreatePayload {
-    customer: Customer
-    userErrors: [UserError!]!
-}
 type Customer {
     id: ID!
     email: String!
@@ -98,8 +87,10 @@ type Customer {
     displayName: String
     preferredContactMethod: String
     marketingOptIn: Boolean
-    metafields(first: Int): MetafieldConnection  # تغيير هنا
+    metafields(first: Int): MetafieldConnection!
+    addresses: [Address!]!
 }
+
 
 # Connection type for Metafields
 type MetafieldConnection {
@@ -131,15 +122,7 @@ input MetafieldInput {
 # Mutations
 type Mutation {
     customerCreate(input: CustomerInput!): CustomerCreatePayload
-    customerUpdate(input: CustomerUpdateInput!): CustomerUpdatePayload  # Added update mutation
-}
-
-input CustomerInput {
-    email: String!
-    firstName: String!
-    lastName: String!
-    phone: String
-    tags: [String!]
+    customerUpdate(input: CustomerInput!): CustomerUpdatePayload  # Added update mutation
 }
 
 type CustomerCreatePayload {
@@ -213,8 +196,6 @@ input MailingAddressInput {
     city: String!
     phone: String!
 }
-
-
 
 # The address type
 type Address {

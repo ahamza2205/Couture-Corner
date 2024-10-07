@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.Menu
-import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
@@ -66,6 +65,7 @@ class MainActivity : AppCompatActivity() {
                     is ApiState.Loading -> {
                         // Handle loading state if needed
                     }
+
                     is ApiState.Success -> {
                         val products = apiState.data?.data?.products?.edges
                         productAdapter = ProductAdapter(products ?: emptyList()) { productId ->
@@ -83,6 +83,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
         val searchItem = menu?.findItem(R.id.action_search)
@@ -92,6 +93,7 @@ class MainActivity : AppCompatActivity() {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return false
             }
+
             override fun onQueryTextChange(newText: String?): Boolean {
                 if (!newText.isNullOrEmpty()) {
                     recyclerView.visibility = View.VISIBLE // Show when there's text
@@ -105,6 +107,7 @@ class MainActivity : AppCompatActivity() {
 
         return true
     }
+
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment)
         return navController.navigateUp() || super.onSupportNavigateUp()
