@@ -11,6 +11,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.couturecorner.R
 import com.example.couturecorner.authentication.viewmodel.LoginViewModel
 import com.example.couturecorner.databinding.FragmentCheckOutBinding
+import com.example.couturecorner.home.ui.MainActivity
 import com.example.couturecorner.setting.viewmodel.CheckOutViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -33,6 +34,8 @@ class CheckOutFragment : Fragment() {
     }
 override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
+    (activity as? MainActivity)?.hideBottomNav()
+
     loginViewModel.getCustomerDataTwo()
     Log.i("ADDRESS", "onViewCreated: "+"${checkOutViewModel.getAddressState()}")
     if(checkOutViewModel.getAddressState()==true){

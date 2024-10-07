@@ -13,11 +13,13 @@ import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.example.couturecorner.R
 import com.example.couturecorner.authentication.viewmodel.LoginViewModel
+import com.example.couturecorner.home.ui.MainActivity
 import com.example.couturecorner.setting.viewmodel.AddAdressViewModel
 import com.graphql.type.MailingAddressInput
 
 @AndroidEntryPoint
 class AddAdressFragment : Fragment() {
+
 
     private var _binding: FragmentAddAdressBinding? = null
     private val binding get() = _binding!!
@@ -36,6 +38,8 @@ class AddAdressFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        (activity as? MainActivity)?.hideBottomNav()
 
         loginViewModel.getCustomerDataTwo()
 

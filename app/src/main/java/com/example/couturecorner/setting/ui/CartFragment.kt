@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.couturecorner.R
 import com.example.couturecorner.adapter.CartItemAdapter
 import com.example.couturecorner.databinding.FragmentCartBinding
+import com.example.couturecorner.home.ui.MainActivity
 import com.example.couturecorner.setting.viewmodel.CartViewModel
 
 
@@ -29,6 +30,7 @@ class CartFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        (activity as? MainActivity)?.hideBottomNav()
 
         cartItemAdapter = CartItemAdapter(
             onIncreaseQuantity = { cartItem ->
