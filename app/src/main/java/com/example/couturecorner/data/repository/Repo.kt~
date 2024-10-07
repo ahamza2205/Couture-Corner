@@ -63,11 +63,9 @@ class Repo
     ): String? {
         val auth = FirebaseAuth.getInstance()
         try {
-            // Create Firebase user
             val firebaseUserId = auth.createUserWithEmailAndPassword(email, password).await()
 
             if (firebaseUserId.user != null) {
-                // Proceed with Shopify registration
                 val client = ApolloClient.apolloClient
                 val mutation = CustomerCreateMutation(
                     input = CustomerInput(
@@ -80,17 +78,17 @@ class Repo
                 val response = client.mutation(mutation).execute()
 
                 if (response.hasErrors()) {
-                    // Log Shopify errors
-                    Log.e("ShopifyRegistration", "Shopify user creation failed: ${response.errors}")
                     throw Exception("Error creating Shopify user: ${response.errors}")
                 } else {
                     val shopifyUserId = response.data?.customerCreate?.customer?.id
-                    Log.d("UserRegistration", "User successfully created on Shopify: $firstName $lastName, Shopify User ID: $shopifyUserId")
+                    Log.d(
+                        "UserRegistration",
+                        "User successfully created on Shopify: $firstName $lastName, Shopify User ID: $shopifyUserId"
+                    )
+
                     return shopifyUserId
                 }
             } else {
-                // Log Firebase registration failure
-                Log.e("UserRegistration", "Failed to create Firebase user")
                 throw Exception("Failed to create Firebase user")
             }
         } catch (e: Exception) {
@@ -99,16 +97,15 @@ class Repo
         }
     }
 
-    // Fetch customer data by ID
+    // --------------------------- get customer data --------------------------------
+
     suspend fun getCustomerById(customerId: String): GetCustomerByIdQuery.Customer? {
         val client = ApolloClient.apolloClient
         val response = client.query(GetCustomerByIdQuery(id = customerId)).execute()
 
         if (response.hasErrors()) {
-            Log.e("CustomerData", "Error fetching customer: ${response.errors}")
             throw Exception("Error fetching customer: ${response.errors}")
         }
-
         response.data?.customer?.let { customer ->
             return GetCustomerByIdQuery.Customer(
                 id = customer.id,

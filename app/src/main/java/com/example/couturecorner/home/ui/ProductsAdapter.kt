@@ -16,7 +16,6 @@ class ProductDiffUtil : DiffUtil.ItemCallback<HomeProductsQuery.Edge>() {
     ): Boolean {
         return oldItem.node?.id == newItem.node?.id
     }
-
     override fun areContentsTheSame(
         oldItem: HomeProductsQuery.Edge,
         newItem: HomeProductsQuery.Edge

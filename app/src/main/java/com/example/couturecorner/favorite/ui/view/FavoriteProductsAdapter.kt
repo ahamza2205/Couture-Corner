@@ -20,9 +20,8 @@ class FavoriteProductsAdapter(
         val binding = ProductItemBinding.inflate(inflater, parent, false)
         return FavoriteProductViewHolder(binding)
     }
-
     override fun onBindViewHolder(holder: FavoriteProductViewHolder, position: Int) {
-        val product = productList[position] // استخدم productList
+        val product = productList[position]
         holder.binding.title.text = product.title
         holder.binding.priceTextView.text = product.variants?.edges?.get(0)?.node?.price
         Glide.with(holder.itemView.context)
