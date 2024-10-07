@@ -9,26 +9,28 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
 import com.example.couturecorner.databinding.ProductItemBinding
+import com.graphql.FilteredProductsQuery
 import com.graphql.HomeProductsQuery
 
 
-class productdiifUtill():DiffUtil.ItemCallback<HomeProductsQuery.Edge>() {
+class productdiifUtill():DiffUtil.ItemCallback<FilteredProductsQuery.Edge>() {
     override fun areItemsTheSame(
-        oldItem: HomeProductsQuery.Edge,
-        newItem: HomeProductsQuery.Edge
+        oldItem: FilteredProductsQuery.Edge,
+        newItem: FilteredProductsQuery.Edge
     ): Boolean {
-        return  oldItem.node?.id==newItem.node?.id
+        return oldItem.node?.id==newItem.node?.id
     }
 
     override fun areContentsTheSame(
-        oldItem: HomeProductsQuery.Edge,
-        newItem: HomeProductsQuery.Edge
+        oldItem: FilteredProductsQuery.Edge,
+        newItem: FilteredProductsQuery.Edge
     ): Boolean {
-        return  oldItem==newItem
+        return oldItem==newItem
     }
+
 }
 
-class ProductsAdapter:ListAdapter<HomeProductsQuery.Edge,ProductsAdapter.ProductsViewHolder>(productdiifUtill()) {
+class ProductsAdapter:ListAdapter<FilteredProductsQuery.Edge,ProductsAdapter.ProductsViewHolder>(productdiifUtill()) {
     lateinit var binding: ProductItemBinding
 
     class ProductsViewHolder(var binding: ProductItemBinding):ViewHolder(binding.root)

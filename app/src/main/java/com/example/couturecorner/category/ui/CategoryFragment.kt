@@ -13,6 +13,7 @@ import com.example.couturecorner.brand.ui.ProductBrandAdapter
 import com.example.couturecorner.category.viewModel.CategoryViewModel
 import com.example.couturecorner.data.model.ApiState
 import com.example.couturecorner.databinding.FragmentCategoryBinding
+import com.example.couturecorner.home.ui.ProductsAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -24,7 +25,7 @@ class CategoryFragment : Fragment() {
 
     val viewModel: CategoryViewModel by viewModels()
 
-    lateinit var categoryAdapter: ProductBrandAdapter
+    lateinit var categoryAdapter:ProductsAdapter
 
     val categoryLogos: Map<String, Int> = mapOf("women" to R.drawable.woman, "men" to R.drawable.men,
         "kid" to R.drawable.shopping, "sale" to R.drawable.sale)
@@ -43,10 +44,10 @@ class CategoryFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
 
-        categoryAdapter= ProductBrandAdapter()
+        categoryAdapter= ProductsAdapter()
         binding.productsRecycel.adapter=categoryAdapter
 
-        viewModel.getFilterdProducts(category ?: "women")
+        viewModel.getFilterdProducts(category)
 
         val logoResId = categoryLogos[category] ?: R.drawable.shoz10
         binding.categoryImageView.setImageResource(logoResId)

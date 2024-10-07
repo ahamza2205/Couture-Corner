@@ -12,6 +12,7 @@ import com.example.couturecorner.R
 import com.example.couturecorner.brand.viewModel.BrandViewModel
 import com.example.couturecorner.data.model.ApiState
 import com.example.couturecorner.databinding.FragmentBrandsBinding
+import com.example.couturecorner.home.ui.ProductsAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -23,7 +24,7 @@ class BrandsFragment : Fragment() {
     val viewModel:BrandViewModel by viewModels()
 
     lateinit var binding:FragmentBrandsBinding
-    lateinit var productsBrandAdapter: ProductBrandAdapter
+    lateinit var productsBrandAdapter: ProductsAdapter
 
 
     val brandLogos: Map<String, Int> = mapOf("vans" to R.drawable.vans_logo, "palladium" to R.drawable.palladium_logo,
@@ -47,7 +48,7 @@ class BrandsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        productsBrandAdapter=ProductBrandAdapter()
+        productsBrandAdapter=ProductsAdapter()
         binding.productsRecycel.adapter=productsBrandAdapter
 
 

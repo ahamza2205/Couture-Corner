@@ -1,22 +1,29 @@
 package com.example.couturecorner.home.ui
 
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CompoundButton
+import androidx.core.content.ContextCompat
+import androidx.core.view.children
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.couturecorner.R
 import com.example.couturecorner.category.ui.CategoryAdapter
 import com.example.couturecorner.data.model.ApiState
 import com.example.couturecorner.databinding.FragmentHomeBinding
 import com.example.couturecorner.home.viewmodel.HomeViewModel
+import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import java.util.Locale
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
@@ -56,7 +63,44 @@ class HomeFragment : Fragment() {
         binding.CategoryRecycel.adapter=categoryAdapter
         binding.CategoryRecycel.layoutManager=LinearLayoutManager(context, RecyclerView.HORIZONTAL,false)
 
-        viewModel.getProducts()
+        viewModel.getFilterdProducts(null)
+
+
+
+
+        binding.chipGroup.setOnCheckedChangeListener { group, checkedId ->
+            // Reset all chips to their default background color
+            for (i in 0 until group.childCount) {
+                val chip = group.getChildAt(i) as Chip
+                chip.setChipBackgroundColorResource(R.color.white) // Default color
+            }
+
+            // Change the background color of the selected chip
+            when (checkedId) {
+                R.id.chip0 -> {
+                   binding.chip0.setChipBackgroundColorResource(R.color.colorPrimary)
+                    Log.d("AmrChips", "chip0 selected")
+                    viewModel.getFilterdProducts(null)
+                }
+                R.id.chip1 -> {
+                    binding.chip1.setChipBackgroundColorResource(R.color.colorPrimary)
+                    Log.d("AmrChips", "chip1 selected")
+                    viewModel.getFilterdProducts("product_type:${binding.chip1.text}")
+                }
+                R.id.chip2 -> {
+                    binding.chip2.setChipBackgroundColorResource(R.color.colorPrimary)
+                    Log.d("AmrChips", "chip2 selected")
+                    viewModel.getFilterdProducts("product_type:${binding.chip2.text}")
+                }
+                R.id.chip3 -> {
+                    binding.chip3.setChipBackgroundColorResource(R.color.colorPrimary)
+                    Log.d("AmrChips", "chip3 selected")
+                    viewModel.getFilterdProducts("product_type:${binding.chip3.text}")
+                }
+            }
+        }
+
+
 
         lifecycleScope.launch {
             viewModel.products.collect{

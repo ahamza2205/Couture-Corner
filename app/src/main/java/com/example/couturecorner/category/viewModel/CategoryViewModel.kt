@@ -22,7 +22,7 @@ class CategoryViewModel @Inject constructor(
     val productsCategory : StateFlow<ApiState<ApolloResponse<FilteredProductsQuery.Data>>> =_productsCategory
 
 
-    fun getFilterdProducts(cat: String) {
+    fun getFilterdProducts(cat: String?) {
         viewModelScope.launch {
             repo.getFilterdProducts(cat).collect {
                 if (it.hasErrors())

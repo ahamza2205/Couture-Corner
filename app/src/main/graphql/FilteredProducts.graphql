@@ -1,4 +1,4 @@
-query FilteredProducts($query: String!){
+query FilteredProducts($query: String){
     products(first: 30, query: $query) {
         edges {
             node {

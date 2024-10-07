@@ -9,5 +9,5 @@ import kotlinx.coroutines.flow.Flow
 interface IremoteData   {
     fun getProducts(): Flow<ApolloResponse<GetProductsQuery.Data>>
     fun getHomeProducts(): Flow<ApolloResponse<HomeProductsQuery.Data>>
-    fun getFilterdProducts(vendor:String): Flow<ApolloResponse<FilteredProductsQuery.Data>>
+    fun getFilterdProducts(vendor:String?): Flow<ApolloResponse<FilteredProductsQuery.Data>>
 }

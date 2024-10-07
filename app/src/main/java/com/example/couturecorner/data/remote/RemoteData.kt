@@ -26,9 +26,17 @@ class RemoteData @Inject constructor() : IremoteData {
         emit(response)
     }
 
-    override fun getFilterdProducts(vendor: String): Flow<ApolloResponse<FilteredProductsQuery.Data>> = flow{
-      val response = ApolloClient.apolloClient.query(FilteredProductsQuery(query =vendor)).execute()
+    override fun getFilterdProducts(vendor: String?): Flow<ApolloResponse<FilteredProductsQuery.Data>> = flow{
+
+        val response = if (vendor == null) {
+            ApolloClient.apolloClient.query(FilteredProductsQuery(query = Optional.Present(null))).execute()
+        } else {
+            ApolloClient.apolloClient.query(FilteredProductsQuery(query = Optional.Present(vendor))).execute()
+        }
         emit(response)
+
+//      val response = ApolloClient.apolloClient.query(FilteredProductsQuery(query =vendor)).execute()
+//        emit(response)
     }
 
 

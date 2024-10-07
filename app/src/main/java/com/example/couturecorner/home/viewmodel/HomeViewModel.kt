@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.apollographql.apollo3.api.ApolloResponse
 import com.example.couturecorner.data.model.ApiState
 import com.example.couturecorner.data.repository.Irepo
+import com.graphql.FilteredProductsQuery
 
 import com.graphql.GetProductsQuery
 import com.graphql.HomeProductsQuery
@@ -19,14 +20,15 @@ class HomeViewModel@Inject constructor(
     private val repo: Irepo
 ):ViewModel() {
 
-    private val _products = MutableStateFlow<ApiState<ApolloResponse<HomeProductsQuery.Data>>>(ApiState.Loading)
-    val products : StateFlow<ApiState<ApolloResponse<HomeProductsQuery.Data>>> =_products
+
+    private val _products= MutableStateFlow<ApiState<ApolloResponse<FilteredProductsQuery.Data>>>(
+        ApiState.Loading)
+    val products : StateFlow<ApiState<ApolloResponse<FilteredProductsQuery.Data>>> =_products
 
 
-    fun getProducts()
-    {
+    fun getFilterdProducts(productTpye: String?) {
         viewModelScope.launch {
-            repo.getHomeProducts().collect{
+            repo.getFilterdProducts(productTpye).collect {
                 if (it.hasErrors())
                 {
                     _products.value= ApiState.Error(it.errors?.get(0)?.message.toString())

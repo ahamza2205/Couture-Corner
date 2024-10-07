@@ -34,7 +34,7 @@ class Repo
         return remoteData.getHomeProducts()
     }
 
-    override fun getFilterdProducts(vendor: String): Flow<ApolloResponse<FilteredProductsQuery.Data>> {
+    override fun getFilterdProducts(vendor: String?): Flow<ApolloResponse<FilteredProductsQuery.Data>> {
         return remoteData.getFilterdProducts(vendor)
     }
 
