@@ -1,0 +1,36 @@
+
+query GetDraftOrdersByCustomer($query: String!) {
+    draftOrders(query: $query, first: 100) {
+        nodes {
+            lineItems(first: 100) {
+                nodes {
+                    name
+                    quantity
+                    title
+                    variant {
+                        id
+                        inventoryQuantity
+                        selectedOptions {
+                            name
+                            value
+                        }
+                        price
+                        product {
+                            media(first: 1) {
+                                nodes {
+                                    ... on MediaImage {
+                                        image {
+                                            url
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            id
+            tags
+        }
+    }
+}
