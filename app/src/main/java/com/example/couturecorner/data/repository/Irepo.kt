@@ -1,6 +1,7 @@
 package com.example.couturecorner.data.repository
 
 import com.apollographql.apollo3.api.ApolloResponse
+import com.graphql.FilteredProductsQuery
 import com.graphql.GetCuponCodesQuery
 import com.graphql.GetProductsQuery
 import com.graphql.UpdateCustomerMetafieldsMutation
@@ -15,6 +16,7 @@ interface Irepo {
 
     fun updateCustomer(input: CustomerInput): Flow<ApolloResponse<UpdateCustomerMetafieldsMutation.Data>>
      fun getHomeProducts(): Flow<ApolloResponse<HomeProductsQuery.Data>>
+     fun getFilterdProducts(vendor:String?): Flow<ApolloResponse<FilteredProductsQuery.Data>>
 
      // --------------- shared preference  -------------------------
 

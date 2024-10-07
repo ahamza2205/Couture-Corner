@@ -1,11 +1,11 @@
-query GetProducts {
-    products(first: 10,query: null) {
+query FilteredProducts($query: String){
+    products(first: 30, query: $query) {
         edges {
             node {
                 id
                 title
-                description
                 handle
+                tags
                 images(first: 1) {
                     edges {
                         node {
@@ -13,11 +13,10 @@ query GetProducts {
                         }
                     }
                 }
-                variants(first: 3) {
+                variants(first: 1) {
                     edges {
                         node {
                             price
-                            sku
                         }
                     }
                 }
