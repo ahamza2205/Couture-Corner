@@ -75,6 +75,9 @@
         <action
             android:id="@+id/action_addAdressFragment_to_checkOutFragment"
             app:destination="@id/checkOutFragment" />
+        <action
+            android:id="@+id/action_addAdressFragment_to_mapFragment"
+            app:destination="@id/mapFragment" />
     </fragment>
     <fragment
         android:id="@+id/checkOutFragment"
@@ -83,6 +86,15 @@
         tools:layout="@layout/fragment_check_out" >
         <action
             android:id="@+id/action_checkOutFragment_to_addAdressFragment"
+            app:destination="@id/addAdressFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/mapFragment"
+        android:name="com.example.couturecorner.setting.ui.MapFragment"
+        android:label="fragment_map"
+        tools:layout="@layout/fragment_map" >
+        <action
+            android:id="@+id/action_mapFragment_to_addAdressFragment"
             app:destination="@id/addAdressFragment" />
     </fragment>
 </navigation>

@@ -52,6 +52,7 @@
         android:textSize="16sp" />
 
     <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/detailsOfShippingAddressform"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
@@ -60,6 +61,9 @@
         app:boxCornerRadiusBottomStart="10dp"
         app:boxCornerRadiusTopEnd="10dp"
         app:boxCornerRadiusTopStart="10dp"
+        app:endIconDrawable="@drawable/add_location"
+        app:endIconMode="custom"
+        app:endIconTint="@color/colorPrimary"
         app:boxStrokeColor="@color/light_gray"
         app:boxStrokeWidth="1dp">
 

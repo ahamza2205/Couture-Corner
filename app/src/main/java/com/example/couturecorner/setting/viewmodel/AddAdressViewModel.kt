@@ -1,5 +1,4 @@
 package com.example.couturecorner.setting.viewmodel
-
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -17,7 +16,6 @@ import javax.inject.Inject
 class AddAdressViewModel @Inject constructor(
     private val repo: Repo
 ) : ViewModel() {
-
     // LiveData to observe the response state
     private val _updateStatus = MutableLiveData<Result<String>>()
     val updateStatus: LiveData<Result<String>> get() = _updateStatus
@@ -25,14 +23,12 @@ class AddAdressViewModel @Inject constructor(
      var userId =repo.getShopifyUserId()
     fun saveAddressState() {
         repo.saveAddressState(true)
-
     }
 
     fun updateCustomer(address: List<MailingAddressInput>) {
         val input = CustomerInput(
             id = Optional.Present(userId),
-            addresses = Optional.present(address)
-        )
+            addresses = Optional.present(address))
 
         viewModelScope.launch {
             Log.i("AddAdress", "updateCustomer: "+userId)

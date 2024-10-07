@@ -59,6 +59,12 @@ class AddAdressFragment : Fragment() {
             viewModel.updateCustomer(addressList)
 
         }
+        binding.detailsOfShippingAddressform.setOnClickListener(
+            {
+                findNavController().navigate(R.id.action_addAdressFragment_to_mapFragment)
+
+            }
+        )
     }
 
     override fun onDestroyView() {
