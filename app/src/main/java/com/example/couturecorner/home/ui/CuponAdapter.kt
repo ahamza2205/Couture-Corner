@@ -1,8 +1,11 @@
 package com.example.couturecorner.home.ui
 
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -51,7 +54,23 @@ class CuponAdapter:ListAdapter<GetCuponCodesQuery.Node, CuponAdapter.CuponViewHo
         cupon.codeDiscount.onDiscountCodeBasic?.summary
         val logoResId = cuponLogo[cupon.codeDiscount.onDiscountCodeBasic?.summary] ?: R.drawable.five_per
         holder.binding.backgroundImage.setImageResource(logoResId)
+
+
+
+        binding.backgroundImage.setOnClickListener {
+            val clipboard = holder.itemView.context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            val clip = ClipData.newPlainText("Coupon Title", cupon.codeDiscount.onDiscountCodeBasic?.title)
+            clipboard.setPrimaryClip(clip)
+
+            // Optionally, you can show a toast message
+            Toast.makeText(holder.itemView.context, "Copied to clipboard", Toast.LENGTH_SHORT).show()
+        }
+
+
+
     }
+
+
 
 
 }
