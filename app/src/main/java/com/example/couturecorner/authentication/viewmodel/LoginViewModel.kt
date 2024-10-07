@@ -9,7 +9,6 @@ import com.example.couturecorner.data.local.SharedPreference
 import com.example.couturecorner.data.repository.Repo
 import com.google.firebase.auth.FirebaseAuth
 import com.graphql.GetCustomerByIdQuery
-import com.graphql.type.MailingAddressInput
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -71,10 +70,10 @@ class LoginViewModel @Inject constructor(
             if (userEmail != null) {
                 // Get the Shopify customer ID using the email
                 val customerId = repo.getShopifyUserId(userEmail)
-                Log.i("AddAddress", "updateCustomer: "+customerId)
 
                 if (customerId != null) {
-
+                    repo.saveDraftOrderTag(customerId,"CART_DRAFT_ORDER+$customerId")
+                    Log.i("CartTag", "getCustomerDataTwo: "+repo.getDraftOrderTag(userId = customerId))
                     getCustomerData(customerId)
 
 

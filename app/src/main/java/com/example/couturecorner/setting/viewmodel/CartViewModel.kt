@@ -1,13 +1,65 @@
 package com.example.couturecorner.setting.viewmodel
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.couturecorner.R
+import androidx.lifecycle.viewModelScope
+import com.example.couturecorner.Utility.CartItemMapper
+import com.example.couturecorner.data.model.CartItem
+import com.example.couturecorner.data.repository.Repo
+import com.google.firebase.auth.FirebaseAuth
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
+import javax.inject.Inject
+@HiltViewModel
+class CartViewModel@Inject constructor(
+    private val repo: Repo
+):ViewModel() {
+    private val _updatCartListStatus = MutableLiveData<Result<List<CartItem>>>()
+    val uppdatCartListStatus: LiveData<Result<List<CartItem>>> get() = _updatCartListStatus
+    private val cartItemMapper = CartItemMapper()
 
-class CartViewModel : ViewModel() {
 
-    private val _cartItems = MutableLiveData<List<CartItem>>()
-    val cartItems: LiveData<List<CartItem>> = _cartItems
+    private val user = FirebaseAuth.getInstance().currentUser
+    fun getCartItems() {
+        if (user != null) {
+            val userEmail = user.email
+            if (userEmail != null) {
+                // Get the Shopify customer ID using the email
+                val customerId = repo.getShopifyUserId(userEmail)
+                if (customerId != null) {
+                    Log.i("CartTag", "getCartItems: " + customerId)
+                    val tag = repo.getDraftOrderTag(customerId)
+
+                    Log.i("CartTag", "getCartItems: " + tag)
+
+                    // Call the repository to fetch draft orders and update LiveData
+                    viewModelScope.launch {
+                        try {
+                            repo.getDraftOrderByCustomerId(customerId)
+                                .collect { response ->
+                                    Log.i("Cart", "getCartItems: " + response.data)
+                                    val cartItems = cartItemMapper.mapToCartItems(response, tag!!)
+                                    _updatCartListStatus.postValue(Result.success(cartItems))
+                                }
+                        } catch (e: Exception) {
+                            Log.i("Cart", "getCartItems: " + e)
+
+                            _updatCartListStatus.postValue(Result.failure(e))
+                        }
+                    }
+                } else {
+                    Log.i("Cart", "User ID is null")
+                }
+            }
+        }
+    }
+
+
+
+}
+
+
     // To observe the calculated total price
     private val _totalPrice = MutableLiveData<Double>()
     val totalPrice: LiveData<Double> = _totalPrice
@@ -16,67 +68,45 @@ private val _subtotal = MutableLiveData<Double>()
     private val deliveryFee = 5.0
     private val discount = 5.0
 
-    init {
-        // Initialize the list with mock data
-        _cartItems.value = generateMockCartItems()
-        calculateTotal() // Calculate initial total
+//    init {
+//        calculateTotal() // Calculate initial total
+//
+//    }
 
-    }
-
-    // Method to generate mock cart items
-    private fun generateMockCartItems(): List<CartItem> {
-        return listOf(
-            CartItem(R.drawable.test, "Item 1", 25, 1),
-            CartItem(R.drawable.test, "Item 2", 30, 2),
-            CartItem(R.drawable.test, "Item 3", 15, 3),
-            CartItem(R.drawable.test, "Item 4", 50, 1),
-            CartItem(R.drawable.test, "Item 5", 20, 2),
-            CartItem(R.drawable.test, "Item 6", 35, 3),
-            CartItem(R.drawable.test, "Item 7", 40, 1),
-            CartItem(R.drawable.test, "Item 8", 45, 2),
-        )
-    }
 
     // Method to increase quantity
-    fun increaseQuantity(cartItem: CartItem) {
-        _cartItems.value?.let { currentItems ->
-            val updatedItems = currentItems.map {
-                if (it == cartItem) it.copy(quantity = it.quantity + 1) else it
-            }
-            _cartItems.value = updatedItems
-            calculateTotal()
-
-        }
-    }
+//    fun increaseQuantity(cartItem: CartItem) {
+//        _cartItems.value?.let { currentItems ->
+//            val updatedItems = currentItems.map {
+//                if (it == cartItem) it.copy(quantity = it.quantity + 1) else it
+//            }
+//            _cartItems.value = updatedItems
+//            calculateTotal()
+//
+//        }
+//    }
 
     // Method to decrease quantity
-    fun decreaseQuantity(cartItem: CartItem) {
-        _cartItems.value?.let { currentItems ->
-            val updatedItems = currentItems.map {
-                if (it == cartItem && it.quantity > 0) it.copy(quantity = it.quantity - 1) else it
-            }
-            _cartItems.value = updatedItems
-            calculateTotal()
-        }
-    }
-    private fun calculateTotal() {
-        val currentItems = _cartItems.value ?: emptyList()
-
-        val subtotal = currentItems.sumOf { it.quantity * it.price.toDouble() }
-
-        _subtotal.value = subtotal
-        val total = subtotal + deliveryFee - discount
-
-        _totalPrice.value = total
-    }
-
-}
+//    fun decreaseQuantity(cartItem: CartItem) {
+//        _cartItems.value?.let { currentItems ->
+//            val updatedItems = currentItems.map {
+//                if (it == cartItem && it.quantity??.toInt() > 0) it.copy(quantity = it.quantity - 1) else it
+//            }
+//            _cartItems.value = updatedItems
+//            calculateTotal()
+//        }
+//    }
+//    private fun calculateTotal() {
+//        val currentItems = _cartItems.value ?: emptyList()
+//
+//        val subtotal = currentItems.sumOf { it.quantity * it.price.toDouble() }
+//
+//        _subtotal.value = subtotal
+//        val total = subtotal + deliveryFee - discount
+//
+//        _totalPrice.value = total
+//    }
 
 
-// Data class for CartItem (should be outside of the ViewModel class)
-data class CartItem(
-    val imageResId: Int,
-    val name: String,
-    val price: Int,
-    val quantity: Int
-)
+
+

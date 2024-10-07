@@ -12,22 +12,26 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.Gson
 import com.graphql.AddFavoriteProductMutation
 import com.graphql.CustomerCreateMutation
+import com.graphql.DeleteDraftOrderMutation
+import com.graphql.DraftOrderCreateMutation
 import com.graphql.FilteredProductsQuery
 import com.graphql.GetCuponCodesQuery
 import com.graphql.GetCustomerByIdQuery
+import com.graphql.GetDraftOrdersByCustomerQuery
 import com.graphql.GetFavoriteProductsQuery
 import com.graphql.GetProductsQuery
 import com.graphql.HomeProductsQuery
 import com.graphql.UpdateCustomerMetafieldsMutation
 import com.graphql.ProductQuery
-import com.graphql.type.Customer
+import com.graphql.UpdateDraftOrderMetafieldsMutation
 import com.graphql.type.CustomerInput
-import kotlinx.coroutines.delay
+import com.graphql.type.DraftOrderDeleteInput
+import com.graphql.type.DraftOrderInput
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
-import javax.inject.Singleton
+
 
 class Repo
     @Inject constructor(
@@ -46,6 +50,33 @@ class Repo
 
     override fun getFilterdProducts(vendor: String?): Flow<ApolloResponse<FilteredProductsQuery.Data>> {
         return remoteData.getFilterdProducts(vendor)
+    }
+
+    // ---------------------------- Draft Order ------------------------------------
+    // ---------------------------- Draft Order ------------------------------------
+
+    override fun createDraftOrder(input: DraftOrderInput): Flow<ApolloResponse<DraftOrderCreateMutation.Data>> {
+
+        return remoteData.createDraftOrder(input)
+    }
+
+    override fun getDraftOrderByCustomerId(id: String): Flow<ApolloResponse<GetDraftOrdersByCustomerQuery.Data>> {
+
+        return remoteData.getDraftOrderByCustomerId(id)
+    }
+
+    override fun deleteDraftOrder(input: DraftOrderDeleteInput): Flow<ApolloResponse<DeleteDraftOrderMutation.Data>> {
+
+        return remoteData.deleteDraftOrder(input)
+    }
+
+
+    override fun updateDraftOrder(
+        input: DraftOrderInput,
+        id: String
+    ): Flow<ApolloResponse<UpdateDraftOrderMetafieldsMutation.Data>> {
+
+        return remoteData.updateDraftOrder(input, id)
     }
 
     // ---------------------------- shared preference ------------------------------------
@@ -71,7 +102,13 @@ class Repo
         return sharedPreference.getAddressState()
     }
 
+    override fun saveDraftOrderTag(userId: String, tag: String) {
+        sharedPreference.saveDraftOrderTag(userId, tag)
+    }
 
+override fun getDraftOrderTag(userId: String): String? {
+    return sharedPreference.getDraftOrderTag(userId)
+}
 
     // --------------------------- shopify registration -------------------------------
     suspend fun registerUser(
