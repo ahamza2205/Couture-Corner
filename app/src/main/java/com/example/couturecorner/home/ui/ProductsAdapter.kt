@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
 import com.example.couturecorner.databinding.ProductItemBinding
 import com.graphql.FilteredProductsQuery
-import com.graphql.HomeProductsQuery
 
 
 class productdiifUtill():DiffUtil.ItemCallback<FilteredProductsQuery.Edge>() {
@@ -30,7 +29,9 @@ class productdiifUtill():DiffUtil.ItemCallback<FilteredProductsQuery.Edge>() {
 
 }
 
-class ProductsAdapter:ListAdapter<FilteredProductsQuery.Edge,ProductsAdapter.ProductsViewHolder>(productdiifUtill()) {
+class ProductsAdapter(
+    private val listener: OnItemClickListener
+):ListAdapter<FilteredProductsQuery.Edge,ProductsAdapter.ProductsViewHolder>(productdiifUtill()) {
     lateinit var binding: ProductItemBinding
 
     class ProductsViewHolder(var binding: ProductItemBinding):ViewHolder(binding.root)
@@ -52,7 +53,14 @@ class ProductsAdapter:ListAdapter<FilteredProductsQuery.Edge,ProductsAdapter.Pro
         Glide.with(holder.itemView.context)
             .load(product?.images?.edges?.get(0)?.node?.src)
             .into(holder.binding.ProductImageView)
-
+        holder.binding.favoriteAddsButton.setOnClickListener {
+            product?.id?.let { productId ->
+                listener.onFavoriteClick(productId)
+            }
+        }
+        holder.itemView.setOnClickListener {
+            listener.onItemClick(product)
+        }
     }
 
 }

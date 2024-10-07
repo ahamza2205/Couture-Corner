@@ -13,12 +13,14 @@ import com.example.couturecorner.brand.ui.ProductBrandAdapter
 import com.example.couturecorner.category.viewModel.CategoryViewModel
 import com.example.couturecorner.data.model.ApiState
 import com.example.couturecorner.databinding.FragmentCategoryBinding
+import com.example.couturecorner.home.ui.OnItemClickListener
 import com.example.couturecorner.home.ui.ProductsAdapter
+import com.graphql.FilteredProductsQuery
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class CategoryFragment : Fragment() {
+class CategoryFragment : Fragment(), OnItemClickListener {
 
     private var category: String? = null
     lateinit var binding:FragmentCategoryBinding
@@ -44,7 +46,7 @@ class CategoryFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
 
-        categoryAdapter= ProductsAdapter()
+        categoryAdapter= ProductsAdapter(this)
         binding.productsRecycel.adapter=categoryAdapter
 
         viewModel.getFilterdProducts(category)
@@ -57,13 +59,14 @@ class CategoryFragment : Fragment() {
                 when(it){
                     is ApiState.Loading->showLoading(true)
                     is ApiState.Success->{
-                        val products = it.data.data?.products?.edges
-                        categoryAdapter.submitList(products)
+                        val products = it.data?.data?.products?.edges
+
                         showLoading(false)
+                        categoryAdapter.submitList(products)
 //                        products?.forEach { edge ->
 //                            val productTag = edge?.node?.tags
-//                            productTag?.forEach { tag -> Log.d("AmrCategoryApollo", "tag: ${tag}, Description: ") }
-////                            Log.d("AmrCategoryApollo", "Product: ${product?.tags?.}, Description: ")
+//                           // productTag?.forEach { tag -> Log.d("AmrCategoryApollo", "tag: ${tag}, Description: ") }
+//                            Log.d("AmrCategoryApollo", "Product: ${edge?.node?.title}, Description: ")
 //                        }
                     }
                     is ApiState.Error->{
@@ -75,7 +78,15 @@ class CategoryFragment : Fragment() {
         }
 
     }
+    override fun onItemClick(product: FilteredProductsQuery.Node?) {
+        // Handle item click, e.g., navigate to a detailed product page
+        Log.d("BrandFragment", "Clicked on product: ${product?.title}")
+    }
 
+    override fun onFavoriteClick(productId: String) {
+        // Handle favorite button click, e.g., add to favorite list
+        Log.d("BrandFragment", "Favorited product ID: $productId")
+    }
     fun showLoading(isLoading:Boolean)
     {
         if (isLoading)

@@ -1,7 +1,9 @@
+# Existing schema
 type Query {
-#    products(first: Int!): ProductConnection
+#    products(first: Int!, query: String): ProductConnection
     products(first: Int!, query: String): ProductConnection
     customer(id: ID!): Customer
+    product(id: ID!): Product
     codeDiscountNodes(first: Int!): CodeDiscountNodeConnection
     HomeProducts(first: Int!): ProductConnection
 }
@@ -23,6 +25,9 @@ type Product {
     description: String
     tags: [String]
     handle: String
+    vendor: String
+    productType: String
+    totalInventory: Int
     images(first: Int!): ImageConnection
     variants(first: Int!): VariantConnection
 }
@@ -56,12 +61,7 @@ type VariantEdge {
 type Variant {
     price: String!
     sku: String
-}
-# Define the Customer type
-type Mutation {
-    customerCreate(input: CustomerInput!): CustomerCreatePayload!
-    customerUpdate(input: CustomerInput!): CustomerUpdatePayload!
-
+    displayName: String
 }
 
 input CustomerInput {
@@ -75,10 +75,6 @@ input CustomerInput {
     addresses: [MailingAddressInput]
 }
 
-type CustomerCreatePayload {
-    customer: Customer
-    userErrors: [UserError!]!
-}
 type Customer {
     id: ID!
     email: String!
@@ -103,12 +99,60 @@ type MailingAddress {
     city: String
     phone: String
 }
+
+
+# Connection type for Metafields
+type MetafieldConnection {
+    edges: [MetafieldEdge!]!
+    metafields(first: Int): MetafieldConnection!
+    addresses: [Address!]!
+}
+
+type MetafieldEdge {
+    node: Metafield
+}
+
+# New fields for Metafields
+type Metafield {
+    namespace: String!
+    key: String!
+    value: String!
+    type: String!
+    id: ID!
+}
+
+input MetafieldInput {
+    namespace: String!
+    key: String!
+    value: String!
+    type: String!
+}
+
+# Mutations
+type Mutation {
+    customerCreate(input: CustomerInput!): CustomerCreatePayload
+    customerUpdate(input: CustomerInput!): CustomerUpdatePayload  # Added update mutation
+}
+
+type CustomerCreatePayload {
+    customer: Customer
+    userErrors: [UserError!]!
+}
+
+input CustomerUpdateInput {
+    id: ID!
+    metafields: [MetafieldInput!]  # Input for updating customer metafields
+}
+
+type CustomerUpdatePayload {
+    customer: Customer
+    userErrors: [UserError!]!
+}
+
 type UserError {
     field: [String]
     message: String!
 }
-
-
 
 
 
@@ -145,37 +189,12 @@ type CodeDiscountNodeConnection {
 
 
 
-# The input type for metafields
-input MetafieldInput {
-    namespace: String!
-    key: String!
-    value: String!
-}
-
 # The input type for addresses
 input AddressInput {
     address1: String!
     address2: String!
     city: String!
     phone: String!
-}
-
-# The metafield type
-type Metafield {
-    id: ID!
-    namespace: String!
-    key: String!
-    value: String!
-}
-
-# Define Edge type for metafields
-type MetafieldEdge {
-    node: Metafield!
-}
-
-# Define Connection type for metafields
-type MetafieldConnection {
-    edges: [MetafieldEdge!]!
 }
 
 
@@ -186,8 +205,6 @@ input MailingAddressInput {
     city: String!
     phone: String!
 }
-
-
 
 # The address type
 type Address {
@@ -201,11 +218,7 @@ type Address {
 
 
 
-# The payload for the customer update mutation
-type CustomerUpdatePayload {
-    customer: Customer
-    userErrors: [UserError!]!
-}
+
 
 
 

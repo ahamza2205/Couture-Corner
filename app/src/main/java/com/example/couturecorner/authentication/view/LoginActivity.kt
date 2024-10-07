@@ -1,4 +1,5 @@
 package com.example.couturecorner.authentication.view
+
 import android.content.Intent
 import android.graphics.Paint
 import android.os.Bundle
@@ -42,8 +43,8 @@ class LoginActivity : AppCompatActivity() {
                 auth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
-                            viewModel.saveUserLoggedIn(true)
-                            viewModel.getCustomerData()
+                            // Fetch Shopify user data after logging in
+                            viewModel.getCustomerDataFromFirebaseAuth(email)
                             viewModel.customerData.observe(this) { customer ->
                                 if (customer != null) {
                                         if (   customer.defaultAddress==null ){
@@ -57,23 +58,25 @@ class LoginActivity : AppCompatActivity() {
 
                                     Log.d("HamzaData", "Customer Data: " +
                                             "ID: ${customer.id}, " +
-                                            "Address: ${customer.defaultAddress}, " +
-                                        "Address1: ${customer.defaultAddress?.address1}, " +
-                                        "Address2: ${customer.defaultAddress?.address2}, " +
-                                        "City: ${customer.defaultAddress?.city}, " +
-                                        "Phone: ${customer.defaultAddress?.phone}"
+                                            "Display Name: ${customer.displayName}, " +
+                                            "Email: ${customer.email}, " +
+                                            "First Name: ${customer.firstName}, " +
+                                            "Last Name: ${customer.lastName}, " +
+                                            "Phone: ${customer.phone}, " +
+                                            "Created At: ${customer.createdAt}, " +
+                                            "Updated At: ${customer.updatedAt}")
 
+                                    // Save the login state
+                                    viewModel.saveUserLoggedIn(true)
 
-                                    )
-
-
+                                    // Start the MainActivity
+                                    startActivity(Intent(this, MainActivity::class.java))
+                                    finish()
                                 } else {
-                                    Log.e("HamzaData", "Customer data is null"+customer)
+                                    Log.e("HamzaData", "Customer data is null")
+                                    Toast.makeText(this, "Unable to fetch customer data.", Toast.LENGTH_SHORT).show()
                                 }
                             }
-                            Toast.makeText(this, "Login successful!", Toast.LENGTH_SHORT).show()
-                            startActivity(Intent(this, MainActivity::class.java))
-                            finish()
                         } else {
                             Toast.makeText(this, "Error: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
                         }
@@ -82,9 +85,8 @@ class LoginActivity : AppCompatActivity() {
                 Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show()
             }
         }
-
+        // Check if user is already logged in
         if (viewModel.isUserLoggedIn()) {
-
             startActivity(Intent(this, MainActivity::class.java))
             finish()
         }

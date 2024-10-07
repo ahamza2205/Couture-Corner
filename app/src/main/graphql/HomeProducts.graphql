@@ -1,5 +1,5 @@
 query HomeProducts {
-    products(first: 30, query: null) {
+    products(first: 30,query: null) {
         edges {
             node {
                 id

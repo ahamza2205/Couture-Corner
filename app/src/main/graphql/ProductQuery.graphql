@@ -1,0 +1,26 @@
+query Product($productId: ID!) {
+    product(id: $productId) {
+        description
+        id
+        productType
+        title
+        totalInventory
+        vendor
+        images(first: 5) {
+            edges {
+                node {
+                    src
+                }
+            }
+        }
+        variants(first: 3) {
+            edges {
+                node {
+                    displayName
+                    price
+                    sku
+                }
+            }
+        }
+    }
+}

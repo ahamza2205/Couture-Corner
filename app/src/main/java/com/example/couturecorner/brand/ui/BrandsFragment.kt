@@ -12,12 +12,14 @@ import com.example.couturecorner.R
 import com.example.couturecorner.brand.viewModel.BrandViewModel
 import com.example.couturecorner.data.model.ApiState
 import com.example.couturecorner.databinding.FragmentBrandsBinding
+import com.example.couturecorner.home.ui.OnItemClickListener
 import com.example.couturecorner.home.ui.ProductsAdapter
+import com.graphql.FilteredProductsQuery
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class BrandsFragment : Fragment() {
+class BrandsFragment : Fragment(), OnItemClickListener {
 
     private var brandName: String? = null
 
@@ -36,42 +38,33 @@ class BrandsFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-
+    ): View {
         brandName = arguments?.getString("brand")
-        Log.d("BrandArgsTest", "$brandName: ")
-
-        binding= FragmentBrandsBinding.inflate(inflater,container,false)
+        binding = FragmentBrandsBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        productsBrandAdapter=ProductsAdapter()
-        binding.productsRecycel.adapter=productsBrandAdapter
-
+        // Pass 'this' as the listener
+        productsBrandAdapter = ProductsAdapter(this)
+        binding.productsRecycel.adapter = productsBrandAdapter
 
         val logoResId = brandLogos[brandName] ?: R.drawable.shoz10
         binding.AddsImageView.setImageResource(logoResId)
-
 
         viewModel.getFilterdProducts(brandName ?: "puma")
 
         lifecycleScope.launch {
             viewModel.productsBrands.collect {
                 when (it) {
-                    is ApiState.Loading -> {showLoading(true)}
+                    is ApiState.Loading -> showLoading(true)
                     is ApiState.Success -> {
-                        val products = it.data.data?.products?.edges
+                        val products = it.data?.data?.products?.edges
                         productsBrandAdapter.submitList(products)
                         showLoading(false)
-                        products?.forEach { edge ->
-                            val product = edge?.node
-                            Log.d("AmrBrandsApollo", "Product: ${product?.title}, Description: ")
-                        }
                     }
-
                     is ApiState.Error -> {
                         showLoading(false)
                         Log.d("AmrApollo", "${it.message} ")
@@ -81,17 +74,23 @@ class BrandsFragment : Fragment() {
         }
     }
 
-    fun showLoading(isLoading:Boolean)
-    {
-        if (isLoading)
-        {
-            binding.progressBar.visibility=View.VISIBLE
-            binding.productsRecycel.visibility=View.GONE
-        }
-        else
-        {
-            binding.progressBar.visibility=View.GONE
-            binding.productsRecycel.visibility=View.VISIBLE
+    override fun onItemClick(product: FilteredProductsQuery.Node?) {
+        // Handle item click, e.g., navigate to a detailed product page
+        Log.d("BrandFragment", "Clicked on product: ${product?.title}")
+    }
+
+    override fun onFavoriteClick(productId: String) {
+        // Handle favorite button click, e.g., add to favorite list
+        Log.d("BrandFragment", "Favorited product ID: $productId")
+    }
+
+    fun showLoading(isLoading: Boolean) {
+        if (isLoading) {
+            binding.progressBar.visibility = View.VISIBLE
+            binding.productsRecycel.visibility = View.GONE
+        } else {
+            binding.progressBar.visibility = View.GONE
+            binding.productsRecycel.visibility = View.VISIBLE
         }
     }
 }

@@ -16,11 +16,14 @@
         <action
             android:id="@+id/action_homeFragment_to_categoryFragment"
             app:destination="@id/categoryFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_productDetailsFragment"
+            app:destination="@id/productDetailsFragment" />
     </fragment>
 
     <fragment
         android:id="@+id/favoriteFragment"
-        android:name="com.example.couturecorner.favorite.ui.FavoriteFragment"
+        android:name="com.example.couturecorner.favorite.ui.view.FavoriteFragment"
         android:label="Favorite"
         tools:layout="@layout/fragment_favorite" />
 
@@ -96,5 +99,18 @@
         <action
             android:id="@+id/action_mapFragment_to_addAdressFragment"
             app:destination="@id/addAdressFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/productDetailsFragment"
+        android:name="com.example.couturecorner.productdetails.view.ProductDetailsFragment"
+        android:label="Product Details"
+        tools:layout="@layout/fragment_product_details" >
+        <argument
+            android:name="productId"
+            app:argType="string"
+            android:defaultValue="" />
+        <action
+            android:id="@+id/action_productDetailsFragment_to_homeFragment"
+            app:destination="@id/homeFragment" />
     </fragment>
 </navigation>

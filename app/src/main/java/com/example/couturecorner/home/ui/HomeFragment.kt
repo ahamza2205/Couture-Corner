@@ -3,10 +3,11 @@ package com.example.couturecorner.home.ui
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
+import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -18,11 +19,12 @@ import com.example.couturecorner.data.model.ApiState
 import com.example.couturecorner.databinding.FragmentHomeBinding
 import com.example.couturecorner.home.viewmodel.HomeViewModel
 import com.google.android.material.chip.Chip
+import com.graphql.FilteredProductsQuery
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(), OnItemClickListener {
 
     lateinit var binding: FragmentHomeBinding
     lateinit var brandsAdapter: BrandsAdapter
@@ -43,21 +45,25 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        brandsAdapter= BrandsAdapter{  val action = HomeFragmentDirections.actionHomeFragmentToBrandsFragment(it)
-            findNavController().navigate(action)}
+        // Initialize adapters first
+        brandsAdapter = BrandsAdapter {
+            val action = HomeFragmentDirections.actionHomeFragmentToBrandsFragment(it)
+            findNavController().navigate(action)
+        }
+        binding.BrandsRecycle.adapter = brandsAdapter
+        binding.BrandsRecycle.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
 
+        // Initialize productsAdapter
+        productsAdapter = ProductsAdapter(this)
+        binding.productsRecycel.adapter = productsAdapter
 
-        binding.BrandsRecycle.adapter=brandsAdapter
-        binding.BrandsRecycle.layoutManager= LinearLayoutManager(context, RecyclerView.HORIZONTAL,false)
-
-        productsAdapter=ProductsAdapter()
-        binding.productsRecycel.adapter=productsAdapter
-
-        categoryAdapter= CategoryAdapter{val action = HomeFragmentDirections.actionHomeFragmentToCategoryFragment(it)
-            findNavController().navigate(action)}
-
-        binding.CategoryRecycel.adapter=categoryAdapter
-        binding.CategoryRecycel.layoutManager=LinearLayoutManager(context, RecyclerView.HORIZONTAL,false)
+        // Initialize categoryAdapter
+        categoryAdapter = CategoryAdapter {
+            val action = HomeFragmentDirections.actionHomeFragmentToCategoryFragment(it)
+            findNavController().navigate(action)
+        }
+        binding.CategoryRecycel.adapter = categoryAdapter
+        binding.CategoryRecycel.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
 
        // viewModel.getFilterdProducts(null)
 
@@ -65,27 +71,35 @@ class HomeFragment : Fragment() {
 
 
         lifecycleScope.launch {
-            viewModel.products.collect{
-                when(it){
-                    is ApiState.Loading->showLoading(true)
-                    is ApiState.Success->{
-                        val products = it.data.data?.products?.edges
-                        productsAdapter.submitList(products)
+            viewModel.products.collect { state ->
+                when (state) {
+                    is ApiState.Loading -> showLoading(true)
+                    is ApiState.Success -> {
+                        val products = state.data?.data?.products?.edges
+                        productsAdapter.submitList(products) // Use the initialized adapter here
                         showLoading(false)
                         products?.forEach { edge ->
                             val product = edge?.node
                             Log.d("AmrApollo", "Product: ${product?.title}, Description: ")
                         }
                     }
-                    is ApiState.Error->{
-                        Log.d("AmrApollo", "${it.message} ")
+                    is ApiState.Error -> {
+                        Log.d("AmrApollo", "${state.message} ")
                     }
                 }
             }
         }
-
     }
 
+    // Implement the onItemClick method from the interface
+    override fun onItemClick(product: FilteredProductsQuery.Node?) {
+        val action = HomeFragmentDirections.actionHomeFragmentToProductDetailsFragment(product?.id.toString())
+        findNavController().navigate(action)
+    }
+    override fun onFavoriteClick(productId: String) {
+        viewModel.addProductToFavorites(productId)
+        Toast.makeText(requireContext(), "Added to favorites", Toast.LENGTH_SHORT).show()
+    }
     fun showLoading(isLoading:Boolean)
     {
         if (isLoading)

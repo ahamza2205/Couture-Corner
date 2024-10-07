@@ -10,6 +10,8 @@
     <color name="gray">#888888</color>
     <color name="light_gray">#E9E9E9</color> <!-- Gray -->
 
+    <color name="gray">#888888</color> <!-- Black -->
+    <color name="white_transparent">#FFFFFFFF</color> <!-- 50% transparent white -->
 
     <!-- Default Material Colors -->
     <color name="black">#FF000000</color>
@@ -17,6 +19,8 @@
         <color name="purple_200">#BB86FC</color>
         <color name="purple_700">#3700B3</color>
         <color name="teal_200">#03DAC5</color>
+        <color name="colorDefault">#FFFFFF</color>
+        <color name="colorHighlight">#FF000000</color>
 
 
 </resources>

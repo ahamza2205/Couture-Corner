@@ -1,4 +1,5 @@
 package com.example.couturecorner.data.local
+
 import android.content.Context
 import android.content.SharedPreferences
 import javax.inject.Inject
@@ -19,12 +20,11 @@ class SharedPreference @Inject constructor(context: Context) {
     fun logoutUser() {
         sharedPreferences.edit().remove("isLoggedIn").apply()
     }
-    // Shopify User ID
-    fun saveShopifyUserId(shopifyUserId: String) {
-        sharedPreferences.edit().putString("shopifyUserId", shopifyUserId).apply()
-    }
-    fun getShopifyUserId(): String? {
-        return sharedPreferences.getString("shopifyUserId", null)
+
+
+    // ---------------------- shopify user id -----------------------------
+    fun saveShopifyUserId(email: String, userId: String) {
+        sharedPreferences.edit().putString(email, userId).apply()
     }
     fun saveAddressState(haveAddress: Boolean){
         sharedPreferences.edit().putBoolean("haveAddress", haveAddress).apply()
@@ -33,4 +33,7 @@ class SharedPreference @Inject constructor(context: Context) {
         return sharedPreferences.getBoolean("haveAddress", false)
     }
 
+    fun getShopifyUserId(email: String): String? {
+        return sharedPreferences.getString(email, null)
+    }
 }

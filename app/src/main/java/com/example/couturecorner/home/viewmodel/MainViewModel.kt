@@ -23,24 +23,19 @@ class MainViewModel @Inject constructor(
 
     private val _productsApollo = MutableStateFlow<ApiState<ApolloResponse<GetProductsQuery.Data>>>(
         ApiState.Loading)
-    val productsApollo : StateFlow<ApiState<ApolloResponse<GetProductsQuery.Data>>> =_productsApollo
+    val productsApollo: StateFlow<ApiState<ApolloResponse<GetProductsQuery.Data>>> = _productsApollo
 
+    var selectedProductId: String? = null
 
-
-
-    fun getProducts(){
+    fun getProducts() {
         viewModelScope.launch {
-            repo.getProducts().collect{
-                if (it.hasErrors())
-                {
-                    _productsApollo.value= ApiState.Error(it.errors?.get(0)?.message.toString())
-                }
-                else
-                {
-                    _productsApollo.value= ApiState.Success(it)
+            repo.getProducts().collect {
+                if (it.hasErrors()) {
+                    _productsApollo.value = ApiState.Error(it.errors?.get(0)?.message.toString())
+                } else {
+                    _productsApollo.value = ApiState.Success(it)
                 }
             }
         }
     }
-
 }
