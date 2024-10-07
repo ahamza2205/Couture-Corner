@@ -36,6 +36,8 @@ class Repo
 
 ) : Irepo {
 
+    // ---------------------------- Product  ------------------------------------
+
     override fun getProducts(): Flow<ApolloResponse<GetProductsQuery.Data>> {
         return remoteData.getProducts()
     }
@@ -48,7 +50,7 @@ class Repo
         return remoteData.getFilterdProducts(vendor)
     }
 
-    // ---------------------------- shared preference ------------------------------------
+
     // ---------------------------- shared preference ------------------------------------
     override fun saveUserLoggedIn(isLoggedIn: Boolean) {
         sharedPreference.saveUserLoggedIn(isLoggedIn)

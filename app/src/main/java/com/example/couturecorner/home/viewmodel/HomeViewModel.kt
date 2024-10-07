@@ -8,6 +8,7 @@ import com.example.couturecorner.data.model.ApiState
 import com.example.couturecorner.data.repository.Irepo
 import com.google.firebase.auth.FirebaseAuth
 import com.graphql.FilteredProductsQuery
+import com.graphql.GetCuponCodesQuery
 import com.graphql.GetProductsQuery
 import com.graphql.HomeProductsQuery
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,6 +26,10 @@ class HomeViewModel@Inject constructor(
     private val _products= MutableStateFlow<ApiState<ApolloResponse<FilteredProductsQuery.Data>>>(
         ApiState.Loading)
     val products : StateFlow<ApiState<ApolloResponse<FilteredProductsQuery.Data>>> =_products
+
+    private val _cupons= MutableStateFlow<ApiState<ApolloResponse<GetCuponCodesQuery.Data>>>(
+        ApiState.Loading)
+    val cupons : StateFlow<ApiState<ApolloResponse<GetCuponCodesQuery.Data>>> =_cupons
 
 
     fun getFilterdProducts(productTpye: String?) {
@@ -70,6 +75,22 @@ class HomeViewModel@Inject constructor(
                 }
             } else {
                 Log.e("HomeViewModel", "Error: No user logged in")
+            }
+        }
+    }
+
+    fun getCupons()
+    {
+        viewModelScope.launch {
+            repo.getCupones().collect {
+                if (it.hasErrors())
+                {
+                    _cupons.value= ApiState.Error(it.errors?.get(0)?.message.toString())
+                }
+                else
+                {
+                    _cupons.value= ApiState.Success(it)
+                }
             }
         }
     }
