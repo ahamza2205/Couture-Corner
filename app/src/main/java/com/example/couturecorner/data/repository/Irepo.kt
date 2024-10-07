@@ -1,6 +1,7 @@
 package com.example.couturecorner.data.repository
 
 import com.apollographql.apollo3.api.ApolloResponse
+import com.graphql.FilteredProductsQuery
 import com.graphql.GetCuponCodesQuery
 import com.graphql.GetProductsQuery
 import com.graphql.UpdateCustomerMetafieldsMutation
