@@ -10,7 +10,6 @@
     <color name="gray">#888888</color>
     <color name="light_gray">#E9E9E9</color> <!-- Gray -->
 
-    <color name="gray">#888888</color> <!-- Black -->
     <color name="white_transparent">#FFFFFFFF</color> <!-- 50% transparent white -->
 
     <!-- Default Material Colors -->

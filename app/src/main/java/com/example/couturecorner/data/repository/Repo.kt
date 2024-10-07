@@ -71,9 +71,7 @@ class Repo
         return sharedPreference.getAddressState()
     }
 
-    override fun getShopifyUserId(): String {
-        return sharedPreference.getShopifyUserId() ?: ""
-    }
+
 
     // --------------------------- shopify registration -------------------------------
     suspend fun registerUser(

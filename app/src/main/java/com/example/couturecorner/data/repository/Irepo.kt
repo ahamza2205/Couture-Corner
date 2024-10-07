@@ -33,5 +33,4 @@ interface Irepo {
      suspend fun addProductToFavorites(customerId: String, productId: String)
      fun saveAddressState(haveAddress: Boolean)
      fun getAddressState(): Boolean
-     fun getShopifyUserId(): String
 }

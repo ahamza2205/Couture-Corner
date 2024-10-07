@@ -33,12 +33,14 @@ class CheckOutFragment : Fragment() {
     }
 override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
+    loginViewModel.getCustomerDataTwo()
     Log.i("ADDRESS", "onViewCreated: "+"${checkOutViewModel.getAddressState()}")
     if(checkOutViewModel.getAddressState()==true){
         binding.curretAdress.visibility=View.VISIBLE
         loginViewModel.customerData.observe(viewLifecycleOwner){customer->
 
             if (customer != null) {
+                Log.i("ADDRESSSS", "onViewCreated: "+customer.id)
                 binding.addressName.text=customer.defaultAddress?.address1
                 binding.addressDetails.text=customer.defaultAddress?.address2
             }

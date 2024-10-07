@@ -7,7 +7,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.couturecorner.data.local.SharedPreference
 import com.example.couturecorner.data.repository.Repo
+import com.google.firebase.auth.FirebaseAuth
 import com.graphql.GetCustomerByIdQuery
+import com.graphql.type.MailingAddressInput
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -52,6 +54,35 @@ class LoginViewModel @Inject constructor(
                 Log.e("LoginViewModel", "No Shopify User ID found for email: $email")
             }
         }
+    }
+
+
+
+
+    //
+    // Function to update the customer with the not thing take
+    private val user = FirebaseAuth.getInstance().currentUser
+
+    fun getCustomerDataTwo() {
+        if (user != null) {
+            val userEmail = user.email
+            Log.i("AddAddress", "updateCustomer: "+userEmail)
+
+            if (userEmail != null) {
+                // Get the Shopify customer ID using the email
+                val customerId = repo.getShopifyUserId(userEmail)
+                Log.i("AddAddress", "updateCustomer: "+customerId)
+
+                if (customerId != null) {
+
+                    getCustomerData(customerId)
+
+
+
+                }
+            }
+        }
+        Log.i("get data customer ", "getCustomerDataTwo: "+"user is null")
     }
 
 
