@@ -2,6 +2,7 @@ package com.example.couturecorner.home.ui
 
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.view.Menu
 import android.view.View
 import androidx.activity.viewModels
@@ -21,15 +22,19 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-    private val viewModel: MainViewModel by viewModels()
+    val viewModel: MainViewModel by viewModels()
+    private lateinit var bottomNav: BottomNavigationView
+
     private lateinit var productAdapter: ProductAdapter
     private lateinit var recyclerView: RecyclerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        bottomNav = findViewById(R.id.bottom_navigation)
 
         val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
@@ -54,6 +59,7 @@ class MainActivity : AppCompatActivity() {
         // Hide the RecyclerView initially
         recyclerView.visibility = View.GONE
         viewModel.getProducts()
+
         lifecycleScope.launch {
             viewModel.productsApollo.collect { apiState ->
                 when (apiState) {
@@ -69,6 +75,7 @@ class MainActivity : AppCompatActivity() {
                         recyclerView.adapter = productAdapter
                         // Keep the RecyclerView hidden until search is performed
                     }
+
                     is ApiState.Error -> {
                         Log.d("MainActivity", "${apiState.message}")
                     }

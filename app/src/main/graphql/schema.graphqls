@@ -1,8 +1,11 @@
 # Existing schema
 type Query {
+#    products(first: Int!, query: String): ProductConnection
     products(first: Int!, query: String): ProductConnection
     customer(id: ID!): Customer
     product(id: ID!): Product
+    codeDiscountNodes(first: Int!): CodeDiscountNodeConnection
+    HomeProducts(first: Int!): ProductConnection
 }
 
 # Connection type for pagination
@@ -20,6 +23,7 @@ type Product {
     id: ID!
     title: String!
     description: String
+    tags: [String]
     handle: String
     vendor: String
     productType: String
@@ -61,6 +65,27 @@ type Variant {
 }
 
 # Define the Customer type
+type Mutation {
+    customerCreate(input: CustomerInput!): CustomerCreatePayload!
+    customerUpdate(input: CustomerInput!): CustomerUpdatePayload!
+
+}
+
+input CustomerInput {
+    email: String
+    firstName: String
+    lastName: String
+    phone: String
+    tags: [String]
+    id: ID
+    metafields: [MetafieldInput]
+    addresses: [MailingAddressInput]
+}
+
+type CustomerCreatePayload {
+    customer: Customer
+    userErrors: [UserError!]!
+}
 type Customer {
     id: ID!
     email: String!
@@ -78,7 +103,9 @@ type Customer {
 
 # Connection type for Metafields
 type MetafieldConnection {
-    edges: [MetafieldEdge]
+    edges: [MetafieldEdge!]!
+    metafields(first: Int): MetafieldConnection!
+    addresses: [Address!]!
 }
 
 type MetafieldEdge {
@@ -91,6 +118,7 @@ type Metafield {
     key: String!
     value: String!
     type: String!
+    id: ID!
 }
 
 input MetafieldInput {
@@ -133,3 +161,74 @@ type UserError {
     field: [String]
     message: String!
 }
+
+
+
+# Type for CodesCount
+type CodesCount {
+    count: Int!
+}
+
+# Type for DiscountCodeBasic
+type DiscountCodeBasic {
+    title: String!
+    summary: String!
+}
+
+# Type for DiscountCodeBxgy
+type DiscountCodeBxgy {
+    title: String!
+    codesCount: CodesCount!
+}
+
+# Union type for DiscountCode
+union DiscountCode = DiscountCodeBasic | DiscountCodeBxgy
+
+# Type for CodeDiscountNode
+type CodeDiscountNode {
+    id: ID!
+    codeDiscount: DiscountCode!
+}
+
+# Type for CodeDiscountNode connection
+type CodeDiscountNodeConnection {
+    nodes: [CodeDiscountNode]
+}
+
+
+
+# The input type for addresses
+input AddressInput {
+    address1: String!
+    address2: String!
+    city: String!
+    phone: String!
+}
+
+
+# The input type for Mailing Address
+input MailingAddressInput {
+    address1: String!
+    address2: String!
+    city: String!
+    phone: String!
+}
+
+
+
+# The address type
+type Address {
+    address1: String!
+    address2: String!
+    city: String!
+    phone: String!
+}
+
+
+
+
+
+
+
+
+

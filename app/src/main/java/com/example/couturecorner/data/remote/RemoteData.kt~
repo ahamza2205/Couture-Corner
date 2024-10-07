@@ -3,9 +3,11 @@ package com.example.couturecorner.data.remote
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Optional
 import com.example.couturecorner.network.ApolloClient
-
+<<<<<<< HEAD
 import com.graphql.FilteredProductsQuery
+=======
 import com.graphql.GetCuponCodesQuery
+>>>>>>> devolpment
 import com.graphql.GetProductsQuery
 import com.graphql.HomeProductsQuery
 import com.graphql.UpdateCustomerMetafieldsMutation
@@ -30,7 +32,7 @@ class RemoteData @Inject constructor() : IremoteData {
         emit(response)
     }
 
-
+<<<<<<< HEAD
     override fun getFilterdProducts(vendor: String?): Flow<ApolloResponse<FilteredProductsQuery.Data>> = flow{
 
         val response = if (vendor == null) {
@@ -44,7 +46,7 @@ class RemoteData @Inject constructor() : IremoteData {
 //        emit(response)
     }
 
-
+=======
     override fun getCupones(): Flow<ApolloResponse<GetCuponCodesQuery.Data>> = flow {
         val response = ApolloClient.apolloClient.query(GetCuponCodesQuery()).execute()
         emit(response)
@@ -57,6 +59,7 @@ class RemoteData @Inject constructor() : IremoteData {
         ).execute()
         emit(response)
     }
+>>>>>>> devolpment
 
 }
 

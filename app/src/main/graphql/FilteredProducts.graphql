@@ -1,0 +1,26 @@
+query FilteredProducts($query: String){
+    products(first: 30, query: $query) {
+        edges {
+            node {
+                id
+                title
+                handle
+                tags
+                images(first: 1) {
+                    edges {
+                        node {
+                            src
+                        }
+                    }
+                }
+                variants(first: 1) {
+                    edges {
+                        node {
+                            price
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

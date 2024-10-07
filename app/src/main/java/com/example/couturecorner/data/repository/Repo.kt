@@ -12,10 +12,13 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.Gson
 import com.graphql.AddFavoriteProductMutation
 import com.graphql.CustomerCreateMutation
+import com.graphql.FilteredProductsQuery
+import com.graphql.GetCuponCodesQuery
 import com.graphql.GetCustomerByIdQuery
 import com.graphql.GetFavoriteProductsQuery
 import com.graphql.GetProductsQuery
 import com.graphql.HomeProductsQuery
+import com.graphql.UpdateCustomerMetafieldsMutation
 import com.graphql.ProductQuery
 import com.graphql.type.Customer
 import com.graphql.type.CustomerInput
@@ -30,6 +33,7 @@ class Repo
     @Inject constructor(
     private val remoteData: IremoteData,
     private val sharedPreference: SharedPreference
+
 ) : Irepo {
 
     override fun getProducts(): Flow<ApolloResponse<GetProductsQuery.Data>> {
@@ -40,6 +44,11 @@ class Repo
         return remoteData.getHomeProducts()
     }
 
+    override fun getFilterdProducts(vendor: String?): Flow<ApolloResponse<FilteredProductsQuery.Data>> {
+        return remoteData.getFilterdProducts(vendor)
+    }
+
+    // ---------------------------- shared preference ------------------------------------
     // ---------------------------- shared preference ------------------------------------
     override fun saveUserLoggedIn(isLoggedIn: Boolean) {
         sharedPreference.saveUserLoggedIn(isLoggedIn)
@@ -52,6 +61,7 @@ class Repo
     override fun logoutUser() {
         sharedPreference.logoutUser()
     }
+
 
     // --------------------------- shopify registration -------------------------------
     suspend fun registerUser(
@@ -86,6 +96,12 @@ class Repo
                 } else {
                     val shopifyUserId = response.data?.customerCreate?.customer?.id
                     Log.d("UserRegistration", "User successfully created on Shopify: $firstName $lastName, Shopify User ID: $shopifyUserId")
+
+                    // Save the Shopify User ID in shared preferences
+                    sharedPreference.saveShopifyUserId(shopifyUserId ?: "")
+                    if (shopifyUserId != null) {
+                        getCustomerById(shopifyUserId)
+                    }
                     return shopifyUserId
                 }
             } else {
@@ -193,4 +209,11 @@ override suspend fun addProductToFavorites(customerId: String, productId: String
         return favoriteProducts
     }
 
+
+    override fun getCupones(): Flow<ApolloResponse<GetCuponCodesQuery.Data>> {
+        return remoteData.getCupones()
+    }
+    override fun updateCustomer(input: CustomerInput): Flow<ApolloResponse<UpdateCustomerMetafieldsMutation.Data>> {
+        return remoteData.updateCustomer(input)
+    }
 }

@@ -251,6 +251,77 @@
                 android:textStyle="bold" />
 
 
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:scrollbars="none">
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chipGroup"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:singleSelection="true"
+                    app:layout_constraintHorizontal_bias="0.583">
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chip0"
+                        android:layout_width="125dp"
+                        android:layout_height="48dp"
+                        android:textAlignment="center"
+                        android:text="@string/all"
+                        app:chipBackgroundColor="@color/white"
+                        app:chipStrokeColor="@color/colorPrimary"
+                        app:chipStrokeWidth="2dp"
+                        android:checkable="true"
+                        style="@style/Widget.MaterialComponents.Chip.Action"
+                        />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chip1"
+                        android:layout_width="125dp"
+                        android:layout_height="48dp"
+                        android:textAlignment="center"
+                        android:text="@string/shoesUpper"
+                        app:chipBackgroundColor="@color/white"
+                        app:chipStrokeColor="@color/colorPrimary"
+                        app:chipStrokeWidth="2dp"
+                        android:checkable="true"
+                        style="@style/Widget.MaterialComponents.Chip.Action"
+                       />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chip2"
+                        android:layout_width="125dp"
+                        android:layout_height="48dp"
+                        android:textAlignment="center"
+                        android:text="@string/t_shirts"
+                        app:chipBackgroundColor="@color/white"
+                        app:chipStrokeColor="@color/colorPrimary"
+                        app:chipStrokeWidth="2dp"
+                        android:checkable="true"
+                        style="@style/Widget.MaterialComponents.Chip.Action"
+                        />
+
+                    <com.google.android.material.chip.Chip
+                        android:id="@+id/chip3"
+                        android:layout_width="125dp"
+                        android:layout_height="48dp"
+                        android:textAlignment="center"
+                        android:text="@string/accessories"
+                        app:chipBackgroundColor="@color/white"
+                        app:chipStrokeColor="@color/colorPrimary"
+                        app:chipStrokeWidth="2dp"
+                        android:checkable="true"
+                        style="@style/Widget.MaterialComponents.Chip.Action"
+                         />
+
+                </com.google.android.material.chip.ChipGroup>
+            </HorizontalScrollView>
+
+
+
             <ProgressBar
                 android:id="@+id/progressBar"
                 android:layout_width="wrap_content"

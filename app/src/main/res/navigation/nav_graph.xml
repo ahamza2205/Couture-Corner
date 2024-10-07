@@ -44,12 +44,21 @@
         android:id="@+id/settingsFragment"
         android:name="com.example.couturecorner.setting.ui.SettingsFragment"
         android:label="Settings"
+        tools:layout="@layout/fragment_settings" >
+        <action
+            android:id="@+id/action_settingsFragment_to_cartFragment"
+            app:destination="@id/cartFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/cartFragment"
+        android:name="com.example.couturecorner.setting.ui.CartFragment"
+        android:label="CartFragment" />
         tools:layout="@layout/fragment_settings" />
     <fragment
         android:id="@+id/brandsFragment"
-        android:name="com.example.couturecorner.home.ui.BrandsFragment"
-        android:label="fragment_brands"
-        tools:layout="@layout/fragment_brands" >
+        android:name="com.example.couturecorner.brand.ui.BrandsFragment"
+        android:label="Brands"
+        tools:layout="@layout/fragment_brands">
         <action
             android:id="@+id/action_brandsFragment_to_homeFragment"
             app:destination="@id/homeFragment" />

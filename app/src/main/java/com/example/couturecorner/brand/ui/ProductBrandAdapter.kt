@@ -1,5 +1,4 @@
-package com.example.couturecorner.home.ui
-
+package com.example.couturecorner.brand.ui
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -9,16 +8,16 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
 import com.example.couturecorner.databinding.ProductItemBinding
+import com.example.couturecorner.home.ui.ProductsAdapter.ProductsViewHolder
 import com.graphql.FilteredProductsQuery
-import com.graphql.HomeProductsQuery
 
-
-class productdiifUtill():DiffUtil.ItemCallback<FilteredProductsQuery.Edge>() {
+class ProductBrandDiffUtill():DiffUtil.ItemCallback<FilteredProductsQuery.Edge>()
+{
     override fun areItemsTheSame(
         oldItem: FilteredProductsQuery.Edge,
         newItem: FilteredProductsQuery.Edge
     ): Boolean {
-        return oldItem.node?.id==newItem.node?.id
+       return oldItem.node?.id==newItem.node?.id
     }
 
     override fun areContentsTheSame(
@@ -29,21 +28,18 @@ class productdiifUtill():DiffUtil.ItemCallback<FilteredProductsQuery.Edge>() {
     }
 
 }
+class ProductBrandAdapter():ListAdapter<FilteredProductsQuery.Edge,ProductBrandAdapter.ProductBrandViewHolder>(ProductBrandDiffUtill()){
 
-class ProductsAdapter(
-    private val listener: OnItemClickListener
-):ListAdapter<FilteredProductsQuery.Edge,ProductsAdapter.ProductsViewHolder>(productdiifUtill()) {
     lateinit var binding: ProductItemBinding
+    class ProductBrandViewHolder(var binding: ProductItemBinding):ViewHolder(binding.root)
 
-    class ProductsViewHolder(var binding: ProductItemBinding):ViewHolder(binding.root)
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductsViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductBrandViewHolder {
         val inflater : LayoutInflater = parent.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         binding= ProductItemBinding.inflate(inflater, parent, false)
-        return ProductsViewHolder(binding)
+        return ProductBrandViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: ProductsViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ProductBrandViewHolder, position: Int) {
 
         val product=getItem(position).node
         val title=product?.title?.split("|")
@@ -54,14 +50,6 @@ class ProductsAdapter(
         Glide.with(holder.itemView.context)
             .load(product?.images?.edges?.get(0)?.node?.src)
             .into(holder.binding.ProductImageView)
-        holder.binding.favoriteAddsButton.setOnClickListener {
-            product?.id?.let { productId ->
-                listener.onFavoriteClick(productId)
-            }
-        }
-        holder.itemView.setOnClickListener {
-            listener.onItemClick(product)
-        }
-    }
 
+    }
 }

@@ -1,11 +1,15 @@
 package com.example.couturecorner.home.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.apollographql.apollo3.api.ApolloResponse
+import com.apollographql.apollo3.api.Optional
 import com.example.couturecorner.data.model.ApiState
 import com.example.couturecorner.data.repository.Irepo
 import com.graphql.GetProductsQuery
+import com.graphql.type.CustomerInput
+import com.graphql.type.MailingAddressInput
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
