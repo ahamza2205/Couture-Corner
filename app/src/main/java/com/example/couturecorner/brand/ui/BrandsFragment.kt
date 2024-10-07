@@ -73,17 +73,14 @@ class BrandsFragment : Fragment(), OnItemClickListener {
             }
         }
     }
-
     override fun onItemClick(product: FilteredProductsQuery.Node?) {
         // Handle item click, e.g., navigate to a detailed product page
         Log.d("BrandFragment", "Clicked on product: ${product?.title}")
     }
-
     override fun onFavoriteClick(productId: String) {
         // Handle favorite button click, e.g., add to favorite list
         Log.d("BrandFragment", "Favorited product ID: $productId")
     }
-
     fun showLoading(isLoading: Boolean) {
         if (isLoading) {
             binding.progressBar.visibility = View.VISIBLE

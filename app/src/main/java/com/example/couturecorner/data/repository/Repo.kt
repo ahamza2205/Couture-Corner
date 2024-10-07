@@ -142,7 +142,6 @@ class Repo
         }
         return null
     }
-
     // ----------------------------------- product details --------------------------------
     override fun getProductDetails(productId: String): Flow<ApiState<ProductQuery.Data>> = flow {
         try {
@@ -152,7 +151,6 @@ class Repo
             emit(ApiState.Error(e.message ?: "Unknown Error"))
         }
     }
-
     // ------------------------ get & save shopify user id --------------------------------
     override fun getShopifyUserId(email: String): String? {
         return sharedPreference.getShopifyUserId(email)
