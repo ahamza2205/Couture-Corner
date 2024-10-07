@@ -59,9 +59,17 @@ type VariantEdge {
 
 # Define the Variant type
 type Variant {
+    id: ID!
     price: String!
     sku: String
     displayName: String
+    selectedOptions: [SelectedOption]
+}
+
+# Define the SelectedOption type (new type)
+type SelectedOption {
+    name: String!
+    value: String!
 }
 
 input CustomerInput {

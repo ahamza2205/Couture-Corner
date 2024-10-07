@@ -129,53 +129,70 @@
             android:text="5 items available"
             android:textColor="@android:color/holo_green_dark"
             android:textSize="18sp"
-            app:layout_constraintTop_toBottomOf="@id/productType"
-            app:layout_constraintStart_toEndOf="@id/stockStatus" />
+            app:layout_constraintStart_toEndOf="@id/stockStatus"
+            app:layout_constraintTop_toBottomOf="@id/productType" />
 
-        <!-- Sizes -->
+        <!-- Sizes and Colors Layout -->
         <LinearLayout
-            android:id="@+id/linearLayout2"
+            android:id="@+id/sizesColorsLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:orientation="vertical"
+            android:orientation="horizontal"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/stockCount">
 
-            <!-- Sizes Label -->
-            <TextView
-                android:id="@+id/sizesLabel"
-                android:layout_width="wrap_content"
+            <!-- Sizes Section -->
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Sizes : "
-                android:textColor="@color/colorPrimary"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-            <Spinner
-                android:id="@+id/sizesSpinner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:popupBackground="@color/white"
-                android:layout_marginTop="4dp" />
+                <!-- Sizes Label -->
+                <TextView
+                    android:id="@+id/sizesLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sizes : "
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
 
-            <!-- Colors Label -->
-            <TextView
-                android:id="@+id/colorsLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Colors : "
-                android:textColor="@color/colorPrimary"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:layout_marginTop="15dp" />
+                <Spinner
+                    android:id="@+id/sizesSpinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:popupBackground="@color/white"
+                    android:layout_marginTop="4dp" />
+            </LinearLayout>
 
-            <Spinner
-                android:id="@+id/colorsSpinner"
-                android:layout_width="wrap_content"
+            <!-- Colors Section -->
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:popupBackground="@color/white"
-                android:layout_marginTop="4dp" />
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginStart="16dp">
+
+                <!-- Colors Label -->
+                <TextView
+                    android:id="@+id/colorsLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Colors : "
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <Spinner
+                    android:id="@+id/colorsSpinner"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:popupBackground="@color/white"
+                    android:layout_marginTop="4dp" />
+            </LinearLayout>
+
         </LinearLayout>
 
         <!-- Total Price -->
@@ -190,7 +207,7 @@
             android:textSize="28sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
+            app:layout_constraintTop_toBottomOf="@id/sizesColorsLayout" />
 
         <TextView
             android:id="@+id/priceValue"
@@ -209,9 +226,9 @@
             android:id="@+id/btnAddToCart"
             android:layout_width="180dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="35dp"
-            android:layout_marginTop="22dp"
-            android:layout_marginEnd="12dp"
+            android:layout_marginStart="31dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="16dp"
             android:backgroundTint="@color/colorPrimary"
             android:drawableLeft="@drawable/baseline_shopping_cart_checkout_24"
             android:padding="16dp"
@@ -220,8 +237,7 @@
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/totalPriceLabel"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
-
+            app:layout_constraintTop_toBottomOf="@+id/sizesColorsLayout" />
         <!-- LinearLayout for Additional Items -->
         <LinearLayout
             android:id="@+id/additionalItemsLayout"
@@ -287,4 +303,5 @@
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </ScrollView>

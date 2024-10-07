@@ -1,9 +1,8 @@
 package com.example.couturecorner.productdetails.view
 
-import android.R // Use the correct library
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log // Import Log class
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -46,7 +45,6 @@ class ProductDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Retrieve the product ID from arguments
         val args = ProductDetailsFragmentArgs.fromBundle(requireArguments())
         val productIdFromArgs = args.productId
 
@@ -64,7 +62,6 @@ class ProductDetailsFragment : Fragment() {
             viewModel.productDetails.collect { state ->
                 when (state) {
                     is ApiState.Loading -> {
-                        // Show loading indicator
                         Log.d("ProductDetailsFragment", "Loading product details...")
                     }
 
@@ -72,23 +69,21 @@ class ProductDetailsFragment : Fragment() {
                         val product = state.data?.product
                         Log.d("ProductDetailsFragment", "Product details received: $product")
 
-                        // Update UI with product details
                         product?.let {
                             binding.productTitle.text = it.title
 
                             val colorFromTitle = it.title.split("|").lastOrNull()?.trim()
 
-                            val availableSizesWithPrices = it.variants?.edges?.mapNotNull { variant ->
-                                variant?.node?.let { node ->
-                                    val price = node.price
-                                    val color = node.displayName?.split(" - ")?.get(1)?.trim() ?: "Not specified"
-                                    "($color) - Price: ${price}"
-                                }
+                            val variants = it.variants?.edges?.mapNotNull { variant ->
+                                variant?.node
                             } ?: listOf()
 
-                            // Log the available sizes with prices for debugging
-                            availableSizesWithPrices.forEach { sizeWithPrice ->
-                                Log.d("ProductDetailsFragment", "Available Size: $sizeWithPrice")
+                            // Extract available sizes and colors
+                            val availableSizes = variants.map { variant ->
+                                variant.selectedOptions?.find { option -> option?.name == "Size" }?.value ?: ""
+                            }
+                            val availableColors = variants.map { variant ->
+                                variant.selectedOptions?.find { option -> option?.name == "Color" }?.value ?: ""
                             }
 
                             // Update UI components
@@ -103,11 +98,29 @@ class ProductDetailsFragment : Fragment() {
                             }
 
                             // Set up size spinner
-                            setupSpinner(binding.sizesSpinner, availableSizesWithPrices, null)
+                            setupSpinner(binding.sizesSpinner, availableSizes.distinct(), null)
 
-                            // Set up color spinner with one color only
-                            val colors = listOf(colorFromTitle ?: "Not specified")
-                            setupSpinner(binding.colorsSpinner, colors, null)
+                            // Set up color spinner
+                            setupSpinner(binding.colorsSpinner, availableColors.distinct(), colorFromTitle)
+
+                            // Handle add to cart action
+                            binding.btnAddToCart.setOnClickListener {
+                                val selectedSize = binding.sizesSpinner.selectedItem.toString()
+                                val selectedColor = binding.colorsSpinner.selectedItem.toString()
+
+                                // Find the matching variant by size and color
+                                val selectedVariant = variants.find { variant ->
+                                    val size = variant.selectedOptions?.find { it?.name == "Size" }?.value
+                                    val color = variant.selectedOptions?.find { it?.name == "Color" }?.value
+                                    size == selectedSize && color == selectedColor
+                                }
+
+                                if (selectedVariant != null) {
+                                    addToCart(selectedVariant.id, selectedSize, selectedColor)
+                                } else {
+                                    Toast.makeText(requireContext(), "Variant not found for selected size and color", Toast.LENGTH_SHORT).show()
+                                }
+                            }
                         }
                     }
 
@@ -117,12 +130,11 @@ class ProductDetailsFragment : Fragment() {
                 }
             }
         }
-        // Handle add to cart action
-        binding.btnAddToCart.setOnClickListener {
-            val selectedSize = binding.sizesSpinner.selectedItem.toString()
-            val selectedColor = binding.colorsSpinner.selectedItem.toString()
-            addToCart(productId, selectedSize, selectedColor)
-        }
+    }
+    private fun addToCart(variantId: String, selectedSize: String, selectedColor: String) {
+        Log.d("ProductDetailsFragment", "Adding to cart: VariantId= $variantId, Size= $selectedSize, Color= $selectedColor")
+        // Logic to handle adding product to cart (e.g., calling ViewModel or CartManager)
+        Toast.makeText(requireContext(), "Added to cart: Size= $selectedSize, Color= $selectedColor", Toast.LENGTH_SHORT).show()
     }
     private fun setupSpinner(spinner: Spinner, items: List<String>, selectedItem: String?) {
         val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, items)
@@ -134,11 +146,6 @@ class ProductDetailsFragment : Fragment() {
                 spinner.setSelection(index)
             }
         }
-    }
-    private fun addToCart(productId: String, selectedSize: String, selectedColor: String) {
-        Log.d("ProductDetailsFragment", "Adding to cart: ProductId= $productId, Size= $selectedSize, Color= $selectedColor")
-        // Logic to handle adding product to cart (e.g., calling ViewModel or CartManager)
-        Toast.makeText(requireContext(), "Added to cart: $selectedSize, $selectedColor", Toast.LENGTH_SHORT).show()
     }
     private fun setupImagesRecyclerView(images: List<String>) {
         imagesAdapter = ImageAdapter(images) { selectedImage ->

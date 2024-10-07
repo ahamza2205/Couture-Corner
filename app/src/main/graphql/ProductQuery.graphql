@@ -13,12 +13,17 @@ query Product($productId: ID!) {
                 }
             }
         }
-        variants(first: 3) {
+        variants(first: 5) {
             edges {
                 node {
+                    id
                     displayName
                     price
                     sku
+                    selectedOptions {
+                        name
+                        value
+                    }
                 }
             }
         }
