@@ -63,6 +63,16 @@ class Repo
     }
 
 
+    override fun saveAddressState(haveAddress: Boolean){
+        sharedPreference.saveAddressState(haveAddress) }
+
+
+    override fun getAddressState(): Boolean {
+        return sharedPreference.getAddressState()
+    }
+
+
+
     // --------------------------- shopify registration -------------------------------
     suspend fun registerUser(
         email: String,
@@ -128,19 +138,26 @@ class Repo
             throw Exception("Error fetching customer: ${response.errors}")
         }
 
-        response.data?.customer?.let { customer ->
-            return GetCustomerByIdQuery.Customer(
+        return response.data?.customer?.let { customer ->
+            GetCustomerByIdQuery.Customer(
                 id = customer.id,
-                displayName = customer.displayName ?: "",
+                displayName = customer.displayName ?: "", // Handle nullable fields
                 email = customer.email,
                 firstName = customer.firstName,
                 lastName = customer.lastName,
                 phone = customer.phone,
                 createdAt = customer.createdAt,
-                updatedAt = customer.updatedAt
+                updatedAt = customer.updatedAt,
+                defaultAddress = customer.defaultAddress?.let { address ->
+                    GetCustomerByIdQuery.DefaultAddress( // Correctly reference the nested DefaultAddress class
+                        address1 = address.address1 ?: "", // Handle nullable fields
+                        address2 = address.address2 ?: "",
+                        city = address.city ?: "",
+                        phone = address.phone ?: ""
+                    )
+                }
             )
         }
-        return null
     }
     // ----------------------------------- product details --------------------------------
     override fun getProductDetails(productId: String): Flow<ApiState<ProductQuery.Data>> = flow {

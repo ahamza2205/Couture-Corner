@@ -23,6 +23,7 @@ interface Irepo {
      fun getFilterdProducts(vendor:String?): Flow<ApolloResponse<FilteredProductsQuery.Data>>
 
      // --------------- shared preference  -------------------------
+
      fun saveUserLoggedIn(isLoggedIn: Boolean)
      fun isUserLoggedIn(): Boolean
      fun logoutUser()
@@ -30,4 +31,6 @@ interface Irepo {
      fun saveShopifyUserId(email: String, userId: String)
      // -------------- add product to favorite ------------------------
      suspend fun addProductToFavorites(customerId: String, productId: String)
+     fun saveAddressState(haveAddress: Boolean)
+     fun getAddressState(): Boolean
 }

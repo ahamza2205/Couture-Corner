@@ -52,7 +52,11 @@
     <fragment
         android:id="@+id/cartFragment"
         android:name="com.example.couturecorner.setting.ui.CartFragment"
-        android:label="CartFragment" />
+        android:label="CartFragment" >
+        <action
+            android:id="@+id/action_cartFragment_to_checkOutFragment"
+            app:destination="@id/checkOutFragment" />
+    </fragment>
         tools:layout="@layout/fragment_settings" />
     <fragment
         android:id="@+id/brandsFragment"
@@ -65,6 +69,36 @@
         <argument
             android:name="brand"
             app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/addAdressFragment"
+        android:name="com.example.couturecorner.setting.ui.AddAdressFragment"
+        android:label="fragment_add_adress"
+        tools:layout="@layout/fragment_add_adress" >
+        <action
+            android:id="@+id/action_addAdressFragment_to_checkOutFragment"
+            app:destination="@id/checkOutFragment" />
+        <action
+            android:id="@+id/action_addAdressFragment_to_mapFragment"
+            app:destination="@id/mapFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/checkOutFragment"
+        android:name="com.example.couturecorner.setting.ui.CheckOutFragment"
+        android:label="fragment_check_out"
+        tools:layout="@layout/fragment_check_out" >
+        <action
+            android:id="@+id/action_checkOutFragment_to_addAdressFragment"
+            app:destination="@id/addAdressFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/mapFragment"
+        android:name="com.example.couturecorner.setting.ui.MapFragment"
+        android:label="fragment_map"
+        tools:layout="@layout/fragment_map" >
+        <action
+            android:id="@+id/action_mapFragment_to_addAdressFragment"
+            app:destination="@id/addAdressFragment" />
     </fragment>
     <fragment
         android:id="@+id/productDetailsFragment"

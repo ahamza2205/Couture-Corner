@@ -3,7 +3,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.couturecorner.databinding.CartItemBinding
-
 import com.example.couturecorner.setting.viewmodel.CartItem
 
 class CartItemAdapter(

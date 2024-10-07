@@ -26,6 +26,13 @@ class SharedPreference @Inject constructor(context: Context) {
     fun saveShopifyUserId(email: String, userId: String) {
         sharedPreferences.edit().putString(email, userId).apply()
     }
+    fun saveAddressState(haveAddress: Boolean){
+        sharedPreferences.edit().putBoolean("haveAddress", haveAddress).apply()
+    }
+    fun getAddressState(): Boolean {
+        return sharedPreferences.getBoolean("haveAddress", false)
+    }
+
     fun getShopifyUserId(email: String): String? {
         return sharedPreferences.getString(email, null)
     }

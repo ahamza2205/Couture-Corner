@@ -7,7 +7,9 @@
     <color name="colorSecondary">#FFFFFFFF</color> <!-- White -->
     <color name="colorSecondaryVariant">#FFFFFFFF</color> <!-- White -->
     <color name="colorOnSecondary">#FF000000</color> <!-- Black -->
-    <color name="gray">#888888</color> <!-- Black -->
+    <color name="gray">#888888</color>
+    <color name="light_gray">#E9E9E9</color> <!-- Gray -->
+
     <color name="white_transparent">#FFFFFFFF</color> <!-- 50% transparent white -->
     <color name="transparent">#80714930</color> <!-- 50% transparent white -->
     <!-- Default Material Colors -->
