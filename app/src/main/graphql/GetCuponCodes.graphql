@@ -1,0 +1,15 @@
+query GetCuponCodes {
+    codeDiscountNodes(first: 10) {
+        nodes {
+            id
+            codeDiscount {
+                ... on DiscountCodeBasic {
+                    title
+                    summary
+                }
+
+            }
+        }
+    }
+}
+
