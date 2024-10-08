@@ -28,18 +28,17 @@ class CartViewModel@Inject constructor(
                 // Get the Shopify customer ID using the email
                 val customerId = repo.getShopifyUserId(userEmail)
                 if (customerId != null) {
-                    Log.i("CartTag", "getCartItems: " + customerId)
-                    val tag = repo.getDraftOrderTag(customerId)
-
-                    Log.i("CartTag", "getCartItems: " + tag)
+//                    val tag = repo.getDraftOrderTag(customerId)
+val tag = "gid://shopify/Customer/8417368834332"
 
                     // Call the repository to fetch draft orders and update LiveData
                     viewModelScope.launch {
                         try {
                             repo.getDraftOrderByCustomerId(customerId)
                                 .collect { response ->
-                                    Log.i("Cart", "getCartItems: " + response.data)
-                                    val cartItems = cartItemMapper.mapToCartItems(response, tag!!)
+//                                    Log.i("Cart", "getCartItems: " + response.data)
+                                    val cartItems = cartItemMapper.mapToCartItems(response, tag)
+                                    Log.i("Cart", "getCartItems: "+cartItems)
                                     _updatCartListStatus.postValue(Result.success(cartItems))
                                 }
                         } catch (e: Exception) {

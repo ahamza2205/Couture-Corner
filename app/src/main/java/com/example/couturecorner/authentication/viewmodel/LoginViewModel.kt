@@ -72,7 +72,7 @@ class LoginViewModel @Inject constructor(
                 val customerId = repo.getShopifyUserId(userEmail)
 
                 if (customerId != null) {
-                    repo.saveDraftOrderTag(customerId,"CART_DRAFT_ORDER+$customerId")
+                    repo.saveDraftOrderTag(customerId,"$customerId")
                     Log.i("CartTag", "getCustomerDataTwo: "+repo.getDraftOrderTag(userId = customerId))
                     getCustomerData(customerId)
 

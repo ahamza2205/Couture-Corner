@@ -13,7 +13,7 @@ class CartItemMapper {
         val cartItems = mutableListOf<CartItem>()
         response.data?.draftOrders?.nodes?.forEach { draftOrderNode ->
             // Check if the tags contain the requiredTag
-            if (draftOrderNode.tags?.getOrNull(1) == requiredTag) {
+            if (draftOrderNode.tags?.getOrNull(0) == requiredTag) {
                 draftOrderNode.lineItems?.nodes?.forEach { lineItemNode ->
                     val variant = lineItemNode.variant
                     val product = variant?.product

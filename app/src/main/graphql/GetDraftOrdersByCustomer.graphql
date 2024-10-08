@@ -1,8 +1,8 @@
 
 query GetDraftOrdersByCustomer($query: String!) {
-    draftOrders(query: $query, first: 100) {
+    draftOrders(query: $query, first: 200) {
         nodes {
-            lineItems(first: 100) {
+            lineItems(first: 200) {
                 nodes {
                     name
                     quantity
