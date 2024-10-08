@@ -7,17 +7,23 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.compose.ui.unit.dp
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.ViewPager2
 import com.example.couturecorner.R
 import com.example.couturecorner.category.ui.CategoryAdapter
 import com.example.couturecorner.data.model.ApiState
 import com.example.couturecorner.databinding.FragmentHomeBinding
 import com.example.couturecorner.home.viewmodel.HomeViewModel
+import com.example.couturecorner.home.viewmodel.MainViewModel
 import com.google.android.material.chip.Chip
 import com.graphql.FilteredProductsQuery
 import dagger.hilt.android.AndroidEntryPoint
@@ -30,8 +36,15 @@ class HomeFragment : Fragment(), OnItemClickListener {
     lateinit var brandsAdapter: BrandsAdapter
     lateinit var productsAdapter: ProductsAdapter
     lateinit var categoryAdapter: CategoryAdapter
+    lateinit var cuponAdapter: CuponAdapter
 
     val viewModel: HomeViewModel by viewModels()
+    val sharedViewModel:MainViewModel by activityViewModels()
+
+    private lateinit var pageChangeCallback: ViewPager2.OnPageChangeCallback
+    val params=LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT).apply {
+        setMargins(8,0,8,0)
+    }
 
 
     override fun onCreateView(
@@ -65,6 +78,29 @@ class HomeFragment : Fragment(), OnItemClickListener {
         binding.CategoryRecycel.adapter = categoryAdapter
         binding.CategoryRecycel.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
 
+        cuponAdapter=CuponAdapter()
+        binding.cuponRecycle.adapter=cuponAdapter
+
+        updateCuponsDots()
+
+       viewModel.getCupons()
+
+        lifecycleScope.launch {
+            viewModel.cupons.collect{ state ->
+                when (state) {
+                    is ApiState.Loading -> showLoading(true)
+                    is ApiState.Success -> {
+                        val cupons = state.data?.data?.codeDiscountNodes?.nodes
+                        cuponAdapter.submitList(cupons) // Use the initialized adapter here
+                        showLoading(false)
+                    }
+                    is ApiState.Error -> {
+                        Log.d("AmrApollo", "${state.message} ")
+                    }
+                }
+            }
+        }
+
        // viewModel.getFilterdProducts(null)
 
         updateChips()
@@ -89,6 +125,23 @@ class HomeFragment : Fragment(), OnItemClickListener {
                 }
             }
         }
+
+        sharedViewModel.getFavList()
+
+        lifecycleScope.launch {
+            sharedViewModel.favIdsList.collect{
+                if(it.isNotEmpty()){
+                   productsAdapter.favListUpdate(it.toMutableList())
+                }
+            }
+        }
+
+
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding.cuponRecycle.unregisterOnPageChangeCallback(pageChangeCallback)
     }
 
     // Implement the onItemClick method from the interface
@@ -96,8 +149,11 @@ class HomeFragment : Fragment(), OnItemClickListener {
         val action = HomeFragmentDirections.actionHomeFragmentToProductDetailsFragment(product?.id.toString())
         findNavController().navigate(action)
     }
+
+
+
     override fun onFavoriteClick(productId: String) {
-        viewModel.addProductToFavorites(productId)
+        sharedViewModel.addProductToFavorites(productId)
         Toast.makeText(requireContext(), "Added to favorites", Toast.LENGTH_SHORT).show()
     }
     fun showLoading(isLoading:Boolean)
@@ -112,6 +168,43 @@ class HomeFragment : Fragment(), OnItemClickListener {
             binding.progressBar.visibility=View.GONE
             binding.productsRecycel.visibility=View.VISIBLE
         }
+    }
+
+    fun updateCuponsDots(){
+
+        val dotImage=Array(5){ImageView(context)}
+        dotImage.forEach {
+            it.setImageResource(
+                R.drawable.dot_inactive
+
+            )
+            binding.dotContainer.addView(it,params)
+        }
+
+        dotImage[0].setImageResource(R.drawable.dot_active)
+
+        pageChangeCallback = object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                dotImage.mapIndexed { index, imageView ->
+                    if (position==index)
+                    {
+                        imageView.setImageResource(
+                            R.drawable.dot_active
+
+                        )
+                    }
+                    else
+                    {
+                        imageView.setImageResource(R.drawable.dot_inactive)
+                    }
+                }
+                super.onPageSelected(position)
+
+            }
+        }
+
+        binding.cuponRecycle.registerOnPageChangeCallback(pageChangeCallback)
+
     }
 
     fun updateChips(){
@@ -168,6 +261,8 @@ class HomeFragment : Fragment(), OnItemClickListener {
  //           }
         }
     }
+
+
 
 
 }

@@ -90,6 +90,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -127,4 +128,12 @@ class MainActivity : AppCompatActivity() {
         val navController = findNavController(R.id.nav_host_fragment)
         return navController.navigateUp() || super.onSupportNavigateUp()
     }
+    fun hideBottomNav() {
+        bottomNav.visibility = View.GONE
+    }
+
+    fun showBottomNav() {
+        bottomNav.visibility = View.VISIBLE
+    }
+
 }

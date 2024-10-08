@@ -25,6 +25,7 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+
         binding.textView2.paintFlags = binding.textView2.paintFlags or Paint.UNDERLINE_TEXT_FLAG
         // Set onClickListener to navigate to SignInActivity
         binding.textView2.setOnClickListener {
@@ -60,6 +61,15 @@ class LoginActivity : AppCompatActivity() {
                             viewModel.getCustomerDataFromFirebaseAuth(email)
                             viewModel.customerData.observe(this) { customer ->
                                 if (customer != null) {
+                                        if (   customer.defaultAddress==null ){
+
+
+                                        }else{
+                                            viewModel.haveAddress()
+
+                                        }
+
+
                                     Log.d("HamzaData", "Customer Data: " +
                                             "ID: ${customer.id}, " +
                                             "Display Name: ${customer.displayName}, " +
@@ -96,4 +106,3 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 }
-

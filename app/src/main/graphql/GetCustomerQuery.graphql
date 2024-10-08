@@ -8,5 +8,11 @@ query GetCustomerById($id: ID!) {
         lastName
         phone
         updatedAt
+        defaultAddress {
+            address1
+            address2
+            city
+            phone
+        }
     }
 }

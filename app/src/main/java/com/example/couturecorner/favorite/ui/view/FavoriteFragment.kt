@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -13,6 +14,7 @@ import com.example.couturecorner.data.local.SharedPreference
 import com.example.couturecorner.favorite.ui.viewmodel.FavoriteViewModel
 import com.example.couturecorner.data.model.ApiState
 import com.example.couturecorner.databinding.FragmentFavoriteBinding
+import com.example.couturecorner.home.viewmodel.MainViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.graphql.ProductQuery
 import dagger.hilt.android.AndroidEntryPoint
@@ -24,7 +26,10 @@ class FavoriteFragment : Fragment(), OnFavoriteItemClickListener {
     private val binding get() = _binding!!
     @Inject
     lateinit var sharedPreference: SharedPreference
+
     private val favoriteViewModel: FavoriteViewModel by viewModels()
+    val sharedViewModel: MainViewModel by activityViewModels()
+
     private lateinit var productsAdapter: FavoriteProductsAdapter
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,6 +42,7 @@ class FavoriteFragment : Fragment(), OnFavoriteItemClickListener {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
         loadFavoriteProducts()
+
     }
     private fun loadFavoriteProducts() {
         val user = FirebaseAuth.getInstance().currentUser
