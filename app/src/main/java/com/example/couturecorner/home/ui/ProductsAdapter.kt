@@ -84,7 +84,13 @@ class ProductsAdapter(
     {
         favList.clear()
         favList.addAll(favs)
-        notifyDataSetChanged()
+        for (i in currentList.indices) {
+            val product = getItem(i).node
+            if (product?.id in favList) {
+                notifyItemChanged(i) // Update only the changed item
+            }
+        }
+//        notifyDataSetChanged()
     }
 
 
