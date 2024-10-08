@@ -93,4 +93,8 @@ class BrandsFragment : Fragment(), OnItemClickListener {
             binding.productsRecycel.visibility = View.VISIBLE
         }
     }
+
+//    override fun isFavorite(productId: String): Boolean {
+//        TODO("Not yet implemented")
+//    }
 }

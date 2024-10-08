@@ -83,6 +83,8 @@ class CategoryFragment : Fragment(), OnItemClickListener {
         Log.d("BrandFragment", "Clicked on product: ${product?.title}")
     }
 
+
+
     override fun onFavoriteClick(productId: String) {
         // Handle favorite button click, e.g., add to favorite list
         Log.d("BrandFragment", "Favorited product ID: $productId")
@@ -101,4 +103,7 @@ class CategoryFragment : Fragment(), OnItemClickListener {
         }
     }
 
+//    override fun isFavorite(productId: String): Boolean {
+//        TODO("Not yet implemented")
+//    }
 }

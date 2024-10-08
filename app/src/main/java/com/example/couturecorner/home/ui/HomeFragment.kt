@@ -122,6 +122,18 @@ class HomeFragment : Fragment(), OnItemClickListener {
                 }
             }
         }
+
+        viewModel.getFavList()
+
+        lifecycleScope.launch {
+            viewModel.favIdsList.collect{
+                if(it.isNotEmpty()){
+                   productsAdapter.favListUpdate(it.toMutableList())
+                }
+            }
+        }
+
+
     }
 
     override fun onDestroyView() {
@@ -134,6 +146,9 @@ class HomeFragment : Fragment(), OnItemClickListener {
         val action = HomeFragmentDirections.actionHomeFragmentToProductDetailsFragment(product?.id.toString())
         findNavController().navigate(action)
     }
+
+
+
     override fun onFavoriteClick(productId: String) {
         viewModel.addProductToFavorites(productId)
         Toast.makeText(requireContext(), "Added to favorites", Toast.LENGTH_SHORT).show()
@@ -243,6 +258,8 @@ class HomeFragment : Fragment(), OnItemClickListener {
  //           }
         }
     }
+
+
 
 
 }

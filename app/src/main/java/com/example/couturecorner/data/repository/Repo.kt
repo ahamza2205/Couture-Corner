@@ -193,7 +193,7 @@ override suspend fun addProductToFavorites(customerId: String, productId: String
     }
 }
 
-    suspend fun getCurrentFavorites(customerId: String): List<String>? {
+   override suspend fun getCurrentFavorites(customerId: String): List<String>? {
         val query = GetFavoriteProductsQuery(customerId = customerId)
         val response = apolloClient.query(query).execute()
         if (response.hasErrors()) {

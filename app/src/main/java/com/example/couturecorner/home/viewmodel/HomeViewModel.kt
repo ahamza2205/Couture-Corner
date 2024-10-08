@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.apollographql.apollo3.api.ApolloResponse
+import com.example.couturecorner.data.local.SharedPreference
 import com.example.couturecorner.data.model.ApiState
 import com.example.couturecorner.data.repository.Irepo
 import com.google.firebase.auth.FirebaseAuth
@@ -15,11 +16,13 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel@Inject constructor(
-    private val repo: Irepo
+    private val repo: Irepo,
+    val sharedPreference: SharedPreference
 ):ViewModel() {
 
 
@@ -30,6 +33,10 @@ class HomeViewModel@Inject constructor(
     private val _cupons= MutableStateFlow<ApiState<ApolloResponse<GetCuponCodesQuery.Data>>>(
         ApiState.Loading)
     val cupons : StateFlow<ApiState<ApolloResponse<GetCuponCodesQuery.Data>>> =_cupons
+
+    private val _favIdsList= MutableStateFlow<List<String>>(emptyList())
+    val favIdsList : StateFlow<List<String>> =_favIdsList
+
 
 
     fun getFilterdProducts(productTpye: String?) {
@@ -93,6 +100,26 @@ class HomeViewModel@Inject constructor(
                 }
             }
         }
+    }
+
+    fun getFavList() {
+        val user = FirebaseAuth.getInstance().currentUser
+        if (user != null) {
+            val userEmail = user.email
+
+            if (userEmail != null) {
+                val customerId = sharedPreference.getShopifyUserId(userEmail)
+
+                if (customerId != null) {
+                    viewModelScope.launch {
+                        val favs = repo.getCurrentFavorites(customerId)
+                        _favIdsList.value= favs ?: emptyList()
+
+                    }
+                }
+            }
+        }
+
     }
 
 }
