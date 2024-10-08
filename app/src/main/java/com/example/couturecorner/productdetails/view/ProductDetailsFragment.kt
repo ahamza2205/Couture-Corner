@@ -52,6 +52,7 @@ class ProductDetailsFragment : Fragment() {
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        cartViewModel.getCartItems()  // Trigger fetching cart items
 
         val args = ProductDetailsFragmentArgs.fromBundle(requireArguments())
         val productIdFromArgs = args.productId
@@ -143,7 +144,7 @@ class ProductDetailsFragment : Fragment() {
             size =selectedSize,
             inventoryQuantity = stockQuantity?.toInt(),
         )
-        cartViewModel.updateOrAddItemById(newItem)
+        cartViewModel.addedToCart(newItem)
 
         Log.d("ProductDetailsFragment", "Adding to cart: VariantId= $variantId, Size= $selectedSize, Color= $selectedColor")
         Toast.makeText(requireContext(), "Added to cart: Size= $selectedSize, Color= $selectedColor", Toast.LENGTH_SHORT).show()

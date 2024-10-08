@@ -39,7 +39,7 @@ class CartFragment : Fragment() {
         setupRecyclerView()
         observeViewModel()
         setupUI()
-        cartViewModel.getCartItems()  // Trigger fetching cart items
+        cartViewModel.getCartItems()
     }
 
     // Set up RecyclerView for cart items

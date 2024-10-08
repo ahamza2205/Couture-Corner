@@ -92,7 +92,7 @@ class CartViewModel @Inject constructor(
             val localItem = cartItemList.find { it.id == remoteItem.id }
             if (localItem != null) {
                 // Use the maximum quantity between local and remote
-                val newQuantity = maxOf(localItem.quantity ?: 0, remoteItem.quantity ?: 0)
+                val newQuantity = maxOf(localItem.quantity ?: 0, remoteItem.inventoryQuantity ?: 0)
                 val updatedItem = localItem.copy(quantity = newQuantity)
                 updatedList.add(updatedItem)
                 cartItemList.remove(localItem) // Remove old item
@@ -159,56 +159,31 @@ class CartViewModel @Inject constructor(
         calculateTotal()
     }
 
-    // Function to add or update an item by CartItem
-    fun updateOrAddItemById(cartItem: CartItem) {
-        // Find the item by its ID in the cart list
+    // Function to add an item by CartItem
+// Function to add an item by CartItem
+    fun addedToCart(cartItem: CartItem) {
+        // First check if the item already exists in the local cart
         val existingItem = cartItemList.find { it.id == cartItem.id }
 
-        if (cartItem.quantity!! > 0) {
-            if (existingItem != null) {
-                // Update the quantity for the existing item
-                val updatedItem = existingItem.copy(quantity = existingItem.quantity!! + cartItem.quantity!!)
-                Log.i("Cart", "Updating quantity for item: ${existingItem.id}, new quantity: ${updatedItem.quantity}")
-
-                // Update the local cart item
-                updateLocalCartItem(updatedItem)
-            } else {
-                // Add a new item to the cart list
-                val newItem = CartItem(
-                    id = cartItem.id,
-                    quantity = cartItem.quantity,
-                    imageUrl = cartItem.imageUrl,
-                    name = cartItem.name,
-                    price = cartItem.price,
-                    color = cartItem.color,
-                    size = cartItem.size,
-                    inventoryQuantity = cartItem.inventoryQuantity
-                )
-                cartItemList.add(newItem)
-                Log.i("Cart", "Added new item: ${newItem.id} with quantity: ${newItem.quantity} and price: ${newItem.price}")
-
-                // Update the local cart
-                _cartItems.postValue(cartItemList.toList())
-                calculateTotal()
-            }
-
-            // Send the updated list to Shopify
-            updateShopifyDraftOrder(cartItemList)
+        if (existingItem != null) {
+            // If it exists, we just increase its quantity
+            val updatedItem = existingItem.copy(
+                quantity = existingItem.quantity!! + cartItem.quantity!!  // Add to existing quantity
+            )
+            Log.i("Cart", "Updated existing item: ${updatedItem.id} with new quantity: ${updatedItem.quantity}")
+            updateLocalCartItem(updatedItem)
         } else {
-            // If the new quantity is zero, remove the item if it exists
-            if (existingItem != null) {
-                Log.i("Cart", "Removing item: ${existingItem.id} as quantity reached zero")
-                cartItemList.remove(existingItem)
-                _cartItems.postValue(cartItemList.toList())
-                calculateTotal()
-
-                // Update Shopify after removing the item
-                updateShopifyDraftOrder(cartItemList)
-            } else {
-                Log.i("Cart", "Item not found with ID: ${cartItem.id}, nothing to remove")
-            }
+            // If it doesn't exist, add it as a new item
+            val newItem = cartItem.copy() // Make sure to copy cartItem to avoid mutations
+            Log.i("Cart", "Added new item: ${newItem.id} with quantity: ${newItem.quantity}")
+            updateLocalCartItem(newItem)
         }
+
+        // Sync the local cart list with the Shopify draft order
+        updateShopifyDraftOrder(cartItemList)
     }
+
+
 
 
 
