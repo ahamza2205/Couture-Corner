@@ -36,6 +36,8 @@ class Repo
 
 ) : Irepo {
 
+    // ---------------------------- Product  ------------------------------------
+
     override fun getProducts(): Flow<ApolloResponse<GetProductsQuery.Data>> {
         return remoteData.getProducts()
     }
@@ -48,7 +50,7 @@ class Repo
         return remoteData.getFilterdProducts(vendor)
     }
 
-    // ---------------------------- shared preference ------------------------------------
+
     // ---------------------------- shared preference ------------------------------------
     override fun saveUserLoggedIn(isLoggedIn: Boolean) {
         sharedPreference.saveUserLoggedIn(isLoggedIn)
@@ -208,7 +210,7 @@ override suspend fun addProductToFavorites(customerId: String, productId: String
     }
 }
 
-    suspend fun getCurrentFavorites(customerId: String): List<String>? {
+   override suspend fun getCurrentFavorites(customerId: String): List<String>? {
         val query = GetFavoriteProductsQuery(customerId = customerId)
         val response = apolloClient.query(query).execute()
         if (response.hasErrors()) {

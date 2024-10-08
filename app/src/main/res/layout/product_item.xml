@@ -156,7 +156,7 @@
                     android:layout_margin="8dp"
                     android:background="@android:color/transparent"
                     android:contentDescription="@string/product"
-                    android:src="@drawable/baseline_favorite_border_24" />
+                    android:src="@drawable/selector_btn" />
 
             </RelativeLayout>
 

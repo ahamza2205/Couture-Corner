@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
+import com.example.couturecorner.R
 import com.example.couturecorner.databinding.ProductItemBinding
 import com.graphql.FilteredProductsQuery
 
@@ -32,6 +33,9 @@ class productdiifUtill():DiffUtil.ItemCallback<FilteredProductsQuery.Edge>() {
 class ProductsAdapter(
     private val listener: OnItemClickListener
 ):ListAdapter<FilteredProductsQuery.Edge,ProductsAdapter.ProductsViewHolder>(productdiifUtill()) {
+
+    val favList= mutableListOf<String>()
+
     lateinit var binding: ProductItemBinding
 
     class ProductsViewHolder(var binding: ProductItemBinding):ViewHolder(binding.root)
@@ -50,17 +54,45 @@ class ProductsAdapter(
 //      holder.binding.title.text=product?.title
         holder.binding.priceTextView.text=product?.variants?.edges?.get(0)?.node?.price
 
+        holder.binding.favoriteAddsButton.isSelected=favList.contains(product?.id)
+
         Glide.with(holder.itemView.context)
             .load(product?.images?.edges?.get(0)?.node?.src)
             .into(holder.binding.ProductImageView)
         holder.binding.favoriteAddsButton.setOnClickListener {
-            product?.id?.let { productId ->
-                listener.onFavoriteClick(productId)
+
+            if (favList.contains(product?.id))
+            {
+                // delet method
+                holder.binding.favoriteAddsButton.isSelected=false
             }
+            else
+            {
+                product?.id?.let { productId ->
+                    listener.onFavoriteClick(productId)
+                }
+                holder.binding.favoriteAddsButton.isSelected=true
+            }
+
         }
         holder.itemView.setOnClickListener {
             listener.onItemClick(product)
         }
     }
+
+    fun favListUpdate(favs:MutableList<String>)
+    {
+        favList.clear()
+        favList.addAll(favs)
+        for (i in currentList.indices) {
+            val product = getItem(i).node
+            if (product?.id in favList) {
+                notifyItemChanged(i) // Update only the changed item
+            }
+        }
+//        notifyDataSetChanged()
+    }
+
+
 
 }
