@@ -50,6 +50,9 @@ class CartFragment : Fragment() {
             },
             onDecreaseQuantity = { cartItem ->
                 cartViewModel.decreaseQuantity(cartItem)
+            },
+            ondeleteItem={ cartItem ->
+                cartViewModel.onDeleteCartItem(cartItem)
             }
         )
         binding.cartRecyclerView.layoutManager =

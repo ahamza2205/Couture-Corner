@@ -7,10 +7,10 @@ import com.bumptech.glide.Glide
 import com.example.couturecorner.R
 import com.example.couturecorner.data.model.CartItem
 import com.example.couturecorner.databinding.CartItemBinding
-
 class CartItemAdapter(
     private val onIncreaseQuantity: (CartItem) -> Unit,
-    private val onDecreaseQuantity: (CartItem) -> Unit
+    private val onDecreaseQuantity: (CartItem) -> Unit,
+    private val ondeleteItem: (CartItem) -> Unit
 ) : RecyclerView.Adapter<CartItemAdapter.CartItemViewHolder>() {
 
     private val cartItems = mutableListOf<CartItem>()
@@ -33,13 +33,19 @@ class CartItemAdapter(
 //            // Handle add and remove click listeners
             binding.addImageView.setOnClickListener {
                 onIncreaseQuantity(cartItem)
-                notifyDataSetChanged()
 
             }
 //
             binding.removeImageView.setOnClickListener {
                 onDecreaseQuantity(cartItem)
             }
+            binding.deletitem.setOnClickListener {
+               ondeleteItem(cartItem)
+                notifyDataSetChanged()
+            }
+
+
+
         }
     }
 

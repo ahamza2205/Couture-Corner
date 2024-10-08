@@ -124,6 +124,24 @@ class CartViewModel @Inject constructor(
         updateShopifyDraftOrder(cartItemList)
     }
 
+    fun onDeleteCartItem(cartItem: CartItem) {
+        // Remove the item from the local cart list
+        if (cartItemList.remove(cartItem)) {
+            Log.i("Cart", "Removed item from local cart: ${cartItem.id}")
+
+            // Update LiveData to notify observers
+            _cartItems.postValue(cartItemList.toList())
+
+            // Recalculate total after deletion
+            calculateTotal()
+
+            // Update the Shopify draft order
+            updateShopifyDraftOrder(cartItemList)
+        } else {
+            Log.i("Cart", "Item not found in local cart: ${cartItem.id}")
+        }
+    }
+
     // Update the local cart and post new values to LiveData
     private fun updateLocalCartItem(item: CartItem) {
         val index = cartItemList.indexOfFirst { it.id == item.id }
