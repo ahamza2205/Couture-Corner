@@ -1,11 +1,12 @@
 # Existing schema
 type Query {
-#    products(first: Int!, query: String): ProductConnection
+    #    products(first: Int!, query: String): ProductConnection
     products(first: Int!, query: String): ProductConnection
     customer(id: ID!): Customer
     product(id: ID!): Product
     codeDiscountNodes(first: Int!): CodeDiscountNodeConnection
     HomeProducts(first: Int!): ProductConnection
+    draftOrders(query: String!, first: Int): DraftOrderConnection
 }
 
 # Connection type for pagination
@@ -30,6 +31,7 @@ type Product {
     totalInventory: Int
     images(first: Int!): ImageConnection
     variants(first: Int!): VariantConnection
+    media(first: Int): MediaConnection
 }
 
 # Connection type for images
@@ -40,11 +42,13 @@ type ImageConnection {
 # Edge type for images
 type ImageEdge {
     node: Image
+    url: String
 }
 
 # Define the Image type
 type Image {
     src: String!
+    url: String
 }
 
 # Connection type for variants
@@ -81,6 +85,7 @@ input CustomerInput {
     id: ID
     metafields: [MetafieldInput]
     addresses: [MailingAddressInput]
+
 }
 
 type Customer {
@@ -98,14 +103,6 @@ type Customer {
     metafields(first: Int): MetafieldConnection
     addresses: [Address]
     defaultAddress: MailingAddress
-}
-# The type for Mailing Address
-type MailingAddress {
-    formattedArea: String!
-    address1: String!
-    address2: String
-    city: String
-    phone: String
 }
 
 
@@ -140,13 +137,25 @@ input MetafieldInput {
 type Mutation {
     customerCreate(input: CustomerInput!): CustomerCreatePayload
     customerUpdate(input: CustomerInput!): CustomerUpdatePayload  # Added update mutation
+    draftOrderCreate(input: DraftOrderInput!): DraftOrderCreatePayload
+    draftOrderUpdate(input: DraftOrderInput!, id: ID!): DraftOrderUpdatePayload
+    draftOrderDelete(input: DraftOrderDeleteInput!): DraftOrderDeletePayload
+
 }
 
 type CustomerCreatePayload {
     customer: Customer
     userErrors: [UserError!]!
 }
+input DraftOrderDeleteInput {
+    id: ID!
+}
 
+# Payload type for deleting a draft order
+type DraftOrderDeletePayload {
+    deletedId: ID
+    userErrors: [UserError!]!
+}
 input CustomerUpdateInput {
     id: ID!
     metafields: [MetafieldInput!]  # Input for updating customer metafields
@@ -163,6 +172,13 @@ type UserError {
 }
 
 
+# The input type for Mailing Address
+input MailingAddressInput {
+    address1: String!
+    address2: String!
+    city: String!
+    phone: String!
+}
 
 # Type for CodesCount
 type CodesCount {
@@ -206,13 +222,15 @@ input AddressInput {
 }
 
 
-# The input type for Mailing Address
-input MailingAddressInput {
+# The type for Mailing Address
+type MailingAddress {
+    formattedArea: String!
     address1: String!
-    address2: String!
-    city: String!
-    phone: String!
+    address2: String
+    city: String
+    phone: String
 }
+
 
 # The address type
 type Address {
@@ -222,11 +240,75 @@ type Address {
     phone: String!
 }
 
+input DraftOrderInput {
+    customerId: ID
+    email: String
+    tags: [String!]
+    lineItems: [DraftOrderLineItemInput!]!
+}
+
+input DraftOrderLineItemInput {
+    variantId: ID!
+    quantity: Int!
+}
+
+type DraftOrderUpdatePayload {
+    draftOrder: DraftOrder
+    userErrors: [UserError!]!
+}
 
 
 
+type DraftOrderCreatePayload {
+    draftOrder: DraftOrder
+    userErrors: [UserError!]!
+}
 
 
+type DraftOrder {
+    id: ID!
+    tags: [String]
+    lineItems(first: Int): DraftOrderLineItemConnection
+}
+
+type DraftOrderConnection {
+    nodes: [DraftOrder!]!
+}
+
+type DraftOrderLineItemConnection {
+    nodes: [DraftOrderLineItem!]!
+}
+
+type DraftOrderLineItem {
+    name: String
+    quantity: Int
+    title: String
+    variant: ProductVariant
+}
 
 
+type ProductVariant {
+    id: ID!
+    inventoryQuantity: Int
+    selectedOptions: [SelectedOption!]!
+    price: String
+    product: Product
+}
 
+type SelectedOption {
+    name: String
+    value: String
+}
+
+type MediaConnection {
+    nodes: [Media!]
+}
+
+interface Media {
+    id: ID!
+}
+
+type MediaImage implements Media {
+    id: ID!
+    image: Image
+}

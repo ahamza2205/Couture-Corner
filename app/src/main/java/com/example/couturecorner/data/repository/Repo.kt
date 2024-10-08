@@ -12,22 +12,26 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.Gson
 import com.graphql.AddFavoriteProductMutation
 import com.graphql.CustomerCreateMutation
+import com.graphql.DeleteDraftOrderMutation
+import com.graphql.DraftOrderCreateMutation
 import com.graphql.FilteredProductsQuery
 import com.graphql.GetCuponCodesQuery
 import com.graphql.GetCustomerByIdQuery
+import com.graphql.GetDraftOrdersByCustomerQuery
 import com.graphql.GetFavoriteProductsQuery
 import com.graphql.GetProductsQuery
 import com.graphql.HomeProductsQuery
 import com.graphql.UpdateCustomerMetafieldsMutation
 import com.graphql.ProductQuery
-import com.graphql.type.Customer
+import com.graphql.UpdateDraftOrderMetafieldsMutation
 import com.graphql.type.CustomerInput
-import kotlinx.coroutines.delay
+import com.graphql.type.DraftOrderDeleteInput
+import com.graphql.type.DraftOrderInput
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
-import javax.inject.Singleton
+
 
 class Repo
     @Inject constructor(
@@ -35,8 +39,6 @@ class Repo
     private val sharedPreference: SharedPreference
 
 ) : Irepo {
-
-    // ---------------------------- Product  ------------------------------------
 
     override fun getProducts(): Flow<ApolloResponse<GetProductsQuery.Data>> {
         return remoteData.getProducts()
@@ -50,7 +52,7 @@ class Repo
         return remoteData.getFilterdProducts(vendor)
     }
 
-
+    // ---------------------------- shared preference ------------------------------------
     // ---------------------------- shared preference ------------------------------------
     override fun saveUserLoggedIn(isLoggedIn: Boolean) {
         sharedPreference.saveUserLoggedIn(isLoggedIn)
@@ -160,8 +162,8 @@ class Repo
                 }
             )
         }
-        return null
     }
+
     // ----------------------------------- product details --------------------------------
     override fun getProductDetails(productId: String): Flow<ApiState<ProductQuery.Data>> = flow {
         try {
@@ -171,6 +173,7 @@ class Repo
             emit(ApiState.Error(e.message ?: "Unknown Error"))
         }
     }
+
     // ------------------------ get & save shopify user id --------------------------------
     override fun getShopifyUserId(email: String): String? {
         return sharedPreference.getShopifyUserId(email)
@@ -209,7 +212,7 @@ override suspend fun addProductToFavorites(customerId: String, productId: String
     }
 }
 
-   override suspend fun getCurrentFavorites(customerId: String): List<String>? {
+    suspend fun getCurrentFavorites(customerId: String): List<String>? {
         val query = GetFavoriteProductsQuery(customerId = customerId)
         val response = apolloClient.query(query).execute()
         if (response.hasErrors()) {

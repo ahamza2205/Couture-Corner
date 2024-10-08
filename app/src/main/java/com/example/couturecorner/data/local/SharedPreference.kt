@@ -26,14 +26,29 @@ class SharedPreference @Inject constructor(context: Context) {
     fun saveShopifyUserId(email: String, userId: String) {
         sharedPreferences.edit().putString(email, userId).apply()
     }
+
+    fun getShopifyUserId(email: String): String? {
+        return sharedPreferences.getString(email, null)
+    }
+    // ---------------------- Address state  -----------------------------
+    // ---------------------- Address state  ------------------------------
+
+
     fun saveAddressState(haveAddress: Boolean){
         sharedPreferences.edit().putBoolean("haveAddress", haveAddress).apply()
     }
     fun getAddressState(): Boolean {
         return sharedPreferences.getBoolean("haveAddress", false)
     }
+    // ----------------------  Draft Order Tag -----------------------------
+    // ----------------------  Draft Order Tag -----------------------------
 
-    fun getShopifyUserId(email: String): String? {
-        return sharedPreferences.getString(email, null)
+    fun saveDraftOrderTag(userId: String, tag: String) {
+        sharedPreferences.edit().putString(userId, tag).apply()
     }
+    fun getDraftOrderTag(userId: String): String? {
+        return sharedPreferences.getString(userId, null)
+    }
+
+
 }
