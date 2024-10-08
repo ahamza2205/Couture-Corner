@@ -88,6 +88,13 @@ class ProductDetailsFragment : Fragment() {
                             binding.productTypeValue.text = it.productType
                             binding.stockCount.text = "${it.totalInventory} items available"
                             binding.productRatingText.text=LocalListsData.productRatingsMap[productId]?.toString()
+
+
+                            binding.review.setOnClickListener {
+                                val reviewBottomSheet = ReviewBottomSheetFragment()
+                                reviewBottomSheet.show(childFragmentManager, "ReviewBottomSheet")
+                            }
+
                             it.images?.edges?.let { imageEdges ->
                                 setupImagesRecyclerView(imageEdges.map { imageEdge -> imageEdge?.node?.src ?: "" })
                             }

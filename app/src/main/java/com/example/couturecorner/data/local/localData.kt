@@ -1,5 +1,15 @@
 package com.example.couturecorner.data.local
 
+
+
+data class Review(
+    val id: Int,
+    val reviewerName: String,
+    val profileImageUrl: String,
+    val text: String,
+    val rating: Float
+)
+
 object LocalListsData
 {
     val productIds = listOf(
@@ -25,4 +35,44 @@ object LocalListsData
         3.6f, 4.4f, 4.1f, 3.5f, 4.7f, 3.4f, 4.5f, 3.3f, 4.2f, 3.2f)
 
     val productRatingsMap = productIds.zip(ratings).toMap()
+
+
+    val sampleReviews = mutableListOf(
+        Review(
+            id = 1,
+            reviewerName = "Alice Smith",
+            profileImageUrl = "https://randomuser.me/api/portraits/women/1.jpg",
+            text = "Great product! Really helped me stay organized and productive.",
+            rating = 4.5f
+        ),
+        Review(
+            id = 2,
+            reviewerName = "John Doe",
+            profileImageUrl = "https://randomuser.me/api/portraits/men/2.jpg",
+            text = "The product is decent, but it could use some improvements in design.",
+            rating = 3.0f
+        ),
+        Review(
+            id = 3,
+            reviewerName = "Emma Brown",
+            profileImageUrl = "https://randomuser.me/api/portraits/women/3.jpg",
+            text = "Absolutely love it! The features are exactly what I needed.",
+            rating = 5.0f
+        ),
+        Review(
+            id = 4,
+            reviewerName = "David Wilson",
+            profileImageUrl = "https://randomuser.me/api/portraits/men/4.jpg",
+            text = "Good value for the price, but there are better options available.",
+            rating = 3.5f
+        ),
+        Review(
+            id = 5,
+            reviewerName = "Sophia Davis",
+            profileImageUrl = "https://randomuser.me/api/portraits/women/5.jpg",
+            text = "The product exceeded my expectations, and the customer service was great!",
+            rating = 4.8f
+        )
+    )
+
 }
