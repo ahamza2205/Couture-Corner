@@ -40,6 +40,8 @@ class Repo
 
 ) : Irepo {
 
+    // ---------------------------- Product  ------------------------------------
+
     override fun getProducts(): Flow<ApolloResponse<GetProductsQuery.Data>> {
         return remoteData.getProducts()
     }
@@ -52,7 +54,6 @@ class Repo
         return remoteData.getFilterdProducts(vendor)
     }
 
-    // ---------------------------- shared preference ------------------------------------
     // ---------------------------- shared preference ------------------------------------
     override fun saveUserLoggedIn(isLoggedIn: Boolean) {
         sharedPreference.saveUserLoggedIn(isLoggedIn)
@@ -162,6 +163,7 @@ class Repo
                 }
             )
         }
+        return null
     }
 
     // ----------------------------------- product details --------------------------------
@@ -212,7 +214,7 @@ override suspend fun addProductToFavorites(customerId: String, productId: String
     }
 }
 
-    suspend fun getCurrentFavorites(customerId: String): List<String>? {
+   override suspend fun getCurrentFavorites(customerId: String): List<String>? {
         val query = GetFavoriteProductsQuery(customerId = customerId)
         val response = apolloClient.query(query).execute()
         if (response.hasErrors()) {
@@ -272,5 +274,39 @@ override suspend fun addProductToFavorites(customerId: String, productId: String
     }
     override fun updateCustomer(input: CustomerInput): Flow<ApolloResponse<UpdateCustomerMetafieldsMutation.Data>> {
         return remoteData.updateCustomer(input)
+    }
+
+    // ---------------------------- Draft Order ------------------------------------
+
+    override fun createDraftOrder(input: DraftOrderInput): Flow<ApolloResponse<DraftOrderCreateMutation.Data>> {
+
+        return remoteData.createDraftOrder(input)
+    }
+
+    override fun getDraftOrderByCustomerId(id: String): Flow<ApolloResponse<GetDraftOrdersByCustomerQuery.Data>> {
+
+        return remoteData.getDraftOrderByCustomerId(id)
+    }
+
+    override fun deleteDraftOrder(input: DraftOrderDeleteInput): Flow<ApolloResponse<DeleteDraftOrderMutation.Data>> {
+
+        return remoteData.deleteDraftOrder(input)
+    }
+
+    override fun saveDraftOrderTag(userId: String, tag: String) {
+        sharedPreference.saveDraftOrderTag(userId, tag)
+    }
+
+    override fun getDraftOrderTag(userId: String): String? {
+        return sharedPreference.getDraftOrderTag(userId)
+    }
+
+
+    override fun updateDraftOrder(
+        input: DraftOrderInput,
+        id: String
+    ): Flow<ApolloResponse<UpdateDraftOrderMetafieldsMutation.Data>> {
+
+        return remoteData.updateDraftOrder(input, id)
     }
 }

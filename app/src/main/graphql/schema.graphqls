@@ -106,6 +106,7 @@ type Customer {
 }
 
 
+
 # Connection type for Metafields
 type MetafieldConnection {
     edges: [MetafieldEdge!]!
@@ -180,6 +181,7 @@ input MailingAddressInput {
     phone: String!
 }
 
+
 # Type for CodesCount
 type CodesCount {
     count: Int!
@@ -230,6 +232,7 @@ type MailingAddress {
     city: String
     phone: String
 }
+
 
 
 # The address type
@@ -293,11 +296,6 @@ type ProductVariant {
     selectedOptions: [SelectedOption!]!
     price: String
     product: Product
-}
-
-type SelectedOption {
-    name: String
-    value: String
 }
 
 type MediaConnection {
