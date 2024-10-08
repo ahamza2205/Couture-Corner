@@ -64,6 +64,9 @@ class ProductsAdapter(
             if (favList.contains(product?.id))
             {
                 // delet method
+               product?.id?.let { productId ->
+                   listener.deleteFavorite(productId)
+               }
                 holder.binding.favoriteAddsButton.isSelected=false
             }
             else

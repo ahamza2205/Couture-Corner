@@ -67,6 +67,40 @@ class MainViewModel @Inject constructor(
     }
 
 
+    fun removeProductFromFavorites(productId: String)
+    {
+        viewModelScope.launch {
+            // Get current Firebase user
+            val user = FirebaseAuth.getInstance().currentUser
+
+            if (user != null) {
+                val userEmail = user.email
+
+                if (userEmail != null) {
+                    try {
+                        // Get the customer ID using the user's email
+                        val customerId = repo.getShopifyUserId(userEmail)
+                        if (customerId != null) {
+                            // Attempt to add product to favorites in repo
+                           repo.removeProductFromFavorites(customerId, productId)
+                            // Log success for debugging purposes
+                            Log.d("HomeViewModel", "Product $productId added to favorites for customer $customerId")
+                        } else {
+                            Log.e("HomeViewModel", "Error: customerId is null")
+                        }
+                    } catch (e: Exception) {
+                        Log.e("HomeViewModel", "Error adding product to favorites: ${e.message}")
+                    }
+                } else {
+                    Log.e("HomeViewModel", "Error: User email is null")
+                }
+            } else {
+                Log.e("HomeViewModel", "Error: No user logged in")
+            }
+        }
+    }
+
+
     fun addProductToFavorites(productId: String) {
         viewModelScope.launch {
             // Get current Firebase user

@@ -150,6 +150,10 @@ class HomeFragment : Fragment(), OnItemClickListener {
         findNavController().navigate(action)
     }
 
+    override fun deleteFavorite(productId: String) {
+       sharedViewModel.removeProductFromFavorites(productId)
+        Toast.makeText(requireContext(), "Deleted to favorites", Toast.LENGTH_SHORT).show()
+    }
 
 
     override fun onFavoriteClick(productId: String) {

@@ -107,6 +107,12 @@ class CategoryFragment : Fragment(), OnItemClickListener {
         Toast.makeText(requireContext(), "Added to favorites", Toast.LENGTH_SHORT).show()
         Log.d("BrandFragment", "Favorited product ID: $productId")
     }
+
+    override fun deleteFavorite(productId: String) {
+        sharedViewModel.removeProductFromFavorites(productId)
+        Toast.makeText(requireContext(), "Deleted to favorites", Toast.LENGTH_SHORT).show()
+    }
+
     fun showLoading(isLoading:Boolean)
     {
         if (isLoading)
