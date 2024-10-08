@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.couturecorner.R
 import com.example.couturecorner.databinding.ProductItemBinding
 import com.graphql.ProductQuery
 
@@ -25,7 +26,11 @@ class FavoriteProductsAdapter(
     override fun onBindViewHolder(holder: FavoriteProductViewHolder, position: Int) {
         val product = productList[position]
         holder.binding.title.text = product.title
-        holder.binding.priceTextView.text = product.variants?.edges?.get(0)?.node?.price
+        holder.binding.priceTextView.text = holder.itemView.context.getString(
+            R.string.price,
+            product?.variants?.edges?.get(0)?.node?.price,
+            "EGP"
+        )
 
         holder.binding.favoriteAddsButton.isSelected=checkIsFavorite(product.id)
 
@@ -36,7 +41,7 @@ class FavoriteProductsAdapter(
               listener.onFavoriteClick(product.id)
 
               holder.binding.favoriteAddsButton.isSelected=false
-         
+
       }
 
 

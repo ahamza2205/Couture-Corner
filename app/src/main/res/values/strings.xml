@@ -20,5 +20,6 @@
     <string name="shoesUpper">SHOES</string>
     <string name="accessories">ACCESSORIES</string>
     <string name="all">All</string>
+    <string name="price">%1$s %2$s</string>
 
 </resources>

@@ -4,6 +4,7 @@ package com.example.couturecorner.home.ui
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat.getString
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
@@ -54,7 +55,12 @@ class ProductsAdapter(
         val title=product?.title?.split("|")
         holder.binding.title.text=title?.get(1)
 //      holder.binding.title.text=product?.title
-        holder.binding.priceTextView.text=product?.variants?.edges?.get(0)?.node?.price
+        holder.binding.priceTextView.text= holder.itemView.context.getString(
+                R.string.price,
+                product?.variants?.edges?.get(0)?.node?.price,
+                "EGP"
+            )
+
 
         holder.binding.favoriteAddsButton.isSelected=favList.contains(product?.id)
 
