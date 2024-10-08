@@ -31,6 +31,7 @@ interface Irepo {
      fun saveShopifyUserId(email: String, userId: String)
      // -------------- add product to favorite ------------------------
      suspend fun addProductToFavorites(customerId: String, productId: String)
+    suspend fun getCurrentFavorites(customerId: String): List<String>?
      fun saveAddressState(haveAddress: Boolean)
      fun getAddressState(): Boolean
 }
