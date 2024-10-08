@@ -89,8 +89,24 @@ class FavoriteFragment : Fragment(), OnFavoriteItemClickListener {
         Toast.makeText(requireContext(), "Clicked on: ${product.title}", Toast.LENGTH_SHORT).show()
     }
     override fun onFavoriteClick(productId: String) {
-        Toast.makeText(requireContext(), "Favorite clicked for: $productId", Toast.LENGTH_SHORT).show()
+        val user = FirebaseAuth.getInstance().currentUser
+        if (user != null) {
+            val userEmail = user.email
+            if (userEmail != null) {
+                val customerId = sharedPreference.getShopifyUserId(userEmail)
+                if (customerId != null) {
+                    favoriteViewModel.removeProductFromFavorites(customerId, productId)
+                } else {
+                    Toast.makeText(requireContext(), "Failed to get customer ID", Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                Toast.makeText(requireContext(), "Failed to get user email", Toast.LENGTH_SHORT).show()
+            }
+        } else {
+            Toast.makeText(requireContext(), "User not logged in", Toast.LENGTH_SHORT).show()
+        }
     }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

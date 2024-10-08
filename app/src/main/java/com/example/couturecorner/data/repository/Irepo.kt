@@ -31,6 +31,7 @@ interface Irepo {
      // -------------- add product to favorite ------------------------
      suspend fun addProductToFavorites(customerId: String, productId: String)
     suspend fun getCurrentFavorites(customerId: String): List<String>?
+    suspend fun removeProductFromFavorites(customerId: String, productId: String)
      fun saveAddressState(haveAddress: Boolean)
      fun getAddressState(): Boolean
 }
