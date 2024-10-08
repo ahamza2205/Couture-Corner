@@ -13,6 +13,8 @@ class FavoriteProductsAdapter(
 
     private val productList = mutableListOf<ProductQuery.Product>() // This should hold ProductQuery.Product objects
 
+
+
     class FavoriteProductViewHolder(val binding: ProductItemBinding) : RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavoriteProductViewHolder {
@@ -24,6 +26,20 @@ class FavoriteProductsAdapter(
         val product = productList[position]
         holder.binding.title.text = product.title
         holder.binding.priceTextView.text = product.variants?.edges?.get(0)?.node?.price
+
+        holder.binding.favoriteAddsButton.isSelected=checkIsFavorite(product.id)
+
+      holder.binding.favoriteAddsButton.setOnClickListener {
+
+              // delet method
+
+              listener.onFavoriteClick(product.id)
+
+              holder.binding.favoriteAddsButton.isSelected=false
+         
+      }
+
+
         Glide.with(holder.itemView.context)
             .load(product.images?.edges?.get(0)?.node?.src)
             .into(holder.binding.ProductImageView)
@@ -32,15 +48,17 @@ class FavoriteProductsAdapter(
             listener.onItemClick(product)
         }
         // Set click listener for the favorite button
-        holder.binding.favoriteAddsButton.setOnClickListener {
-            listener.onFavoriteClick(product.id) // Trigger the remove favorite functionality
-        }
+
     }
     override fun getItemCount(): Int = productList.size
     fun submitList(products: List<ProductQuery.Product>) {
         productList.clear()
         productList.addAll(products)
         notifyDataSetChanged()
+    }
+
+    fun checkIsFavorite(productId: String): Boolean {
+        return productList.any { it.id == productId }
     }
 }
 

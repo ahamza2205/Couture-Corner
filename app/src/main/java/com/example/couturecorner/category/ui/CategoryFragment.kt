@@ -12,7 +12,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.couturecorner.R
-import com.example.couturecorner.brand.ui.ProductBrandAdapter
 import com.example.couturecorner.category.viewModel.CategoryViewModel
 import com.example.couturecorner.data.model.ApiState
 import com.example.couturecorner.databinding.FragmentCategoryBinding

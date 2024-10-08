@@ -107,6 +107,8 @@ class FavoriteFragment : Fragment(), OnFavoriteItemClickListener {
         }
     }
 
+
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

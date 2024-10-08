@@ -1,4 +1,4 @@
-package com.example.couturecorner.home.ui
+package com.example.couturecorner.brand.ui
 
 import android.content.Context
 import android.view.LayoutInflater
