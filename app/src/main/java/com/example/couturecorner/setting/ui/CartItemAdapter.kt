@@ -1,4 +1,5 @@
 package com.example.couturecorner.adapter
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -8,14 +9,15 @@ import com.example.couturecorner.data.model.CartItem
 import com.example.couturecorner.databinding.CartItemBinding
 
 class CartItemAdapter(
-//    private val onIncreaseQuantity: (CartItem) -> Unit,
-//    private val onDecreaseQuantity: (CartItem) -> Unit
+    private val onIncreaseQuantity: (CartItem) -> Unit,
+    private val onDecreaseQuantity: (CartItem) -> Unit
 ) : RecyclerView.Adapter<CartItemAdapter.CartItemViewHolder>() {
 
     private val cartItems = mutableListOf<CartItem>()
 
     inner class CartItemViewHolder(val binding: CartItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
+        @SuppressLint("NotifyDataSetChanged")
         fun bind(cartItem: CartItem) {
             Glide.with(binding.imageView.context)
                 .load( cartItem.imageUrl)
@@ -29,13 +31,15 @@ class CartItemAdapter(
             binding.itemColor.text = cartItem.color
 
 //            // Handle add and remove click listeners
-//            binding.addImageView.setOnClickListener {
-//                onIncreaseQuantity(cartItem)
-//            }
+            binding.addImageView.setOnClickListener {
+                onIncreaseQuantity(cartItem)
+                notifyDataSetChanged()
+
+            }
 //
-//            binding.removeImageView.setOnClickListener {
-//                onDecreaseQuantity(cartItem)
-//            }
+            binding.removeImageView.setOnClickListener {
+                onDecreaseQuantity(cartItem)
+            }
         }
     }
 
