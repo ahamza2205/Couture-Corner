@@ -42,10 +42,8 @@ class FavoriteFragment : Fragment(), OnFavoriteItemClickListener {
         val user = FirebaseAuth.getInstance().currentUser
         if (user != null) {
             val userEmail = user.email
-
             if (userEmail != null) {
                 val customerId = sharedPreference.getShopifyUserId(userEmail)
-
                 if (customerId != null) {
                     observeFavoriteProducts(customerId)
                 } else {
@@ -81,7 +79,6 @@ class FavoriteFragment : Fragment(), OnFavoriteItemClickListener {
             adapter = productsAdapter
         }
     }
-
     override fun onItemClick(product: ProductQuery.Product) {
         Toast.makeText(requireContext(), "Clicked on: ${product.title}", Toast.LENGTH_SHORT).show()
     }

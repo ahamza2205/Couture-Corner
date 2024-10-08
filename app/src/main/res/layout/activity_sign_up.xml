@@ -1,5 +1,4 @@
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -20,11 +19,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- Create Account Title -->
     <TextView
         android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:text="Create Account"
         android:textSize="24sp"
         android:textStyle="bold"
@@ -45,16 +45,15 @@
         app:layout_constraintTop_toBottomOf="@id/tvTitle" />
 
     <!-- LinearLayout for Name, Email, Password Inputs -->
-    <!-- LinearLayout for Name, Email, Password Inputs -->
     <LinearLayout
         android:id="@+id/linearLayoutInputs"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:orientation="vertical"
-        android:layout_marginTop="16dp"
-        app:layout_constraintTop_toBottomOf="@id/tvSubtitle"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvSubtitle"
         app:layout_constraintWidth_percent="0.9">
 
         <!-- First Name EditText -->
@@ -62,18 +61,18 @@
             android:id="@+id/etFirstName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="First Name"
             android:background="@drawable/rounded_edittext"
-            android:padding="12dp"/>
+            android:hint="First Name"
+            android:padding="12dp" />
 
         <!-- Last Name EditText -->
         <EditText
             android:id="@+id/etLastName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Last Name"
-            android:background="@drawable/rounded_edittext"
             android:layout_marginTop="16dp"
+            android:background="@drawable/rounded_edittext"
+            android:hint="Last Name"
             android:padding="12dp" />
 
         <!-- Phone Number EditText -->
@@ -81,10 +80,10 @@
             android:id="@+id/etPhoneNumber"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/rounded_edittext"
             android:hint="Phone Number"
             android:inputType="phone"
-            android:background="@drawable/rounded_edittext"
-            android:layout_marginTop="16dp"
             android:padding="12dp" />
 
         <!-- Email EditText -->
@@ -92,30 +91,42 @@
             android:id="@+id/etEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Email"
-            android:background="@drawable/rounded_edittext"
             android:layout_marginTop="16dp"
+            android:background="@drawable/rounded_edittext"
+            android:hint="Email"
             android:padding="12dp" />
 
+        <!-- Password EditText -->
         <!-- Password EditText -->
         <EditText
             android:id="@+id/etPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/rounded_edittext"
             android:hint="Password"
             android:inputType="textPassword"
-            android:background="@drawable/rounded_edittext"
-            android:layout_marginTop="16dp"
             android:padding="12dp" />
+
+        <!-- Confirm Password EditText -->
+        <EditText
+            android:id="@+id/etConfirmPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/rounded_edittext"
+            android:hint="Confirm Password"
+            android:inputType="textPassword"
+            android:padding="12dp" />
+
     </LinearLayout>
-    <!-- Terms and Conditions Checkbox -->
 
     <!-- Sign Up Button -->
     <Button
         android:id="@+id/btnSignUp"
-        android:layout_width="0dp"
+        android:layout_width="350dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="15dp"
         android:backgroundTint="@color/colorPrimary"
         android:text="Sign Up"
         android:textColor="@android:color/white"
@@ -129,44 +140,29 @@
         android:id="@+id/tvOrSignUpWith"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:text="Or sign up with"
         android:textSize="14sp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintTop_toBottomOf="@id/btnSignUp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <!-- Social Media Buttons -->
-    <LinearLayout
-        android:id="@+id/linearLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvOrSignUpWith">
+        app:layout_constraintTop_toBottomOf="@id/btnSignUp" />
 
-        <ImageView
-            android:id="@+id/ivApple"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@drawable/facebook_svgrepo_com" />
+    <!-- Log in with Google Button -->
 
-        <ImageView
-            android:id="@+id/ivGoogle"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="16dp"
-            android:src="@drawable/google_svgrepo_com" />
-
-        <ImageView
-            android:id="@+id/ivFacebook"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="16dp"
-            android:src="@drawable/linkedin_1_svgrepo_com" />
-    </LinearLayout>
+    <!-- Already have account -->
+    <Button
+        android:id="@+id/login_btnGoogle"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:backgroundTint="#4285F4"
+        android:drawableLeft="@drawable/google_svgrepo_com"
+        android:drawablePadding="32dp"
+        android:text="Log in with Google"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvOrSignUpWith" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -178,20 +174,65 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/alreadyhaveacc"
-            android:textColor="@color/gray"
-            android:textSize="14sp" />
-
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:text="@string/signIn"
-            android:textColor="@color/colorPrimary" />
-
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="83dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/alreadyhaveacc"
+        android:textColor="@color/gray"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/login_btnGoogle" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="100dp"
+        android:text="@string/signIn"
+        android:textColor="@color/colorPrimary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/textView"
+        app:layout_constraintTop_toBottomOf="@+id/login_btnGoogle" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="20dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="-172dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="781dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="-162dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="20dp" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -32,6 +32,20 @@ class LoginActivity : AppCompatActivity() {
             val intent = Intent(this, SignUpActivity::class.java)
             startActivity(intent)
         }
+        // Handle guest login
+        binding.loginBtnGuest.setOnClickListener {
+            viewModel.loginAsGuest()
+        }
+
+        // Observe login status
+        viewModel.loginStatus.observe(this) { isSuccess ->
+            if (isSuccess) {
+                startActivity(Intent(this, MainActivity::class.java))
+                finish()
+            } else {
+                Toast.makeText(this, "Error logging in as guest", Toast.LENGTH_SHORT).show()
+            }
+        }
         auth = FirebaseAuth.getInstance()
 
         binding.loginBtnSignIn.setOnClickListener {

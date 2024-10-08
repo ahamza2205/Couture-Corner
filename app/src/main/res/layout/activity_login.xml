@@ -10,6 +10,7 @@
         android:layout_height="match_parent"
         android:gravity="center_horizontal"
         android:orientation="vertical">
+
         <!-- Logo Text -->
         <TextView
             android:id="@+id/tvLogo"
@@ -65,13 +66,6 @@
                 android:padding="12dp" />
 
             <!-- Eye Icon for Password Visibility -->
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:layout_marginEnd="16dp"
-                android:src="@drawable/eye" />
         </RelativeLayout>
 
         <!-- Forgot Password Text -->
@@ -126,31 +120,27 @@
 
         </LinearLayout>
 
-        <!-- Social Media Icons -->
-        <LinearLayout
+        <!-- Log in as Guest Button -->
+        <Button
+            android:id="@+id/login_btnGuest"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
-            android:gravity="center"
-            android:orientation="horizontal">
+            android:layout_marginBottom="20dp"
+            android:backgroundTint="@color/gray"
+            android:text="Log in as Guest"
+            android:textColor="@android:color/white" />
 
-            <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginEnd="16dp"
-                android:src="@drawable/facebook_svgrepo_com" />
-
-            <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginEnd="16dp"
-                android:src="@drawable/google_svgrepo_com" />
-
-            <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@drawable/linkedin_1_svgrepo_com" />
-        </LinearLayout>
+        <!-- Log in with Google Button -->
+        <Button
+            android:id="@+id/login_btnGoogle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:backgroundTint="#4285F4"
+            android:text="Log in with Google"
+            android:textColor="@color/white"
+            android:drawableLeft="@drawable/google_svgrepo_com"
+            android:drawablePadding="32dp" />
 
         <!-- Sign Up Text -->
         <LinearLayout

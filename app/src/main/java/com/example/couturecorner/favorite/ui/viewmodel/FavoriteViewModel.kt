@@ -21,7 +21,6 @@ class FavoriteViewModel @Inject constructor(
 ) : ViewModel() {
     private val _favoriteProducts = MutableLiveData<ApiState<List<ProductQuery.Product>>>()
     val favoriteProducts: LiveData<ApiState<List<ProductQuery.Product>>> get() = _favoriteProducts
-
     fun loadFavoriteProducts(customerId: String) {
         viewModelScope.launch {
             _favoriteProducts.value = ApiState.Loading

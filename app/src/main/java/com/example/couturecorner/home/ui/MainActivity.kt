@@ -42,6 +42,14 @@ class MainActivity : AppCompatActivity() {
             .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         val navController = navHostFragment.navController
 
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            if (destination.id == R.id.productDetailsFragment) {
+                bottomNav.visibility = View.GONE
+            } else {
+                bottomNav.visibility = View.VISIBLE
+            }
+        }
+
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_navigation)
         bottomNav.setupWithNavController(navController)
 
@@ -89,6 +97,13 @@ class MainActivity : AppCompatActivity() {
         val searchItem = menu?.findItem(R.id.action_search)
         val searchView = searchItem?.actionView as SearchView
         searchView.queryHint = "Search for products..."
+        searchView.setOnQueryTextFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                bottomNav.visibility = View.GONE
+            } else {
+                bottomNav.visibility = View.VISIBLE
+            }
+        }
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return false

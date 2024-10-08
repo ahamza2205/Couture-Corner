@@ -49,7 +49,6 @@ class Repo
     }
 
     // ---------------------------- shared preference ------------------------------------
-    // ---------------------------- shared preference ------------------------------------
     override fun saveUserLoggedIn(isLoggedIn: Boolean) {
         sharedPreference.saveUserLoggedIn(isLoggedIn)
     }
@@ -61,7 +60,6 @@ class Repo
     override fun logoutUser() {
         sharedPreference.logoutUser()
     }
-
 
     // --------------------------- shopify registration -------------------------------
     suspend fun registerUser(
@@ -155,11 +153,9 @@ class Repo
     override fun getShopifyUserId(email: String): String? {
         return sharedPreference.getShopifyUserId(email)
     }
-
     override fun saveShopifyUserId(email: String, userId: String) {
         sharedPreference.saveShopifyUserId(email, userId)
     }
-
 // --------------------------- Add product to favorite --------------------------------
 override suspend fun addProductToFavorites(customerId: String, productId: String) {
     try {

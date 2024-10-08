@@ -19,6 +19,9 @@ class LoginViewModel @Inject constructor(
 ) : ViewModel() {
     private val _customerData = MutableLiveData<GetCustomerByIdQuery.Customer?>()
     val customerData: LiveData<GetCustomerByIdQuery.Customer?> get() = _customerData
+    private val auth: FirebaseAuth = FirebaseAuth.getInstance()
+    private val _loginStatus = MutableLiveData<Boolean>()
+    val loginStatus: LiveData<Boolean> get() = _loginStatus
     fun saveUserLoggedIn(isLoggedIn: Boolean) {
         repo.saveUserLoggedIn(isLoggedIn)
     }
@@ -27,6 +30,19 @@ class LoginViewModel @Inject constructor(
         return repo.isUserLoggedIn()
     }
 
+
+    fun loginAsGuest() {
+        auth.signInAnonymously().addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                // Save guest information to SharedPreferences
+                val guestEmail = "guest@example.com"
+                sharedPreference.saveUserLoggedIn(true)
+                _loginStatus.postValue(true)
+            } else {
+                _loginStatus.postValue(false)
+            }
+        }
+    }
     fun getCustomerData(customerId: String) {
         viewModelScope.launch {
             try {
