@@ -211,11 +211,11 @@ class Repo
     }
 
     override fun saveDraftOrderTag(userId: String, tag: String) {
-        TODO("Not yet implemented")
+        sharedPreference.saveDraftOrderTag(userId, tag)
     }
 
     override fun getDraftOrderTag(userId: String): String? {
-        TODO("Not yet implemented")
+        return sharedPreference.getDraftOrderTag(userId)
     }
 
     // --------------------------- Add product to favorite --------------------------------

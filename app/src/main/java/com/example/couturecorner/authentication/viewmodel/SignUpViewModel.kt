@@ -45,7 +45,7 @@ class SignUpViewModel @Inject constructor(
                 if (shopifyUserId != null) {
                     // Save Shopify User ID to shared preferences
                     sharedPreference.saveShopifyUserId(email, shopifyUserId)
-                    repo.saveDraftOrderTag(userId = shopifyUserId, tag = "$shopifyUserId")
+                    repo.saveDraftOrderTag(userId = shopifyUserId, tag = "C$shopifyUserId")
                     Log.i("CartTag", "getCustomerDataTwo: "+repo.getDraftOrderTag(userId = shopifyUserId))
 
                     _registrationStatus.postValue(true)
