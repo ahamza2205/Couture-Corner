@@ -41,6 +41,77 @@
                         </RelativeLayout>
     </androidx.cardview.widget.CardView>
 
+
+    <HorizontalScrollView
+        android:id="@+id/cipsScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:scrollbars="none"
+        app:layout_constraintTop_toBottomOf="@id/brandCardView">
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chipGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintHorizontal_bias="0.583"
+            app:singleSelection="true">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip0"
+                style="@style/Widget.MaterialComponents.Chip.Action"
+                android:layout_width="125dp"
+                android:layout_height="48dp"
+                android:checkable="true"
+                android:text="@string/all"
+                android:textAlignment="center"
+                app:chipBackgroundColor="@color/white"
+                app:chipStrokeColor="@color/colorPrimary"
+                app:chipStrokeWidth="2dp" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip1"
+                style="@style/Widget.MaterialComponents.Chip.Action"
+                android:layout_width="125dp"
+                android:layout_height="48dp"
+                android:checkable="true"
+                android:text="@string/shoesUpper"
+                android:textAlignment="center"
+                app:chipBackgroundColor="@color/white"
+                app:chipStrokeColor="@color/colorPrimary"
+                app:chipStrokeWidth="2dp" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip2"
+                style="@style/Widget.MaterialComponents.Chip.Action"
+                android:layout_width="125dp"
+                android:layout_height="48dp"
+                android:checkable="true"
+                android:text="@string/t_shirts"
+                android:textAlignment="center"
+                app:chipBackgroundColor="@color/white"
+                app:chipStrokeColor="@color/colorPrimary"
+                app:chipStrokeWidth="2dp" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip3"
+                style="@style/Widget.MaterialComponents.Chip.Action"
+                android:layout_width="125dp"
+                android:layout_height="48dp"
+                android:checkable="true"
+                android:text="@string/accessories"
+                android:textAlignment="center"
+                app:chipBackgroundColor="@color/white"
+                app:chipStrokeColor="@color/colorPrimary"
+                app:chipStrokeWidth="2dp" />
+
+        </com.google.android.material.chip.ChipGroup>
+    </HorizontalScrollView>
+
+
+
     <ProgressBar
         android:id="@+id/progressBar"
         android:layout_width="wrap_content"
@@ -52,22 +123,24 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/brandCardView"
+        app:layout_constraintTop_toBottomOf="@id/cipsScrollView"
         app:layout_constraintVertical_bias="0.359" />
 
     <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/productsRecycel"
-                android:paddingHorizontal="4dp"
-                android:layout_width="match_parent"
+        android:id="@+id/productsRecycel"
+        android:layout_width="match_parent"
         android:layout_height="480dp"
-        android:layout_marginTop="15dp"
-                app:spanCount="2"
-                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                android:orientation="vertical"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/brandCardView" />
+        android:layout_marginTop="8dp"
+        android:orientation="vertical"
+        android:paddingHorizontal="4dp"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cipsScrollView"
+        app:layout_constraintVertical_bias="0.0"
+        app:spanCount="2" />
 
 
 

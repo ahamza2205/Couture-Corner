@@ -21,7 +21,7 @@ class BrandViewModel @Inject constructor(
         ApiState.Loading)
     val productsBrands : StateFlow<ApiState<ApolloResponse<FilteredProductsQuery.Data>>> =_productsBrands
 
-    fun getFilterdProducts(vendor: String) {
+    fun getFilterdProducts(vendor: String?) {
         viewModelScope.launch {
             repo.getFilterdProducts(vendor).collect {
                 if (it.hasErrors())

@@ -1,5 +1,6 @@
 package com.example.couturecorner.brand.ui
 
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -17,6 +18,7 @@ import com.example.couturecorner.databinding.FragmentBrandsBinding
 import com.example.couturecorner.home.ui.OnItemClickListener
 import com.example.couturecorner.home.ui.ProductsAdapter
 import com.example.couturecorner.home.viewmodel.MainViewModel
+import com.google.android.material.chip.Chip
 import com.graphql.FilteredProductsQuery
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -58,7 +60,8 @@ class BrandsFragment : Fragment(), OnItemClickListener {
         val logoResId = brandLogos[brandName] ?: R.drawable.shoz10
         binding.AddsImageView.setImageResource(logoResId)
 
-        viewModel.getFilterdProducts(brandName ?: "puma")
+//        viewModel.getFilterdProducts(brandName)
+        updateChips()
 
         lifecycleScope.launch {
             viewModel.productsBrands.collect {
@@ -104,6 +107,62 @@ class BrandsFragment : Fragment(), OnItemClickListener {
         } else {
             binding.progressBar.visibility = View.GONE
             binding.productsRecycel.visibility = View.VISIBLE
+        }
+    }
+
+
+    fun updateChips(){
+
+        binding.chip0.isChecked = true
+        binding.chip0.setChipBackgroundColorResource(R.color.colorPrimary)
+        binding.chip0.setTextColor(Color.WHITE)
+        Log.d("AmrChips", "chip0 selected")
+        viewModel.getFilterdProducts(brandName)
+
+
+        binding.chipGroup.setOnCheckedChangeListener { group, checkedId ->
+            // If no chip is selected (checkedId is -1), re-select chip0
+//            if (checkedId == -1) {
+//                binding.chip0.isChecked = true
+//                binding.chip0.chipBackgroundColor = ContextCompat.getColorStateList(requireContext(), R.color.colorPrimary)
+//                Log.d("AmrChips", "chip0 re-selected")
+//                viewModel.getFilterdProducts(null)
+//            } else {
+            // Reset all chips to their default background color
+            for (i in 0 until group.childCount) {
+                val chip = group.getChildAt(i) as Chip
+                chip.setChipBackgroundColorResource(R.color.white) // Default color
+                chip.setTextColor(Color.BLACK)
+            }
+
+            // Change the background color of the selected chip
+            when (checkedId) {
+                R.id.chip0 -> {
+                    binding.chip0.setChipBackgroundColorResource(R.color.colorPrimary)
+                    binding.chip0.setTextColor(Color.WHITE)
+                    Log.d("AmrChips", "chip0 selected")
+                    viewModel.getFilterdProducts(brandName)
+                }
+                R.id.chip1 -> {
+                    binding.chip1.setChipBackgroundColorResource(R.color.colorPrimary)
+                    binding.chip1.setTextColor(Color.WHITE)
+                    Log.d("AmrChips", "chip1 selected")
+                    viewModel.getFilterdProducts("product_type:${binding.chip1.text} AND $brandName")
+                }
+                R.id.chip2 -> {
+                    binding.chip2.setChipBackgroundColorResource(R.color.colorPrimary)
+                    binding.chip2.setTextColor(Color.WHITE)
+                    Log.d("AmrChips", "chip2 selected")
+                    viewModel.getFilterdProducts("product_type:${binding.chip2.text} AND $brandName")
+                }
+                R.id.chip3 -> {
+                    binding.chip3.setChipBackgroundColorResource(R.color.colorPrimary)
+                    binding.chip3.setTextColor(Color.WHITE)
+                    Log.d("AmrChips", "chip3 selected")
+                    viewModel.getFilterdProducts("product_type:${binding.chip3.text} AND $brandName")
+                }
+            }
+            //           }
         }
     }
 
