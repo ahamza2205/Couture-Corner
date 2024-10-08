@@ -11,6 +11,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.compose.ui.unit.dp
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -22,6 +23,7 @@ import com.example.couturecorner.category.ui.CategoryAdapter
 import com.example.couturecorner.data.model.ApiState
 import com.example.couturecorner.databinding.FragmentHomeBinding
 import com.example.couturecorner.home.viewmodel.HomeViewModel
+import com.example.couturecorner.home.viewmodel.MainViewModel
 import com.google.android.material.chip.Chip
 import com.graphql.FilteredProductsQuery
 import dagger.hilt.android.AndroidEntryPoint
@@ -37,6 +39,7 @@ class HomeFragment : Fragment(), OnItemClickListener {
     lateinit var cuponAdapter: CuponAdapter
 
     val viewModel: HomeViewModel by viewModels()
+    val sharedViewModel:MainViewModel by activityViewModels()
 
     private lateinit var pageChangeCallback: ViewPager2.OnPageChangeCallback
     val params=LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT).apply {
@@ -123,10 +126,10 @@ class HomeFragment : Fragment(), OnItemClickListener {
             }
         }
 
-        viewModel.getFavList()
+        sharedViewModel.getFavList()
 
         lifecycleScope.launch {
-            viewModel.favIdsList.collect{
+            sharedViewModel.favIdsList.collect{
                 if(it.isNotEmpty()){
                    productsAdapter.favListUpdate(it.toMutableList())
                 }
@@ -150,7 +153,7 @@ class HomeFragment : Fragment(), OnItemClickListener {
 
 
     override fun onFavoriteClick(productId: String) {
-        viewModel.addProductToFavorites(productId)
+        sharedViewModel.addProductToFavorites(productId)
         Toast.makeText(requireContext(), "Added to favorites", Toast.LENGTH_SHORT).show()
     }
     fun showLoading(isLoading:Boolean)

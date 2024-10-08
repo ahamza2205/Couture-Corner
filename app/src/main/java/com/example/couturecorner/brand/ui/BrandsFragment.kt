@@ -6,6 +6,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.couturecorner.R
@@ -14,6 +16,7 @@ import com.example.couturecorner.data.model.ApiState
 import com.example.couturecorner.databinding.FragmentBrandsBinding
 import com.example.couturecorner.home.ui.OnItemClickListener
 import com.example.couturecorner.home.ui.ProductsAdapter
+import com.example.couturecorner.home.viewmodel.MainViewModel
 import com.graphql.FilteredProductsQuery
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -24,6 +27,7 @@ class BrandsFragment : Fragment(), OnItemClickListener {
     private var brandName: String? = null
 
     val viewModel:BrandViewModel by viewModels()
+    val sharedViewModel: MainViewModel by activityViewModels()
 
     lateinit var binding:FragmentBrandsBinding
     lateinit var productsBrandAdapter: ProductsAdapter
@@ -72,6 +76,17 @@ class BrandsFragment : Fragment(), OnItemClickListener {
                 }
             }
         }
+
+        sharedViewModel.getFavList()
+
+        lifecycleScope.launch {
+            sharedViewModel.favIdsList.collect{
+                if(it.isNotEmpty()){
+                    productsBrandAdapter.favListUpdate(it.toMutableList())
+                }
+            }
+        }
+
     }
 
     override fun onItemClick(product: FilteredProductsQuery.Node?) {
@@ -80,7 +95,8 @@ class BrandsFragment : Fragment(), OnItemClickListener {
     }
 
     override fun onFavoriteClick(productId: String) {
-        // Handle favorite button click, e.g., add to favorite list
+        sharedViewModel.addProductToFavorites(productId)
+        Toast.makeText(requireContext(), "Added to favorites", Toast.LENGTH_SHORT).show()
         Log.d("BrandFragment", "Favorited product ID: $productId")
     }
 
