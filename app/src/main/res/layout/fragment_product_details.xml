@@ -70,19 +70,31 @@
             app:layout_constraintEnd_toEndOf="parent" />
 
         <!-- Product Rating -->
-        <TextView
-            android:id="@+id/productRating"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="25dp"
-            android:layout_marginEnd="15dp"
-            android:text="4.5 ★"
-            android:textColor="@android:color/holo_orange_dark"
-            android:textSize="32sp"
+
+        <!-- Product Type -->
+
+        <ImageView
+            android:id="@+id/productRatingIcon"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="32dp"
+            android:src="@drawable/baseline_star_24"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/productDescription" />
 
-        <!-- Product Type -->
+        <TextView
+            android:id="@+id/productRatingText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="8dp"
+            android:textColor="#FDC201"
+
+            android:textSize="32sp"
+            app:layout_constraintEnd_toStartOf="@+id/productRatingIcon"
+            app:layout_constraintTop_toBottomOf="@id/productDescription" />
+
         <TextView
             android:id="@+id/productType"
             android:layout_width="wrap_content"

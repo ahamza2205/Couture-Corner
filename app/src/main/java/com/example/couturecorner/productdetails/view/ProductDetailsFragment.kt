@@ -15,6 +15,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.example.couturecorner.data.local.LocalListsData
 import com.example.couturecorner.data.model.ApiState
 import com.example.couturecorner.databinding.FragmentProductDetailsBinding
 import com.example.couturecorner.home.viewmodel.MainViewModel
@@ -86,6 +87,7 @@ class ProductDetailsFragment : Fragment() {
                             binding.priceValue.text = "${it.variants?.edges?.get(0)?.node?.price}"
                             binding.productTypeValue.text = it.productType
                             binding.stockCount.text = "${it.totalInventory} items available"
+                            binding.productRatingText.text=LocalListsData.productRatingsMap[productId]?.toString()
                             it.images?.edges?.let { imageEdges ->
                                 setupImagesRecyclerView(imageEdges.map { imageEdge -> imageEdge?.node?.src ?: "" })
                             }

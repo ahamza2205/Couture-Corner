@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
 import com.example.couturecorner.R
+import com.example.couturecorner.data.local.LocalListsData
 import com.example.couturecorner.databinding.ProductItemBinding
 import com.graphql.FilteredProductsQuery
 
@@ -36,6 +37,7 @@ class ProductsAdapter(
 
     val favList= mutableListOf<String>()
 
+
     lateinit var binding: ProductItemBinding
 
     class ProductsViewHolder(var binding: ProductItemBinding):ViewHolder(binding.root)
@@ -55,6 +57,8 @@ class ProductsAdapter(
         holder.binding.priceTextView.text=product?.variants?.edges?.get(0)?.node?.price
 
         holder.binding.favoriteAddsButton.isSelected=favList.contains(product?.id)
+
+        holder.binding.ratingText.text=LocalListsData.productRatingsMap[product?.id]?.toString()
 
         Glide.with(holder.itemView.context)
             .load(product?.images?.edges?.get(0)?.node?.src)
