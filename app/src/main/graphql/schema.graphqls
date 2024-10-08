@@ -70,11 +70,7 @@ type Variant {
     selectedOptions: [SelectedOption]
 }
 
-# Define the SelectedOption type (new type)
-type SelectedOption {
-    name: String!
-    value: String!
-}
+
 
 input CustomerInput {
     email: String

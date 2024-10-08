@@ -82,6 +82,8 @@ class CartViewModel @Inject constructor(
         }
     }
 
+
+
     // Function to Merge Local and Remote Cart Items
 // Function to Merge Local and Remote Cart Items
     private fun mergeLocalAndRemoteCartItems(remoteCartItems: List<CartItem>): List<CartItem> {
@@ -156,6 +158,60 @@ class CartViewModel @Inject constructor(
         _cartItems.postValue(cartItemList.toList())
         calculateTotal()
     }
+
+    // Function to add or update an item by CartItem
+    fun updateOrAddItemById(cartItem: CartItem) {
+        // Find the item by its ID in the cart list
+        val existingItem = cartItemList.find { it.id == cartItem.id }
+
+        if (cartItem.quantity!! > 0) {
+            if (existingItem != null) {
+                // Update the quantity for the existing item
+                val updatedItem = existingItem.copy(quantity = existingItem.quantity!! + cartItem.quantity!!)
+                Log.i("Cart", "Updating quantity for item: ${existingItem.id}, new quantity: ${updatedItem.quantity}")
+
+                // Update the local cart item
+                updateLocalCartItem(updatedItem)
+            } else {
+                // Add a new item to the cart list
+                val newItem = CartItem(
+                    id = cartItem.id,
+                    quantity = cartItem.quantity,
+                    imageUrl = cartItem.imageUrl,
+                    name = cartItem.name,
+                    price = cartItem.price,
+                    color = cartItem.color,
+                    size = cartItem.size,
+                    inventoryQuantity = cartItem.inventoryQuantity
+                )
+                cartItemList.add(newItem)
+                Log.i("Cart", "Added new item: ${newItem.id} with quantity: ${newItem.quantity} and price: ${newItem.price}")
+
+                // Update the local cart
+                _cartItems.postValue(cartItemList.toList())
+                calculateTotal()
+            }
+
+            // Send the updated list to Shopify
+            updateShopifyDraftOrder(cartItemList)
+        } else {
+            // If the new quantity is zero, remove the item if it exists
+            if (existingItem != null) {
+                Log.i("Cart", "Removing item: ${existingItem.id} as quantity reached zero")
+                cartItemList.remove(existingItem)
+                _cartItems.postValue(cartItemList.toList())
+                calculateTotal()
+
+                // Update Shopify after removing the item
+                updateShopifyDraftOrder(cartItemList)
+            } else {
+                Log.i("Cart", "Item not found with ID: ${cartItem.id}, nothing to remove")
+            }
+        }
+    }
+
+
+
 
     // Calculate the subtotal and total price
     private fun calculateTotal() {

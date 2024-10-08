@@ -16,9 +16,11 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.couturecorner.data.model.ApiState
+import com.example.couturecorner.data.model.CartItem
 import com.example.couturecorner.databinding.FragmentProductDetailsBinding
 import com.example.couturecorner.home.viewmodel.MainViewModel
 import com.example.couturecorner.productdetails.viewmodel.ProductDetailsViewModel
+import com.example.couturecorner.setting.viewmodel.CartViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -27,9 +29,15 @@ class ProductDetailsFragment : Fragment() {
 
     private val mainViewModel: MainViewModel by activityViewModels()
     private val viewModel: ProductDetailsViewModel by viewModels()
+    private val cartViewModel: CartViewModel by viewModels()
 
     private var _binding: FragmentProductDetailsBinding? = null
     private val binding get() = _binding!!
+
+    private var title: String? = null
+    private var imagUrl: String? = null
+    private var price : String? = null
+    private  var stockQuantity: String? = null
 
     private lateinit var imagesAdapter: ImageAdapter
 
@@ -69,7 +77,9 @@ class ProductDetailsFragment : Fragment() {
                         val product = state.data?.product
                         Log.d("ProductDetailsFragment", "Product details received: $product")
                         product?.let {
-                            binding.productTitle.text = it.title
+                            title=  it.title
+                            binding.productTitle.text =title
+
                             val colorFromTitle = it.title.split("|").lastOrNull()?.trim()
                             val variants = it.variants?.edges?.mapNotNull { variant ->
                                 variant?.node
@@ -83,9 +93,12 @@ class ProductDetailsFragment : Fragment() {
                             }
                             // Update UI components
                             binding.productDescription.text = it.description
-                            binding.priceValue.text = "${it.variants?.edges?.get(0)?.node?.price}"
+                            price=it.variants?.edges?.get(0)?.node?.price
+                            binding.priceValue.text = "${price}"
                             binding.productTypeValue.text = it.productType
-                            binding.stockCount.text = "${it.totalInventory} items available"
+                            stockQuantity = it.totalInventory.toString()
+                            binding.stockCount.text = "${stockQuantity} items available"
+                            imagUrl = it.images?.edges?.firstOrNull()?.node?.src
                             it.images?.edges?.let { imageEdges ->
                                 setupImagesRecyclerView(imageEdges.map { imageEdge -> imageEdge?.node?.src ?: "" })
                             }
@@ -120,6 +133,18 @@ class ProductDetailsFragment : Fragment() {
         }
     }
     private fun addToCart(variantId: String, selectedSize: String, selectedColor: String) {
+        val newItem = CartItem(
+            id = variantId,
+            quantity = 1,
+            imageUrl = imagUrl,
+            name = title,
+            price = price,
+            color = selectedColor,
+            size =selectedSize,
+            inventoryQuantity = stockQuantity?.toInt(),
+        )
+        cartViewModel.updateOrAddItemById(newItem)
+
         Log.d("ProductDetailsFragment", "Adding to cart: VariantId= $variantId, Size= $selectedSize, Color= $selectedColor")
         Toast.makeText(requireContext(), "Added to cart: Size= $selectedSize, Color= $selectedColor", Toast.LENGTH_SHORT).show()
     }

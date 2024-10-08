@@ -6,8 +6,9 @@ data class CartItem(
     val name: String?,
     val price: String?,
     val quantity: Int?,
-    val color : String?,
-    val size : String?,
+    val color: String?,
+    val size: String?,
     val inventoryQuantity: Int?
-
 )
+
+

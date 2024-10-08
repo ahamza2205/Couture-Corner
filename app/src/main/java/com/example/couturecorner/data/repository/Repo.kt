@@ -1,5 +1,6 @@
 package com.example.couturecorner.data.repository
 
+
 import android.util.Log
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Optional
@@ -50,6 +51,32 @@ class Repo
 
     override fun getFilterdProducts(vendor: String?): Flow<ApolloResponse<FilteredProductsQuery.Data>> {
         return remoteData.getFilterdProducts(vendor)
+    }
+
+// ---------------------------- Draft Order ------------------------------------
+
+    override fun createDraftOrder(input: DraftOrderInput): Flow<ApolloResponse<DraftOrderCreateMutation.Data>> {
+
+        return remoteData.createDraftOrder(input)
+    }
+
+    override fun getDraftOrderByCustomerId(id: String): Flow<ApolloResponse<GetDraftOrdersByCustomerQuery.Data>> {
+
+        return remoteData.getDraftOrderByCustomerId(id)
+    }
+
+    override fun deleteDraftOrder(input: DraftOrderDeleteInput): Flow<ApolloResponse<DeleteDraftOrderMutation.Data>> {
+
+        return remoteData.deleteDraftOrder(input)
+    }
+
+
+    override fun updateDraftOrder(
+        input: DraftOrderInput,
+        id: String
+    ): Flow<ApolloResponse<UpdateDraftOrderMetafieldsMutation.Data>> {
+
+        return remoteData.updateDraftOrder(input, id)
     }
 
     // ---------------------------- shared preference ------------------------------------
@@ -183,7 +210,15 @@ class Repo
         sharedPreference.saveShopifyUserId(email, userId)
     }
 
-// --------------------------- Add product to favorite --------------------------------
+    override fun saveDraftOrderTag(userId: String, tag: String) {
+        TODO("Not yet implemented")
+    }
+
+    override fun getDraftOrderTag(userId: String): String? {
+        TODO("Not yet implemented")
+    }
+
+    // --------------------------- Add product to favorite --------------------------------
 override suspend fun addProductToFavorites(customerId: String, productId: String) {
     try {
         val currentFavorites = getCurrentFavorites(customerId) ?: listOf()
@@ -212,7 +247,7 @@ override suspend fun addProductToFavorites(customerId: String, productId: String
     }
 }
 
-    suspend fun getCurrentFavorites(customerId: String): List<String>? {
+   override suspend fun getCurrentFavorites(customerId: String): List<String>? {
         val query = GetFavoriteProductsQuery(customerId = customerId)
         val response = apolloClient.query(query).execute()
         if (response.hasErrors()) {
