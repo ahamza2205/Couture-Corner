@@ -33,7 +33,7 @@ interface Irepo {
     fun updateDraftOrder(input: DraftOrderInput, id: String): Flow<ApolloResponse<UpdateDraftOrderMetafieldsMutation.Data>>
 
 
-
+    suspend fun removeProductFromFavorites(customerId: String, productId: String)
     // --------------- shared preference  -------------------------
 
      fun saveUserLoggedIn(isLoggedIn: Boolean)

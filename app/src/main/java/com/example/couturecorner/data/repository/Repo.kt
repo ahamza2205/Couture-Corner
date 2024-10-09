@@ -309,7 +309,38 @@ override suspend fun addProductToFavorites(customerId: String, productId: String
         Log.d("GetFavorites", "Current favorites: $favoriteProducts")
         return favoriteProducts
     }
+    override suspend fun removeProductFromFavorites(customerId: String, productId: String) {
+        try {
+            val currentFavorites = getCurrentFavorites(customerId) ?: listOf()
+            // Remove the productId from the favorites list
+            val updatedFavorites = currentFavorites.filter { it != productId }
+            val jsonProductIds = Gson().toJson(updatedFavorites)
 
+            val mutation = AddFavoriteProductMutation(
+                customerId = customerId,
+                productIds = jsonProductIds // Convert the updated list to a JSON string
+            )
+
+            val response = apolloClient.mutation(mutation).execute()
+
+            // Check for errors
+            if (response.data?.customerUpdate?.userErrors?.isNotEmpty() == true) {
+                for (error in response.data!!.customerUpdate?.userErrors!!) {
+                    Log.e("RemoveFavorite", "User Error: ${error.message} for field ${error.field}")
+                }
+                return
+            }
+
+            // Check for successful operation
+            if (response.hasErrors()) {
+                throw Exception("Error removing product from favorites: ${response.errors}")
+            } else {
+                Log.d("RemoveFavorite", "Product removed from favorites successfully")
+            }
+        } catch (e: Exception) {
+            Log.e("RemoveFavorite", "Error: ${e.message}")
+           }
+        }
 
     override fun getCupones(): Flow<ApolloResponse<GetCuponCodesQuery.Data>> {
         return remoteData.getCupones()
