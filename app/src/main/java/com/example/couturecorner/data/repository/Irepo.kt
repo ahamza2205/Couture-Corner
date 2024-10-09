@@ -45,6 +45,9 @@ interface Irepo {
      fun getDraftOrderTag(userId: String): String?
     fun saveAddressState(haveAddress: Boolean)
     fun getAddressState(): Boolean
+    fun saveDraftOrderId(userId: String, ID: String)
+    fun getDraftOrderId(userId: String): String?
+    fun deleteDraftOrderId(userId: String)
      // -------------- add product to favorite ------------------------
      // -------------- add product to favorite ------------------------
      suspend fun addProductToFavorites(customerId: String, productId: String)

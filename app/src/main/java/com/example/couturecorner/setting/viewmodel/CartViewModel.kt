@@ -5,6 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.apollographql.apollo3.api.Optional
 import com.example.couturecorner.Utility.CartItemMapper
 import com.example.couturecorner.data.model.CartItem
 import com.example.couturecorner.data.repository.Repo
@@ -29,7 +31,8 @@ class CartViewModel @Inject constructor(
     private val cartItemMapper = CartItemMapper()
     private val user = FirebaseAuth.getInstance().currentUser
     private val cartItemList = mutableListOf<CartItem>()
-
+private var userID:String? = null
+    private var tag:String? = null
     // Prices
     private val deliveryFee = 5.0
     private val discount = 5.0
@@ -40,20 +43,41 @@ class CartViewModel @Inject constructor(
     private val _totalPrice = MutableLiveData<Double>()
     val totalPrice: LiveData<Double> = _totalPrice
 
-
-    // ViewModel Function to Fetch Cart Items
-    fun getCartItems() {
+    init {
         if (user != null) {
             val userEmail = user.email
             if (userEmail != null) {
                 val customerId = repo.getShopifyUserId(userEmail)
                 if (customerId != null) {
-                    val tag = "gid://shopify/Customer/8417368834332"
+                    userID = customerId
+                     tag = repo.getDraftOrderTag(userID!!)
+                    Log.i("CartTag", "getFromSharedPref: "+tag.toString())
+
+                }
+                else {
+                    Log.e("Cart", "Error: Customer ID is null")
+                }
+            }
+        }
+        else{
+            Log.e("Cart", "Error: User is null")
+        }
+    }
+
+    // ViewModel Function to Fetch Cart Items
+    fun getCartItems() {
+
+                if (userID != null) {
+
                     viewModelScope.launch {
                         try {
-                            repo.getDraftOrderByCustomerId(customerId)
+                            repo.getDraftOrderByCustomerId(userID!!)
                                 .collect { response ->
-                                    val fetchedCartItems = cartItemMapper.mapToCartItems(response, tag)
+                                    Log.i("CartTag", "getFromSharedPref: "+tag)
+
+                                    val fetchedCartItems = cartItemMapper.mapToCartItems(response,
+                                        tag.toString()
+                                    )
                                     Log.i("Cart", "Fetched cart items: $fetchedCartItems")
 
                                     val mergedCartItems = mergeLocalAndRemoteCartItems(fetchedCartItems)
@@ -75,12 +99,9 @@ class CartViewModel @Inject constructor(
                             _updateCartStatus.postValue(Result.failure(e))
                         }
                     }
-                } else {
-                    Log.i("Cart", "User ID is null")
                 }
-            }
         }
-    }
+
 
 
 
@@ -159,9 +180,44 @@ class CartViewModel @Inject constructor(
         calculateTotal()
     }
 
-    // Function to add an item by CartItem
 // Function to add an item by CartItem
     fun addedToCart(cartItem: CartItem) {
+    viewModelScope.launch {
+        // Check if a draft order ID exists for the user
+        var draftOrderId = repo.getDraftOrderId(userID.toString())
+        Log.i("CartTag", "getFromSharedPref: "+tag)
+
+        // If the draft order ID is null, create a new draft order
+        if (draftOrderId == null) {
+            Log.i("CartTag", "getFromSharedPref: "+tag)
+
+            repo.createDraftOrder(
+                DraftOrderInput(customerId = Optional.present(userID)
+                ,
+                    tags = Optional.present(listOf(tag.toString())),
+                    lineItems = Optional.present(listOf(   DraftOrderLineItemInput(
+                        variantId = cartItem.id.toString(),
+                        quantity = cartItem.quantity ?: 1 // Use the locally updated quantity
+                    ))
+                    )
+                ))
+                .collect { response ->
+                    draftOrderId = response.data?.draftOrderCreate?.draftOrder?.id
+
+                    Log.i("IDDRAFT", "addedToSharedPref:"+response.data)
+                    Log.i("IDDRAFT", "addedToSharedPref:"+draftOrderId)
+
+                    if (draftOrderId != null) {
+                        repo.saveDraftOrderId(userID.toString(), draftOrderId.toString())
+                        Log.i("Cart", "addedToSharedPref: "+draftOrderId)
+
+                    }
+                }
+        }
+
+        Log.i("Cart", "addedToCart: $draftOrderId")
+
+
         // First check if the item already exists in the local cart
         val existingItem = cartItemList.find { it.id == cartItem.id }
 
@@ -170,7 +226,10 @@ class CartViewModel @Inject constructor(
             val updatedItem = existingItem.copy(
                 quantity = existingItem.quantity!! + cartItem.quantity!!  // Add to existing quantity
             )
-            Log.i("Cart", "Updated existing item: ${updatedItem.id} with new quantity: ${updatedItem.quantity}")
+            Log.i(
+                "Cart",
+                "Updated existing item: ${updatedItem.id} with new quantity: ${updatedItem.quantity}"
+            )
             updateLocalCartItem(updatedItem)
         } else {
             // If it doesn't exist, add it as a new item
@@ -183,7 +242,7 @@ class CartViewModel @Inject constructor(
         updateShopifyDraftOrder(cartItemList)
     }
 
-
+}
 
 
 
@@ -212,12 +271,14 @@ class CartViewModel @Inject constructor(
 
         viewModelScope.launch {
             try {
+              var  draftOrderID=repo.getDraftOrderId(userID.toString())
                 // Collecting the flow response properly
                 repo.updateDraftOrder(
                     DraftOrderInput(
-                        lineItems = draftOrderLineItems
+                        lineItems = Optional.present(draftOrderLineItems)
                     ),
-                    "gid://shopify/DraftOrder/1166554792220" // Replace with the correct Draft Order ID
+                    draftOrderID.toString()
+
                 ).collect { response ->
                     Log.i("Cart", "updateShopifyDraftOrder: Response - ${response.data}")
 

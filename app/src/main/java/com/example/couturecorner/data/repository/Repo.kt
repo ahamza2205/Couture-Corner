@@ -1,6 +1,4 @@
 package com.example.couturecorner.data.repository
-
-
 import android.util.Log
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Optional
@@ -104,6 +102,16 @@ class Repo
         return sharedPreference.getAddressState()
     }
 
+    override fun saveDraftOrderId(userId: String, ID: String) {
+        sharedPreference.saveDraftOrderId(userId, ID)
+    }
+
+    override fun getDraftOrderId(userId: String): String? {
+        return sharedPreference.getDraftOrderId(userId)}
+
+    override fun deleteDraftOrderId(userId: String) {
+        sharedPreference.deleteDraftOrderId(userId)
+    }
 
 
     // --------------------------- shopify registration -------------------------------
@@ -245,11 +253,11 @@ class Repo
     }
 
     override fun saveDraftOrderTag(userId: String, tag: String) {
-        TODO("Not yet implemented")
+        sharedPreference.saveDraftOrderTag(userId, tag)
     }
 
     override fun getDraftOrderTag(userId: String): String? {
-        TODO("Not yet implemented")
+        return sharedPreference.getDraftOrderTag(userId)
     }
 
     // --------------------------- Add product to favorite --------------------------------
