@@ -10,7 +10,7 @@
         android:id="@+id/tvLogo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="30dp"
         android:text="@string/app_name"
         android:textColor="#EEEEEE"
         android:textSize="28dp"
@@ -24,7 +24,7 @@
         android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="15dp"
         android:text="Create Account"
         android:textSize="24sp"
         android:textStyle="bold"
@@ -37,7 +37,7 @@
         android:id="@+id/tvSubtitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="25dp"
         android:text="Fill your information below or register with your social account."
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -49,7 +49,7 @@
         android:id="@+id/linearLayoutInputs"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -126,7 +126,7 @@
         android:id="@+id/btnSignUp"
         android:layout_width="350dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="25dp"
         android:backgroundTint="@color/colorPrimary"
         android:text="Sign Up"
         android:textColor="@android:color/white"
@@ -135,70 +135,31 @@
         app:layout_constraintTop_toBottomOf="@+id/linearLayoutInputs"
         app:layout_constraintWidth_percent="0.9" />
 
-    <!-- Or Sign Up with -->
-    <TextView
-        android:id="@+id/tvOrSignUpWith"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="Or sign up with"
-        android:textSize="14sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btnSignUp" />
-
-    <!-- Log in with Google Button -->
-
-    <!-- Already have account -->
-    <Button
-        android:id="@+id/login_btnGoogle"
-        android:layout_width="350dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:backgroundTint="#4285F4"
-        android:drawableLeft="@drawable/google_svgrepo_com"
-        android:drawablePadding="32dp"
-        android:text="Log in with Google"
-        android:textColor="@color/white"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvOrSignUpWith" />
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:gravity="center"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout">
-
-    </LinearLayout>
-
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="83dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="88dp"
+        android:layout_marginTop="20dp"
         android:text="@string/alreadyhaveacc"
         android:textColor="@color/gray"
         android:textSize="14sp"
+        app:layout_constraintEnd_toStartOf="@+id/textView2"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/login_btnGoogle" />
+        app:layout_constraintTop_toBottomOf="@+id/btnSignUp" />
 
     <TextView
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="100dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="120dp"
         android:text="@string/signIn"
         android:textColor="@color/colorPrimary"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/textView"
-        app:layout_constraintTop_toBottomOf="@+id/login_btnGoogle" />
+        app:layout_constraintTop_toBottomOf="@+id/btnSignUp" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"

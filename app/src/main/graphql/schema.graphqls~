@@ -18,7 +18,6 @@ type CustomerEdge {
     node: Customer
 }
 
-
 # Connection type for pagination
 type ProductConnection {
     edges: [ProductEdge]

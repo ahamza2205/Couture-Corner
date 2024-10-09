@@ -7,9 +7,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.couturecorner.data.local.SharedPreference // تأكد من استيراد كلاس SharedPreference
 import com.example.couturecorner.data.repository.Repo
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
 import com.graphql.GetCustomerByIdQuery
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 @HiltViewModel
@@ -39,11 +42,9 @@ class SignUpViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             try {
-                // Call repo to register user in Firebase and Shopify
                 val shopifyUserId = repo.registerUser(email, password, firstName, lastName, phoneNumber)
 
                 if (shopifyUserId != null) {
-                    // Save Shopify User ID to shared preferences
                     sharedPreference.saveShopifyUserId(email, shopifyUserId)
                     repo.saveDraftOrderTag(userId = shopifyUserId, tag = "$shopifyUserId")
                     Log.i("CartTag", "getCustomerDataTwo: "+repo.getDraftOrderTag(userId = shopifyUserId))
@@ -61,18 +62,42 @@ class SignUpViewModel @Inject constructor(
             }
         }
     }
-
-    // Method to fetch customer data by ID
-/*    fun getCustomerData(customerId: String) {
+    fun registerUserWithEmailVerification(email: String, password: String, firstName: String, lastName: String, phoneNumber: String) {
         viewModelScope.launch {
             try {
-                val customer = repo.getCustomerById(customerId)
-                _customerData.postValue(customer)
+                val auth = FirebaseAuth.getInstance()
+                val firebaseUserId = auth.createUserWithEmailAndPassword(email, password).await()
+
+                if (firebaseUserId.user != null) {
+                    // سجل المستخدم في Firebase
+                    Log.d("SignUpViewModel", "Firebase user created successfully: ${firebaseUserId.user!!.email}")
+
+                    // أرسل رسالة تحقق عبر البريد الإلكتروني
+                    firebaseUserId.user?.sendEmailVerification()?.await()
+                    Log.d("SignUpViewModel", "Verification email sent to: ${firebaseUserId.user!!.email}")
+
+                    // سجل المستخدم في النظام الخاص بك
+                    val shopifyUserId = repo.registerUser(email, password, firstName, lastName, phoneNumber)
+                    Log.d("SignUpViewModel", "Shopify user created successfully: $shopifyUserId")
+
+                    // انتقل إلى شاشة التحقق من البريد الإلكتروني
+                    _registrationStatus.postValue(true)
+                } else {
+                    Log.e("SignUpViewModel", "Failed to create Firebase user")
+                    _registrationStatus.postValue(false)
+                }
+
             } catch (e: Exception) {
-                _customerData.postValue(null)
-                Log.e("SignUpViewModel", "Error fetching customer data: ${e.message}")
+                _registrationStatus.postValue(false)
+                Log.e("SignUpViewModel", "Error creating user: ${e.message}")
+                e.printStackTrace()
             }
         }
-    }*/
+    }
+
+
 }
+
+
+
 

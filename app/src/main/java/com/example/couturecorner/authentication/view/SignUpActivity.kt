@@ -4,25 +4,26 @@ import android.content.Intent
 import android.graphics.Paint
 import android.graphics.Typeface
 import android.os.Bundle
-import android.text.InputType
 import android.util.Log
-import android.view.MotionEvent
-import android.view.View
-import android.widget.EditText
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.example.couturecorner.R
 import com.example.couturecorner.authentication.viewmodel.SignUpViewModel
 import com.example.couturecorner.databinding.ActivitySignUpBinding
 import com.example.couturecorner.home.ui.MainActivity
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class SignUpActivity : AppCompatActivity() {
     private val viewModel: SignUpViewModel by viewModels()
     private lateinit var binding: ActivitySignUpBinding
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySignUpBinding.inflate(layoutInflater)
@@ -35,6 +36,7 @@ class SignUpActivity : AppCompatActivity() {
             registerUser()
         }
         observeViewModel()
+
     }
     private fun registerUser() {
         val firstName = binding.etFirstName.text.toString()
@@ -60,15 +62,15 @@ class SignUpActivity : AppCompatActivity() {
     private fun observeViewModel() {
         viewModel.registrationStatus.observe(this) { isSuccess ->
             if (isSuccess) {
-                Toast.makeText(this, "Registration successful!", Toast.LENGTH_SHORT).show()
-                binding.root.postDelayed({
-                    val intent = Intent(this, MainActivity::class.java)
-                    startActivity(intent)
-                    finish()
-                }, 1500)
+                Toast.makeText(this, "Registration successful! Please verify your email.", Toast.LENGTH_SHORT).show()
+
+                val intent = Intent(this, VerifyCodeActivity::class.java)
+                startActivity(intent)
+                finish()
             } else {
                 Toast.makeText(this, "Registration failed. Please try again.", Toast.LENGTH_SHORT).show()
             }
         }
     }
+
 }
