@@ -122,6 +122,7 @@ dependencies {
 
     implementation ("com.airbnb.android:lottie:6.0.1")
 
+    implementation ("com.google.android.gms:play-services-auth:20.5.0")
 
 
     implementation ("com.google.android.material:material:1.8.0")

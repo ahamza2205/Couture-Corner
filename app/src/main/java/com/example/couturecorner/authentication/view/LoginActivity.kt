@@ -5,104 +5,258 @@ import android.graphics.Paint
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import com.example.couturecorner.R
 import com.example.couturecorner.authentication.viewmodel.LoginViewModel
 import com.example.couturecorner.databinding.ActivityLoginBinding
 import com.example.couturecorner.home.ui.MainActivity
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {
-
     private val viewModel: LoginViewModel by viewModels()
     private lateinit var auth: FirebaseAuth
     private lateinit var binding: ActivityLoginBinding
+    private lateinit var googleSignInClient: GoogleSignInClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // Initialize FirebaseAuth
+        auth = FirebaseAuth.getInstance()
 
-        binding.textView2.paintFlags = binding.textView2.paintFlags or Paint.UNDERLINE_TEXT_FLAG
-        // Set onClickListener to navigate to SignInActivity
-        binding.textView2.setOnClickListener {
-            // Start SignInActivity when the text is clicked
-            val intent = Intent(this, SignUpActivity::class.java)
-            startActivity(intent)
+        setupGoogleSignIn()
+        setupListeners()
+        checkUserLoggedIn()
+    }
+
+    private fun setupListeners() {
+        binding.loginBtnGoogle.setOnClickListener {
+            signInUsingGoogle()
         }
-        // Handle guest login
+
+        // Underline the Sign Up text
+        binding.textView2.paintFlags = binding.textView2.paintFlags or Paint.UNDERLINE_TEXT_FLAG
+        binding.textView2.setOnClickListener {
+            startActivity(Intent(this, SignUpActivity::class.java))
+        }
+
         binding.loginBtnGuest.setOnClickListener {
             viewModel.loginAsGuest()
+        }
+
+        binding.loginBtnSignIn.setOnClickListener {
+            handleSignIn()
         }
 
         // Observe login status
         viewModel.loginStatus.observe(this) { isSuccess ->
             if (isSuccess) {
-                startActivity(Intent(this, MainActivity::class.java))
-                finish()
+                navigateToMainActivity()
             } else {
-                Toast.makeText(this, "Error logging in as guest", Toast.LENGTH_SHORT).show()
+                showToast("Error logging in as guest")
             }
         }
-        auth = FirebaseAuth.getInstance()
 
-        binding.loginBtnSignIn.setOnClickListener {
-            val email = binding.loginEtEmail.text.toString()
-            val password = binding.loginEtPassword.text.toString()
+        observeViewModel()
+    }
 
-            if (email.isNotEmpty() && password.isNotEmpty()) {
-                auth.signInWithEmailAndPassword(email, password)
-                    .addOnCompleteListener { task ->
-                        if (task.isSuccessful) {
-                            // Fetch Shopify user data after logging in
-                            viewModel.getCustomerDataFromFirebaseAuth(email)
-                            viewModel.customerData.observe(this) { customer ->
-                                if (customer != null) {
-                                        if (   customer.defaultAddress==null ){
+    private fun handleSignIn() {
+        val email = binding.loginEtEmail.text.toString()
+        val password = binding.loginEtPassword.text.toString()
 
-
-                                        }else{
-                                            viewModel.haveAddress()
-
-                                        }
-
-
-                                    Log.d("HamzaData", "Customer Data: " +
-                                            "ID: ${customer.id}, " +
-                                            "Display Name: ${customer.displayName}, " +
-                                            "Email: ${customer.email}, " +
-                                            "First Name: ${customer.firstName}, " +
-                                            "Last Name: ${customer.lastName}, " +
-                                            "Phone: ${customer.phone}, " +
-                                            "Created At: ${customer.createdAt}, " +
-                                            "Updated At: ${customer.updatedAt}")
-
-                                    // Save the login state
-                                    viewModel.saveUserLoggedIn(true)
-
-                                    // Start the MainActivity
-                                    startActivity(Intent(this, MainActivity::class.java))
-                                    finish()
-                                } else {
-                                    Log.e("HamzaData", "Customer data is null")
-                                    Toast.makeText(this, "Unable to fetch customer data.", Toast.LENGTH_SHORT).show()
-                                }
-                            }
-                        } else {
-                            Toast.makeText(this, "Error: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
-                        }
+        if (email.isNotEmpty() && password.isNotEmpty()) {
+            auth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        fetchCustomerData(email)
+                    } else {
+                        showToast("Error: ${task.exception?.message}")
                     }
-            } else {
-                Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show()
+                }
+        } else {
+            showToast("Please fill in all fields")
+        }
+    }
+
+    private fun fetchCustomerData(email: String) {
+        viewModel.getCustomerDataFromFirebaseAuth(email)
+        viewModel.customerData.observe(this) { customer ->
+            customer?.let {
+                Log.d("CustomerData", it.toString())
+                viewModel.saveUserLoggedIn(true)
+                navigateToMainActivity()
+            } ?: run {
+                showToast("Unable to fetch customer data.")
             }
         }
-        // Check if user is already logged in
+    }
+
+    private fun navigateToMainActivity() {
+        startActivity(Intent(this, MainActivity::class.java))
+        finish()
+    }
+
+    private fun checkUserLoggedIn() {
         if (viewModel.isUserLoggedIn()) {
-            startActivity(Intent(this, MainActivity::class.java))
-            finish()
+            navigateToMainActivity()
         }
+    }
+
+    private fun setupGoogleSignIn() {
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+        googleSignInClient = GoogleSignIn.getClient(this, gso)
+    }
+
+    private fun signInUsingGoogle() {
+        googleSignInClient.signOut().addOnCompleteListener {
+            val signInIntent = googleSignInClient.signInIntent
+            googleSignInLauncher.launch(signInIntent)
+        }
+    }
+
+    private val googleSignInLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        result.data?.let { data ->
+            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+            handleSignInResult(task)
+        }
+    }
+
+    private fun handleSignInResult(completedTask: com.google.android.gms.tasks.Task<GoogleSignInAccount>) {
+        try {
+            val account = completedTask.getResult(ApiException::class.java)
+            account?.let {
+                handleGoogleAccount(it)
+            }
+        } catch (e: ApiException) {
+            Log.e("GoogleSignIn", "Sign-in failed: ${e.message}")
+            showToast("Sign-in failed: ${e.message}")
+        }
+    }
+    private fun handleGoogleAccount(account: GoogleSignInAccount) {
+        val email = account.email ?: ""
+        val idToken = account.idToken ?: ""
+
+        val currentUser = auth.currentUser
+        if (currentUser != null && currentUser.email == email) {
+            Log.d("GoogleSignIn", "User is already signed in, skipping Shopify registration.")
+            navigateToMainActivity()
+            return
+        }
+        auth.fetchSignInMethodsForEmail(email).addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val signInMethods = task.result.signInMethods
+
+                if (!signInMethods.isNullOrEmpty()) {
+                    Log.d("GoogleSignIn", "User already registered in Firebase. Skipping Shopify registration.")
+                    signInWithFirebase(idToken)
+                    navigateToMainActivity()
+                } else {
+                    Log.d("GoogleSignIn", "No sign-in methods found for $email. Proceeding with Shopify registration.")
+                    registerNewUserWithGoogle(email, idToken)
+                }
+            } else {
+                Log.e("GoogleSignIn", "Failed to fetch sign-in methods: ${task.exception?.message}")
+                showToast("Failed to check if user is registered: ${task.exception?.message}")
+            }
+        }
+    }
+    private fun registerNewUserWithGoogle(email: String, idToken: String) {
+        Log.d("GoogleSignIn", "Registering new user with Google: $email")
+
+        val nameBeforeAt = email.split("@")[0]
+        val firstName: String
+        val lastName: String
+
+        if (nameBeforeAt.contains(".") || nameBeforeAt.contains("_")) {
+            val nameParts = nameBeforeAt.split(Regex("[._]"))
+            firstName = nameParts.getOrElse(0) { "" }.replaceFirstChar { it.uppercase() }
+            lastName = if (nameParts.size > 1) {
+                nameParts[1].replaceFirstChar { it.uppercase() }
+            } else {
+                ""
+            }
+        } else {
+            firstName = nameBeforeAt.take(4).replaceFirstChar { it.uppercase() }
+            lastName = nameBeforeAt.drop(4).replaceFirstChar { it.uppercase() }
+        }
+
+        viewModel.registerUserWithGoogle(email, null, firstName, lastName, null, idToken)
+        viewModel.registrationStatus.observe(this) { isSuccess ->
+            if (isSuccess) {
+                Log.d("GoogleSignIn", "Successfully registered user with Shopify: $email")
+                signInWithFirebase(idToken)
+            } else {
+                Log.e("GoogleSignIn", "Failed to register user with Shopify: $email")
+                showToast("Shopify registration failed.")
+            }
+        }
+    }
+
+    private fun observeViewModel() {
+        viewModel.registrationStatus.observe(this) { isSuccess ->
+            if (isSuccess) {
+                showToast("Registration successful!")
+                binding.root.postDelayed({ navigateToMainActivity() }, 1500)
+            } else {
+                showToast("Registration failed. Please try again.")
+            }
+        }
+    }
+
+
+    private fun signInWithFirebase(idToken: String) {
+        if (idToken.isNotEmpty()) {
+            val credential = GoogleAuthProvider.getCredential(idToken, null)
+            auth.signInWithCredential(credential)
+                .addOnCompleteListener(this) { task ->
+                    if (task.isSuccessful) {
+                        Log.d("GoogleSignIn", "Successfully signed in with Firebase.")
+
+                        val user = auth.currentUser
+                        user?.let {
+                            if (!it.isEmailVerified) {
+                                it.sendEmailVerification().addOnCompleteListener { verifyTask ->
+                                    if (verifyTask.isSuccessful) {
+                                        showToast("Verification email sent to ${it.email}")
+                                        Log.d("EmailVerification", "Verification email sent.")
+                                    } else {
+                                        showToast("Failed to send verification email.")
+                                        Log.e("EmailVerification", "Error: ${verifyTask.exception?.message}")
+                                    }
+                                }
+                            } else {
+                                navigateToMainActivity()
+                            }
+                        }
+                    } else {
+                        Log.e("GoogleSignIn", "Firebase sign-in failed: ${task.exception?.message}")
+                        showToast("Failed to sign in with Firebase: ${task.exception?.message}")
+                    }
+                }
+        } else {
+            Log.e("GoogleSignIn", "Invalid idToken. Cannot sign in with Firebase.")
+            showToast("Invalid idToken.")
+        }
+    }
+
+    private fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 }

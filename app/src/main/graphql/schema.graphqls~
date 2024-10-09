@@ -18,7 +18,6 @@ type CustomerEdge {
     node: Customer
 }
 
-
 # Connection type for pagination
 type ProductConnection {
     edges: [ProductEdge]
@@ -80,7 +79,11 @@ type Variant {
     selectedOptions: [SelectedOption]
 }
 
-
+# Define the SelectedOption type (new type)
+type SelectedOption {
+    name: String!
+    value: String!
+}
 
 input CustomerInput {
     email: String
@@ -110,6 +113,7 @@ type Customer {
     addresses: [Address]
     defaultAddress: MailingAddress
 }
+
 
 
 # Connection type for Metafields
@@ -186,6 +190,7 @@ input MailingAddressInput {
     phone: String!
 }
 
+
 # Type for CodesCount
 type CodesCount {
     count: Int!
@@ -236,6 +241,7 @@ type MailingAddress {
     city: String
     phone: String
 }
+
 
 
 # The address type
@@ -299,11 +305,6 @@ type ProductVariant {
     selectedOptions: [SelectedOption!]!
     price: String
     product: Product
-}
-
-type SelectedOption {
-    name: String
-    value: String
 }
 
 type MediaConnection {
