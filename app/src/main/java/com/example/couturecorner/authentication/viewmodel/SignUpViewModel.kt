@@ -69,18 +69,14 @@ class SignUpViewModel @Inject constructor(
                 val firebaseUserId = auth.createUserWithEmailAndPassword(email, password).await()
 
                 if (firebaseUserId.user != null) {
-                    // سجل المستخدم في Firebase
                     Log.d("SignUpViewModel", "Firebase user created successfully: ${firebaseUserId.user!!.email}")
 
-                    // أرسل رسالة تحقق عبر البريد الإلكتروني
                     firebaseUserId.user?.sendEmailVerification()?.await()
                     Log.d("SignUpViewModel", "Verification email sent to: ${firebaseUserId.user!!.email}")
 
-                    // سجل المستخدم في النظام الخاص بك
                     val shopifyUserId = repo.registerUser(email, password, firstName, lastName, phoneNumber)
                     Log.d("SignUpViewModel", "Shopify user created successfully: $shopifyUserId")
 
-                    // انتقل إلى شاشة التحقق من البريد الإلكتروني
                     _registrationStatus.postValue(true)
                 } else {
                     Log.e("SignUpViewModel", "Failed to create Firebase user")
