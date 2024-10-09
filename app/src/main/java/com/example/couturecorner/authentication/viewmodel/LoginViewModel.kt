@@ -65,7 +65,7 @@ class LoginViewModel @Inject constructor(
             val customerId = sharedPreference.getShopifyUserId(email)
             if (customerId != null) {
                 getCustomerData(customerId)
-                repo.saveDraftOrderTag(customerId,"$customerId")
+                repo.saveDraftOrderTag(customerId,"C$customerId")
                 Log.i("CartTag", "getCustomerDataTwo: "+repo.getDraftOrderTag(userId = customerId))
             } else {
                 Log.e("LoginViewModel", "No Shopify User ID found for email: $email")

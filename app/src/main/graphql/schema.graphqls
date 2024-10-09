@@ -239,8 +239,8 @@ type Address {
 input DraftOrderInput {
     customerId: ID
     email: String
-    tags: [String!]
-    lineItems: [DraftOrderLineItemInput!]!
+    tags: [String]
+    lineItems: [DraftOrderLineItemInput!]
 }
 
 input DraftOrderLineItemInput {

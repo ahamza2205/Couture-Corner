@@ -44,10 +44,25 @@ class SharedPreference @Inject constructor(context: Context) {
     // ----------------------  Draft Order Tag -----------------------------
 
     fun saveDraftOrderTag(userId: String, tag: String) {
-        sharedPreferences.edit().putString(userId, tag).apply()
+        sharedPreferences.edit().putString("${userId}_tag", tag).apply()
     }
+
     fun getDraftOrderTag(userId: String): String? {
-        return sharedPreferences.getString(userId, null)
+        return sharedPreferences.getString("${userId}_tag", null)
+    }
+
+// ----------------------  Draft Order Id -----------------------------
+
+    fun saveDraftOrderId(userId: String, draftOrderId: String) {
+        sharedPreferences.edit().putString("${userId}_draftOrderId", draftOrderId).apply()
+    }
+
+    fun getDraftOrderId(userId: String): String? {
+        return sharedPreferences.getString("${userId}_draftOrderId", null)
+    }
+
+    fun deleteDraftOrderId(userId: String) {
+        sharedPreferences.edit().remove("${userId}_draftOrderId").apply()
     }
 
 
