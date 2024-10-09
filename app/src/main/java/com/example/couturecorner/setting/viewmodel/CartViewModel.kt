@@ -5,7 +5,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.apollographql.apollo3.api.Optional
 import com.example.couturecorner.Utility.CartItemMapper
 import com.example.couturecorner.data.model.CartItem
@@ -31,7 +30,7 @@ class CartViewModel @Inject constructor(
     private val cartItemMapper = CartItemMapper()
     private val user = FirebaseAuth.getInstance().currentUser
     private val cartItemList = mutableListOf<CartItem>()
-private var userID:String? = null
+    private var userID:String? = null
     private var tag:String? = null
     // Prices
     private val deliveryFee = 5.0
@@ -50,7 +49,7 @@ private var userID:String? = null
                 val customerId = repo.getShopifyUserId(userEmail)
                 if (customerId != null) {
                     userID = customerId
-                     tag = repo.getDraftOrderTag(userID!!)
+                    tag = repo.getDraftOrderTag(userID!!)
                     Log.i("CartTag", "getFromSharedPref: "+tag.toString())
 
                 }
@@ -67,40 +66,40 @@ private var userID:String? = null
     // ViewModel Function to Fetch Cart Items
     fun getCartItems() {
 
-                if (userID != null) {
+        if (userID != null) {
 
-                    viewModelScope.launch {
-                        try {
-                            repo.getDraftOrderByCustomerId(userID!!)
-                                .collect { response ->
-                                    Log.i("CartTag", "getFromSharedPref: "+tag)
+            viewModelScope.launch {
+                try {
+                    repo.getDraftOrderByCustomerId(userID!!)
+                        .collect { response ->
+                            Log.i("CartTag", "getFromSharedPref: "+tag)
 
-                                    val fetchedCartItems = cartItemMapper.mapToCartItems(response,
-                                        tag.toString()
-                                    )
-                                    Log.i("Cart", "Fetched cart items: $fetchedCartItems")
+                            val fetchedCartItems = cartItemMapper.mapToCartItems(response,
+                                tag.toString()
+                            )
+                            Log.i("Cart", "Fetched cart items: $fetchedCartItems")
 
-                                    val mergedCartItems = mergeLocalAndRemoteCartItems(fetchedCartItems)
+                            val mergedCartItems = mergeLocalAndRemoteCartItems(fetchedCartItems)
 
-                                    // Log after merging
-                                    Log.i("Cart", "Merged Cart Items: $mergedCartItems")
+                            // Log after merging
+                            Log.i("Cart", "Merged Cart Items: $mergedCartItems")
 
-                                    _updateCartStatus.postValue(Result.success(mergedCartItems))
-                                    _cartItems.postValue(mergedCartItems)
+                            _updateCartStatus.postValue(Result.success(mergedCartItems))
+                            _cartItems.postValue(mergedCartItems)
 
-                                    cartItemList.clear()
-                                    cartItemList.addAll(mergedCartItems)
+                            cartItemList.clear()
+                            cartItemList.addAll(mergedCartItems)
 
-                                    // Calculate and update the total price
-                                    calculateTotal()
-                                }
-                        } catch (e: Exception) {
-                            Log.e("Cart", "Error fetching cart items: $e")
-                            _updateCartStatus.postValue(Result.failure(e))
+                            // Calculate and update the total price
+                            calculateTotal()
                         }
-                    }
+                } catch (e: Exception) {
+                    Log.e("Cart", "Error fetching cart items: $e")
+                    _updateCartStatus.postValue(Result.failure(e))
                 }
+            }
         }
+    }
 
 
 
@@ -180,69 +179,69 @@ private var userID:String? = null
         calculateTotal()
     }
 
-// Function to add an item by CartItem
+    // Function to add an item by CartItem
     fun addedToCart(cartItem: CartItem) {
-    viewModelScope.launch {
-        // Check if a draft order ID exists for the user
-        var draftOrderId = repo.getDraftOrderId(userID.toString())
-        Log.i("CartTag", "getFromSharedPref: "+tag)
-
-        // If the draft order ID is null, create a new draft order
-        if (draftOrderId == null) {
+        viewModelScope.launch {
+            // Check if a draft order ID exists for the user
+            var draftOrderId = repo.getDraftOrderId(userID.toString())
             Log.i("CartTag", "getFromSharedPref: "+tag)
 
-            repo.createDraftOrder(
-                DraftOrderInput(customerId = Optional.present(userID)
-                ,
-                    tags = Optional.present(listOf(tag.toString())),
-                    lineItems = Optional.present(listOf(   DraftOrderLineItemInput(
-                        variantId = cartItem.id.toString(),
-                        quantity = cartItem.quantity ?: 1 // Use the locally updated quantity
+            // If the draft order ID is null, create a new draft order
+            if (draftOrderId == null) {
+                Log.i("CartTag", "getFromSharedPref: "+tag)
+
+                repo.createDraftOrder(
+                    DraftOrderInput(customerId = Optional.present(userID)
+                        ,
+                        tags = Optional.present(listOf(tag.toString())),
+                        lineItems = Optional.present(listOf(   DraftOrderLineItemInput(
+                            variantId = cartItem.id.toString(),
+                            quantity = cartItem.quantity ?: 1 // Use the locally updated quantity
+                        ))
+                        )
                     ))
-                    )
-                ))
-                .collect { response ->
-                    draftOrderId = response.data?.draftOrderCreate?.draftOrder?.id
+                    .collect { response ->
+                        draftOrderId = response.data?.draftOrderCreate?.draftOrder?.id
 
-                    Log.i("IDDRAFT", "addedToSharedPref:"+response.data)
-                    Log.i("IDDRAFT", "addedToSharedPref:"+draftOrderId)
+                        Log.i("IDDRAFT", "addedToSharedPref:"+response.data)
+                        Log.i("IDDRAFT", "addedToSharedPref:"+draftOrderId)
 
-                    if (draftOrderId != null) {
-                        repo.saveDraftOrderId(userID.toString(), draftOrderId.toString())
-                        Log.i("Cart", "addedToSharedPref: "+draftOrderId)
+                        if (draftOrderId != null) {
+                            repo.saveDraftOrderId(userID.toString(), draftOrderId.toString())
+                            Log.i("Cart", "addedToSharedPref: "+draftOrderId)
 
+                        }
                     }
-                }
+            }
+
+            Log.i("Cart", "addedToCart: $draftOrderId")
+
+
+            // First check if the item already exists in the local cart
+            val existingItem = cartItemList.find { it.id == cartItem.id }
+
+            if (existingItem != null) {
+                // If it exists, we just increase its quantity
+                val updatedItem = existingItem.copy(
+                    quantity = existingItem.quantity!! + cartItem.quantity!!  // Add to existing quantity
+                )
+                Log.i(
+                    "Cart",
+                    "Updated existing item: ${updatedItem.id} with new quantity: ${updatedItem.quantity}"
+                )
+                updateLocalCartItem(updatedItem)
+            } else {
+                // If it doesn't exist, add it as a new item
+                val newItem = cartItem.copy() // Make sure to copy cartItem to avoid mutations
+                Log.i("Cart", "Added new item: ${newItem.id} with quantity: ${newItem.quantity}")
+                updateLocalCartItem(newItem)
+            }
+
+            // Sync the local cart list with the Shopify draft order
+            updateShopifyDraftOrder(cartItemList)
         }
 
-        Log.i("Cart", "addedToCart: $draftOrderId")
-
-
-        // First check if the item already exists in the local cart
-        val existingItem = cartItemList.find { it.id == cartItem.id }
-
-        if (existingItem != null) {
-            // If it exists, we just increase its quantity
-            val updatedItem = existingItem.copy(
-                quantity = existingItem.quantity!! + cartItem.quantity!!  // Add to existing quantity
-            )
-            Log.i(
-                "Cart",
-                "Updated existing item: ${updatedItem.id} with new quantity: ${updatedItem.quantity}"
-            )
-            updateLocalCartItem(updatedItem)
-        } else {
-            // If it doesn't exist, add it as a new item
-            val newItem = cartItem.copy() // Make sure to copy cartItem to avoid mutations
-            Log.i("Cart", "Added new item: ${newItem.id} with quantity: ${newItem.quantity}")
-            updateLocalCartItem(newItem)
-        }
-
-        // Sync the local cart list with the Shopify draft order
-        updateShopifyDraftOrder(cartItemList)
     }
-
-}
 
 
 
@@ -271,7 +270,7 @@ private var userID:String? = null
 
         viewModelScope.launch {
             try {
-              var  draftOrderID=repo.getDraftOrderId(userID.toString())
+                var  draftOrderID=repo.getDraftOrderId(userID.toString())
                 // Collecting the flow response properly
                 repo.updateDraftOrder(
                     DraftOrderInput(

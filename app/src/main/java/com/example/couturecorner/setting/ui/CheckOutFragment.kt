@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.couturecorner.R
@@ -54,6 +55,23 @@ override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     binding.btnAddNewAddress.setOnClickListener {
         findNavController().navigate(R.id.action_checkOutFragment_to_addAdressFragment)
     }
+
+    binding.radioGroupPayment.setOnCheckedChangeListener { group, checkedId ->
+        when (checkedId) {
+            R.id.pay_with_paypal -> {
+
+                Toast.makeText(requireContext(), "Pay with PayPal selected", Toast.LENGTH_SHORT).show()
+            }
+            R.id.cash_on_delivery -> {
+                // Handle Cash on Delivery selection
+                Toast.makeText(requireContext(), "Cash on Delivery selected", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+
+
 }
+
 
 }
