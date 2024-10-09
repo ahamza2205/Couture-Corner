@@ -27,8 +27,13 @@ class FavoriteProductsAdapter(
         Glide.with(holder.itemView.context)
             .load(product.images?.edges?.get(0)?.node?.src)
             .into(holder.binding.ProductImageView)
+        // Set click listener for the item
         holder.itemView.setOnClickListener {
             listener.onItemClick(product)
+        }
+        // Set click listener for the favorite button
+        holder.binding.favoriteAddsButton.setOnClickListener {
+            listener.onFavoriteClick(product.id) // Trigger the remove favorite functionality
         }
     }
     override fun getItemCount(): Int = productList.size
