@@ -1,5 +1,4 @@
 package com.example.couturecorner.setting.viewmodel
-
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -7,11 +6,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.apollographql.apollo3.api.Optional
 import com.example.couturecorner.Utility.CartItemMapper
+import com.example.couturecorner.data.model.Address
 import com.example.couturecorner.data.model.CartItem
 import com.example.couturecorner.data.repository.Repo
 import com.google.firebase.auth.FirebaseAuth
+import com.graphql.type.DraftOrderAppliedDiscountInput
+import com.graphql.type.DraftOrderAppliedDiscountType
 import com.graphql.type.DraftOrderInput
 import com.graphql.type.DraftOrderLineItemInput
+import com.graphql.type.MailingAddressInput
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -20,6 +23,13 @@ import javax.inject.Inject
 class CartViewModel @Inject constructor(
     private val repo: Repo
 ) : ViewModel() {
+    private val _address = MutableLiveData<Address>()
+    val address: LiveData<Address> = _address
+
+    fun setAddress(address: Address) {
+        _address.value = address
+        Log.i("Final", "setAddress: "+address)
+    }
 
     private val _cartItems = MutableLiveData<List<CartItem>>()
     val cartItems: LiveData<List<CartItem>> get() = _cartItems
@@ -49,6 +59,7 @@ class CartViewModel @Inject constructor(
                 val customerId = repo.getShopifyUserId(userEmail)
                 if (customerId != null) {
                     userID = customerId
+                    Log.i("Final", "userID: "+userID)
                     tag = repo.getDraftOrderTag(userID!!)
                     Log.i("CartTag", "getFromSharedPref: "+tag.toString())
 
@@ -89,6 +100,7 @@ class CartViewModel @Inject constructor(
 
                             cartItemList.clear()
                             cartItemList.addAll(mergedCartItems)
+                            Log.i("Final", "cartItemList: "+cartItemList.size)
 
                             // Calculate and update the total price
                             calculateTotal()
@@ -211,7 +223,7 @@ class CartViewModel @Inject constructor(
                             Log.i("Cart", "addedToSharedPref: "+draftOrderId)
 
                         }
-                    }
+                         }
             }
 
             Log.i("Cart", "addedToCart: $draftOrderId")
@@ -289,4 +301,50 @@ class CartViewModel @Inject constructor(
             }
         }
     }
-}
+
+
+    //create draft order to final order
+     fun createDraftOrder(cartItems: List<CartItem>) {
+        Log.i("Final", "createDraftOrder List: "+cartItemList.size)
+        val draftOrderLineItems = cartItems.map {
+            DraftOrderLineItemInput(
+                variantId = it.id.toString(),
+                quantity = it.quantity ?: 1 // Use the locally updated quantity
+            )
+        }// Make sure CartItem has quantity
+        Log.i("Final", "draftOrderLineItems: "+draftOrderLineItems.size)
+        viewModelScope.launch {
+            Log.i("Final", "userId: " + userID)
+
+                repo.createDraftOrder(
+                    DraftOrderInput(
+                        customerId = Optional.present(userID),
+                        lineItems = Optional.present(draftOrderLineItems),
+                        billingAddress = Optional.present(
+                            MailingAddressInput(
+                                address1 = address.value!!.name,
+                                address2 = address.value!!.addressDetails,
+                                city = address.value!!.city,
+                                phone = address.value!!.phone
+                            )
+                        ),
+                        appliedDiscount = Optional.present(
+                            DraftOrderAppliedDiscountInput(
+                                valueType = Optional.present(DraftOrderAppliedDiscountType.PERCENTAGE),
+                                value = Optional.present(10.09)
+                            )
+                        )
+                    )
+                ).collect { response ->
+                    val finalDraftOrderId = response.data?.draftOrderCreate?.draftOrder?.id
+                    Log.i("Final Draft", "Response Data: finalDraftOrderId: $finalDraftOrderId")
+                    if (finalDraftOrderId != null) {
+                        repo.createOrderFromDraft(finalDraftOrderId).collect({ response ->
+                            Log.i("Final Draft", "Response Data: ${response.data}")
+                        })
+
+                    }
+                }
+            }
+        }
+    }

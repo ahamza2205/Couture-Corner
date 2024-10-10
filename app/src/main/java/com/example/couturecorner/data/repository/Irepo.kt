@@ -2,6 +2,7 @@ package com.example.couturecorner.data.repository
 
 import com.apollographql.apollo3.api.ApolloResponse
 import com.example.couturecorner.data.model.ApiState
+import com.graphql.CreateOrderFromDraftOrderMutation
 import com.graphql.DeleteDraftOrderMutation
 import com.graphql.DraftOrderCreateMutation
 import com.graphql.FilteredProductsQuery
@@ -31,9 +32,10 @@ interface Irepo {
     fun getDraftOrderByCustomerId(id: String): Flow<ApolloResponse<GetDraftOrdersByCustomerQuery.Data>>
     fun deleteDraftOrder(input: DraftOrderDeleteInput): Flow<ApolloResponse<DeleteDraftOrderMutation.Data>>
     fun updateDraftOrder(input: DraftOrderInput, id: String): Flow<ApolloResponse<UpdateDraftOrderMetafieldsMutation.Data>>
+    fun createOrderFromDraft(id: String): Flow<ApolloResponse<CreateOrderFromDraftOrderMutation.Data>>
 
 
-    suspend fun removeProductFromFavorites(customerId: String, productId: String)
+
     // --------------- shared preference  -------------------------
 
      fun saveUserLoggedIn(isLoggedIn: Boolean)
@@ -52,5 +54,6 @@ interface Irepo {
      // -------------- add product to favorite ------------------------
      suspend fun addProductToFavorites(customerId: String, productId: String)
     suspend fun getCurrentFavorites(customerId: String): List<String>?
+    suspend fun removeProductFromFavorites(customerId: String, productId: String)
 
 }

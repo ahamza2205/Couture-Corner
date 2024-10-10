@@ -37,9 +37,11 @@ class CartFragment : Fragment() {
         (activity as? MainActivity)?.hideBottomNav()
 
         setupRecyclerView()
+        cartViewModel.getCartItems()
+
         observeViewModel()
         setupUI()
-        cartViewModel.getCartItems()
+
     }
 
     // Set up RecyclerView for cart items
@@ -73,6 +75,7 @@ class CartFragment : Fragment() {
     private fun observeViewModel() {
         // Observe cart items
         cartViewModel.cartItems.observe(viewLifecycleOwner) { cartItems ->
+
             cartItemAdapter.updateCartItems(cartItems)
             cartItemAdapter.notifyDataSetChanged()  // Notify adapter to refresh data
         }

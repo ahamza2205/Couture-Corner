@@ -84,7 +84,7 @@ class LoginViewModel @Inject constructor(
             if (userEmail != null) {
                 // Get the Shopify customer ID using the email
                 val customerId = repo.getShopifyUserId(userEmail)
-
+                Log.i("AddAddress", "getCustomerDataTwo: "+customerId)
                 if (customerId != null) {
                     getCustomerData(customerId)
                 }

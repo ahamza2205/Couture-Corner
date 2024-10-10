@@ -103,28 +103,32 @@
         android:id="@+id/radio_group_payment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
         android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
+        <!-- ConstraintLayout to group RadioButton and ImageView -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
             <RadioButton
                 android:id="@+id/pay_with_paypal"
                 android:layout_width="50dp"
                 android:layout_height="wrap_content"
                 android:buttonTint="@color/black"
-                android:checked="false"/>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
 
             <ImageView
                 android:layout_width="140dp"
                 android:layout_height="30dp"
                 android:src="@drawable/paypal"
-                android:layout_marginStart="10dp" />
-        </LinearLayout>
+                android:layout_marginStart="10dp"
+                app:layout_constraintStart_toEndOf="@id/pay_with_paypal"
+                app:layout_constraintTop_toTopOf="@id/pay_with_paypal"
+                app:layout_constraintBottom_toBottomOf="@id/pay_with_paypal" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <RadioButton
             android:id="@+id/cash_on_delivery"
@@ -134,8 +138,7 @@
             android:text="Cash On Delivery"
             android:textColor="@color/black"
             android:textSize="20sp"
-            android:buttonTint="@color/black"
-            android:checked="false"/>
+            android:buttonTint="@color/black" />
     </RadioGroup>
     <TextView
         android:layout_width="wrap_content"
