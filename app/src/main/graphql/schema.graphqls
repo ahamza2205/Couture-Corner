@@ -146,7 +146,14 @@ type Mutation {
     draftOrderCreate(input: DraftOrderInput!): DraftOrderCreatePayload
     draftOrderUpdate(input: DraftOrderInput!, id: ID!): DraftOrderUpdatePayload
     draftOrderDelete(input: DraftOrderDeleteInput!): DraftOrderDeletePayload
+    draftOrderComplete(id: ID!): DraftOrderCompletePayload
 
+
+}
+type DraftOrderCompletePayload {
+    draftOrder: DraftOrder
+    order: Order
+    userErrors: [UserError!]!
 }
 
 type CustomerCreatePayload {
@@ -251,7 +258,10 @@ input DraftOrderInput {
     email: String
     tags: [String]
     lineItems: [DraftOrderLineItemInput!]
+    billingAddress: MailingAddressInput
+    appliedDiscount: DraftOrderAppliedDiscountInput
 }
+
 
 input DraftOrderLineItemInput {
     variantId: ID!
@@ -262,7 +272,10 @@ type DraftOrderUpdatePayload {
     draftOrder: DraftOrder
     userErrors: [UserError!]!
 }
-
+input DraftOrderAppliedDiscountInput {
+    valueType: DraftOrderAppliedDiscountType
+    value: Float
+}
 
 
 type DraftOrderCreatePayload {
@@ -275,6 +288,22 @@ type DraftOrder {
     id: ID!
     tags: [String]
     lineItems(first: Int): DraftOrderLineItemConnection
+    billingAddress: MailingAddress
+    appliedDiscount:DraftOrderAppliedDiscount
+    order: Order
+}
+
+type DraftOrderAppliedDiscount {
+    valueType: DraftOrderAppliedDiscountType
+    value:Float
+
+}
+enum DraftOrderAppliedDiscountType {
+    FIXED_AMOUNT
+    PERCENTAGE
+}
+type Order {
+    id: ID!
 }
 
 type DraftOrderConnection {

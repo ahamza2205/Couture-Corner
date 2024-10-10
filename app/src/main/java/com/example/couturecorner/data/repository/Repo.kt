@@ -11,6 +11,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.gson.Gson
 import com.graphql.AddFavoriteProductMutation
+import com.graphql.CreateOrderFromDraftOrderMutation
 import com.graphql.CustomerCreateMutation
 import com.graphql.DeleteDraftOrderMutation
 import com.graphql.DraftOrderCreateMutation
@@ -78,6 +79,13 @@ class Repo
 
         return remoteData.updateDraftOrder(input, id)
     }
+
+
+    override fun createOrderFromDraft(id: String): Flow<ApolloResponse<CreateOrderFromDraftOrderMutation.Data>>{
+
+        return remoteData.createOrderFromDraft(id)
+    }
+
 
     // ---------------------------- shared preference ------------------------------------
     // ---------------------------- shared preference ------------------------------------

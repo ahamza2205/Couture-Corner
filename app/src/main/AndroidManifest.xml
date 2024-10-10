@@ -23,7 +23,7 @@
         <!-- SignUpActivity -->
         <activity
             android:name=".authentication.view.SignUpActivity"
-            android:exported="true"></activity>
+            android:exported="true" />
         <activity
             android:name=".authentication.view.LoginActivity"
             android:exported="true">
@@ -34,7 +34,7 @@
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
-                <data android:scheme="com.example.couturecorner" />
+                <data android:scheme="com.example.couturecorner.setting.ui" />
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
@@ -42,7 +42,7 @@
         </activity> <!-- MainActivity -->
         <activity
             android:name=".home.ui.MainActivity"
-            android:exported="true"></activity>
+            android:exported="true" />
     </application>
 
 </manifest>

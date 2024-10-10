@@ -1,6 +1,7 @@
 package com.example.couturecorner.data.remote
 
 import com.apollographql.apollo3.api.ApolloResponse
+import com.graphql.CreateOrderFromDraftOrderMutation
 import com.graphql.DeleteDraftOrderMutation
 import com.graphql.DraftOrderCreateMutation
 import com.graphql.FilteredProductsQuery
@@ -25,7 +26,7 @@ interface IremoteData   {
     fun getDraftOrderByCustomerId(id: String): Flow<ApolloResponse<GetDraftOrdersByCustomerQuery.Data>>
     fun deleteDraftOrder(input: DraftOrderDeleteInput): Flow<ApolloResponse<DeleteDraftOrderMutation.Data>>
     fun updateDraftOrder(input: DraftOrderInput, id: String): Flow<ApolloResponse<UpdateDraftOrderMetafieldsMutation.Data>>
-
+    fun createOrderFromDraft(id: String): Flow<ApolloResponse<CreateOrderFromDraftOrderMutation.Data>>
 
 }
 

@@ -3,6 +3,7 @@ package com.example.couturecorner.data.remote
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Optional
 import com.example.couturecorner.network.ApolloClient
+import com.graphql.CreateOrderFromDraftOrderMutation
 import com.graphql.DeleteDraftOrderMutation
 import com.graphql.DraftOrderCreateMutation
 
@@ -71,6 +72,19 @@ class RemoteData @Inject constructor() : IremoteData {
         ).execute()
 
         emit(response)
+    }
+
+
+    override fun createOrderFromDraft(
+        id: String
+    ): Flow<ApolloResponse<CreateOrderFromDraftOrderMutation.Data>> = flow {
+        val response = ApolloClient.apolloClient.mutation(
+            CreateOrderFromDraftOrderMutation(id)
+        ).execute()
+        emit(
+            response
+        )
+
     }
 
     override fun getDraftOrderByCustomerId(id: String): Flow<ApolloResponse<GetDraftOrdersByCustomerQuery.Data>> = flow {

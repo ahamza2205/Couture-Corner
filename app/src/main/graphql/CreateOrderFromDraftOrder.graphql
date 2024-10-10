@@ -1,0 +1,10 @@
+mutation CreateOrderFromDraftOrder($id: ID!) {
+    draftOrderComplete(id: $id) {
+        draftOrder {
+            id
+            order {
+                id
+            }
+        }
+    }
+}

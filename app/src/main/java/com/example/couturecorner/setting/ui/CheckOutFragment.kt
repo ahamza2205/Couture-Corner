@@ -14,6 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.couturecorner.R
 import com.example.couturecorner.authentication.viewmodel.LoginViewModel
+import com.example.couturecorner.data.model.Address
 import com.example.couturecorner.data.model.Amount
 import com.example.couturecorner.data.model.ExperienceContext
 import com.example.couturecorner.data.model.OrderRequest
@@ -23,6 +24,7 @@ import com.example.couturecorner.data.model.PurchaseUnit
 import com.example.couturecorner.data.repository.PayPalRepository
 import com.example.couturecorner.databinding.FragmentCheckOutBinding
 import com.example.couturecorner.home.ui.MainActivity
+import com.example.couturecorner.setting.viewmodel.CartViewModel
 import com.example.couturecorner.setting.viewmodel.CheckOutViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -35,7 +37,7 @@ class CheckOutFragment : Fragment() {
 
     private val checkOutViewModel: CheckOutViewModel by viewModels()
     private val loginViewModel: LoginViewModel by viewModels()
-
+private val cartViewModel: CartViewModel by viewModels()
     private lateinit var binding: FragmentCheckOutBinding
     private lateinit var payPalRepository: PayPalRepository
 
@@ -58,6 +60,8 @@ class CheckOutFragment : Fragment() {
 
         loginViewModel.getCustomerDataTwo()
         setupCustomerAddress()
+        cartViewModel.getCartItems()
+        observeViewModel()
 
         binding.btnAddNewAddress.setOnClickListener {
             findNavController().navigate(R.id.action_checkOutFragment_to_addAdressFragment)
@@ -78,14 +82,33 @@ binding.checkOutButton.setOnClickListener {
             }
         }
     }
+    private fun observeViewModel() {
+        // Observe cart items
+        cartViewModel.cartItems.observe(viewLifecycleOwner) { cartItems ->
 
-    private fun setupCustomerAddress() {
+            cartViewModel.createDraftOrder(cartItems)
+
+        }
+    }
+
+        private fun setupCustomerAddress() {
         if (checkOutViewModel.getAddressState() == true) {
             binding.curretAdress.visibility = View.VISIBLE
             loginViewModel.customerData.observe(viewLifecycleOwner) { customer ->
                 customer?.let {
                     binding.addressName.text = it.defaultAddress?.address1
                     binding.addressDetails.text = it.defaultAddress?.address2
+                    val address = Address(
+                        name = it.defaultAddress?.address1 ?: "",
+                        addressDetails = it.defaultAddress?.address2 ?: "",
+                        city = it.defaultAddress?.city ?: "",
+                        phone = it.defaultAddress?.phone ?: "",
+
+                    )
+                    Log.i("Final", "setupCustomerAddress: "+address)
+                    cartViewModel.setAddress(address)
+
+
                 }
             }
         }
@@ -96,9 +119,6 @@ binding.checkOutButton.setOnClickListener {
             clientID = "AQSo4-8c09dCj6c-SU8c_5dmxfpDeOqkgoRwqmI80ZxNYMuwciCLnf6k1z_X2niaNNwHPyA67OuUxQBl",
             secretID = "ECe4BSmb5wSs57wrq-hN94TJRurRrovSPfjJqRmq1Sxdm40sx6vPU--vZIA1xXQSBSOB5nEZ3obHtKjG"
         )
-
-        // Initially hide the "Start Order" button
-        binding.payWithPaypal.visibility = View.GONE
         fetchAccessToken()
     }
 
@@ -111,11 +131,8 @@ binding.checkOutButton.setOnClickListener {
         lifecycleScope.launch(handler) {
             try {
                 val token = payPalRepository.fetchAccessToken()
+                isTokenFetched = true
                 Toast.makeText(requireContext(), "Access Token Fetched!", Toast.LENGTH_SHORT).show()
-                binding.payWithPaypal.visibility = View.VISIBLE
-                isTokenFetched = true // Set to true on success
-                paypall()
-
             } catch (e: Exception) {
                 Toast.makeText(requireContext(), "Failed to fetch access token: ${e.localizedMessage}", Toast.LENGTH_SHORT).show()
             }
