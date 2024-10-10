@@ -51,9 +51,8 @@ class FavoriteViewModel @Inject constructor(
             } catch (e: Exception) {
                 _favoriteProducts.value = ApiState.Error(e.message ?: "Unknown Error")
             }
+            }
         }
-    }
-
     fun getProductDetails(productId: String): Flow<ApiState<ProductQuery.Product>> = flow {
         try {
             val response = apolloClient.query(ProductQuery(productId)).execute()

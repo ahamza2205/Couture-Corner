@@ -62,6 +62,7 @@ android {
 
 }
 
+
 dependencies {
 
     implementation(libs.androidx.core.ktx)
@@ -99,7 +100,6 @@ dependencies {
 
     implementation("com.google.dagger:hilt-android:2.42")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
-    implementation("com.squareup.okhttp3:okhttp:4.9.3")
 
     implementation ("androidx.navigation:navigation-fragment-ktx:2.5.3")
 
@@ -118,14 +118,20 @@ dependencies {
     implementation ("com.google.firebase:firebase-auth")
 //map
     implementation("org.osmdroid:osmdroid-android:6.1.12")
+//payment
+    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation("com.google.code.gson:gson:2.10.1")
 
+    implementation("com.paypal.android:paypal-web-payments:1.5.0")
 
     implementation ("com.airbnb.android:lottie:6.0.1")
 
+    implementation ("com.google.android.gms:play-services-auth:20.5.0")
 
 
     implementation ("com.google.android.material:material:1.8.0")
 
-    implementation ("com.google.code.gson:gson:2.8.9")
 
 }

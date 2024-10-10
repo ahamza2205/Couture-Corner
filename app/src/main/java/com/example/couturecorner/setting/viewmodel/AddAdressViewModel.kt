@@ -26,7 +26,6 @@ class AddAdressViewModel @Inject constructor(
         repo.saveAddressState(true)
     }
 
-
     // Function to update the customer with the address
     fun updateCustomer(address: List<MailingAddressInput>,userId: String) {
 

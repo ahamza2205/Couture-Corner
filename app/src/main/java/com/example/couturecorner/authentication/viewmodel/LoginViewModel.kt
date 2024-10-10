@@ -8,10 +8,11 @@ import androidx.lifecycle.viewModelScope
 import com.example.couturecorner.data.local.SharedPreference
 import com.example.couturecorner.data.repository.Repo
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
 import com.graphql.GetCustomerByIdQuery
-import com.graphql.type.MailingAddressInput
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
@@ -23,6 +24,8 @@ class LoginViewModel @Inject constructor(
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
     private val _loginStatus = MutableLiveData<Boolean>()
     val loginStatus: LiveData<Boolean> get() = _loginStatus
+    private val _registrationStatus = MutableLiveData<Boolean>()
+    val registrationStatus: LiveData<Boolean> get() = _registrationStatus
     fun saveUserLoggedIn(isLoggedIn: Boolean) {
         repo.saveUserLoggedIn(isLoggedIn)
     }
@@ -33,8 +36,6 @@ class LoginViewModel @Inject constructor(
     fun haveAddress() {
         repo.saveAddressState(true)
     }
-
-
 
     fun loginAsGuest() {
         auth.signInAnonymously().addOnCompleteListener { task ->
@@ -66,16 +67,13 @@ class LoginViewModel @Inject constructor(
             val customerId = sharedPreference.getShopifyUserId(email)
             if (customerId != null) {
                 getCustomerData(customerId)
+                repo.saveDraftOrderTag(customerId,"C$customerId")
+                Log.i("CartTag", "getCustomerDataTwo: "+repo.getDraftOrderTag(userId = customerId))
             } else {
                 Log.e("LoginViewModel", "No Shopify User ID found for email: $email")
             }
         }
     }
-
-
-
-
-    //
     // Function to update the customer with the not thing take
     private val user = FirebaseAuth.getInstance().currentUser
 
@@ -83,23 +81,35 @@ class LoginViewModel @Inject constructor(
         if (user != null) {
             val userEmail = user.email
             Log.i("AddAddress", "updateCustomer: "+userEmail)
-
             if (userEmail != null) {
                 // Get the Shopify customer ID using the email
                 val customerId = repo.getShopifyUserId(userEmail)
-                Log.i("AddAddress", "updateCustomer: "+customerId)
-
+                Log.i("AddAddress", "getCustomerDataTwo: "+customerId)
                 if (customerId != null) {
-
                     getCustomerData(customerId)
-
-
-
                 }
             }
         }
         Log.i("get data customer ", "getCustomerDataTwo: "+"user is null")
     }
+    fun registerUserWithGoogle(email: String, password: String?, firstName: String, lastName: String, phoneNumber: String?, idToken: String) {
+        viewModelScope.launch {
+            try {
+                val credential = GoogleAuthProvider.getCredential(idToken, null)
+                FirebaseAuth.getInstance().signInWithCredential(credential).await()
 
+                val shopifyUserId = repo.registerUser(email, password, firstName, lastName, phoneNumber, idToken)
 
+                if (shopifyUserId != null) {
+                    sharedPreference.saveShopifyUserId(email, shopifyUserId)
+                    _registrationStatus.postValue(true)
+                } else {
+                    _registrationStatus.postValue(false)
+                }
+            } catch (e: Exception) {
+                Log.e("UserRegistration", "Error during Google registration: ${e.message}")
+                _registrationStatus.postValue(false)
+            }
+        }
+    }
 }

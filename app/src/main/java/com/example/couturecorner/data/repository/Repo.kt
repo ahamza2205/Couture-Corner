@@ -1,5 +1,4 @@
 package com.example.couturecorner.data.repository
-
 import android.util.Log
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Optional
@@ -9,25 +8,32 @@ import com.example.couturecorner.data.remote.IremoteData
 import com.example.couturecorner.network.ApolloClient
 import com.example.couturecorner.network.ApolloClient.apolloClient
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
 import com.google.gson.Gson
 import com.graphql.AddFavoriteProductMutation
+import com.graphql.CreateOrderFromDraftOrderMutation
 import com.graphql.CustomerCreateMutation
+import com.graphql.DeleteDraftOrderMutation
+import com.graphql.DraftOrderCreateMutation
 import com.graphql.FilteredProductsQuery
 import com.graphql.GetCuponCodesQuery
+import com.graphql.GetCustomerByEmailQuery
 import com.graphql.GetCustomerByIdQuery
+import com.graphql.GetDraftOrdersByCustomerQuery
 import com.graphql.GetFavoriteProductsQuery
 import com.graphql.GetProductsQuery
 import com.graphql.HomeProductsQuery
 import com.graphql.UpdateCustomerMetafieldsMutation
 import com.graphql.ProductQuery
-import com.graphql.type.Customer
+import com.graphql.UpdateDraftOrderMetafieldsMutation
 import com.graphql.type.CustomerInput
-import kotlinx.coroutines.delay
+import com.graphql.type.DraftOrderDeleteInput
+import com.graphql.type.DraftOrderInput
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
-import javax.inject.Singleton
+
 
 class Repo
     @Inject constructor(
@@ -35,8 +41,6 @@ class Repo
     private val sharedPreference: SharedPreference
 
 ) : Irepo {
-
-    // ---------------------------- Product  ------------------------------------
 
     override fun getProducts(): Flow<ApolloResponse<GetProductsQuery.Data>> {
         return remoteData.getProducts()
@@ -50,7 +54,40 @@ class Repo
         return remoteData.getFilterdProducts(vendor)
     }
 
+// ---------------------------- Draft Order ------------------------------------
 
+    override fun createDraftOrder(input: DraftOrderInput): Flow<ApolloResponse<DraftOrderCreateMutation.Data>> {
+
+        return remoteData.createDraftOrder(input)
+    }
+
+    override fun getDraftOrderByCustomerId(id: String): Flow<ApolloResponse<GetDraftOrdersByCustomerQuery.Data>> {
+
+        return remoteData.getDraftOrderByCustomerId(id)
+    }
+
+    override fun deleteDraftOrder(input: DraftOrderDeleteInput): Flow<ApolloResponse<DeleteDraftOrderMutation.Data>> {
+
+        return remoteData.deleteDraftOrder(input)
+    }
+
+
+    override fun updateDraftOrder(
+        input: DraftOrderInput,
+        id: String
+    ): Flow<ApolloResponse<UpdateDraftOrderMetafieldsMutation.Data>> {
+
+        return remoteData.updateDraftOrder(input, id)
+    }
+
+
+    override fun createOrderFromDraft(id: String): Flow<ApolloResponse<CreateOrderFromDraftOrderMutation.Data>>{
+
+        return remoteData.createOrderFromDraft(id)
+    }
+
+
+    // ---------------------------- shared preference ------------------------------------
     // ---------------------------- shared preference ------------------------------------
     override fun saveUserLoggedIn(isLoggedIn: Boolean) {
         sharedPreference.saveUserLoggedIn(isLoggedIn)
@@ -73,22 +110,45 @@ class Repo
         return sharedPreference.getAddressState()
     }
 
+    override fun saveDraftOrderId(userId: String, ID: String) {
+        sharedPreference.saveDraftOrderId(userId, ID)
+    }
+
+    override fun getDraftOrderId(userId: String): String? {
+        return sharedPreference.getDraftOrderId(userId)}
+
+    override fun deleteDraftOrderId(userId: String) {
+        sharedPreference.deleteDraftOrderId(userId)
+    }
 
 
     // --------------------------- shopify registration -------------------------------
     suspend fun registerUser(
-        email: String,
-        password: String,
-        firstName: String,
-        lastName: String,
-        phoneNumber: String
+        email: String?,
+        password: String?,
+        firstName: String?,
+        lastName: String?,
+        phoneNumber: String?,
+        idToken: String? = null,
     ): String? {
+        if (email.isNullOrEmpty() || firstName.isNullOrEmpty() || lastName.isNullOrEmpty()) {
+            Log.e("UserRegistration", "Error: One or more input fields are empty or null.")
+            throw IllegalArgumentException("All fields except password and phoneNumber must be provided.")
+        }
+
         val auth = FirebaseAuth.getInstance()
         try {
             // Create Firebase user
-            val firebaseUserId = auth.createUserWithEmailAndPassword(email, password).await()
-            val user = FirebaseAuth.getInstance().currentUser
-            val userEmail = user?.email
+            val firebaseUserId = if (password != null) {
+                auth.createUserWithEmailAndPassword(email, password).await()
+            } else if (idToken != null) {
+                // Sign in using Google
+                val credential = GoogleAuthProvider.getCredential(idToken, null)
+                auth.signInWithCredential(credential).await()
+            } else {
+                throw IllegalArgumentException("Must provide either a password or an idToken for registration.")
+            }
+
             if (firebaseUserId.user != null) {
                 // Proceed with Shopify registration
                 val client = ApolloClient.apolloClient
@@ -97,30 +157,34 @@ class Repo
                         email = Optional.Present(email),
                         firstName = Optional.Present(firstName),
                         lastName = Optional.Present(lastName),
-                        phone = Optional.Present(phoneNumber)
+                        phone = if (!phoneNumber.isNullOrEmpty()) Optional.Present(phoneNumber) else Optional.Absent,
+                        tags = Optional.Absent,
+                        metafields = Optional.Absent,
+                        addresses = Optional.Absent
                     )
                 )
                 val response = client.mutation(mutation).execute()
 
                 if (response.hasErrors()) {
-                    // Log Shopify errors
                     Log.e("ShopifyRegistration", "Shopify user creation failed: ${response.errors}")
                     throw Exception("Error creating Shopify user: ${response.errors}")
                 } else {
                     val shopifyUserId = response.data?.customerCreate?.customer?.id
                     Log.d("UserRegistration", "User successfully created on Shopify: $firstName $lastName, Shopify User ID: $shopifyUserId")
 
-                    // Save the Shopify User ID in shared preferences
-                    if (userEmail != null) {
-                        sharedPreference.saveShopifyUserId( userEmail , shopifyUserId ?: "")
+                    // Fetch the customer ID by email
+                    val customerId = getCustomerByEmail(email)
+                    if (customerId != null) {
+                        // Save the customer ID in shared preferences
+                        sharedPreference.saveShopifyUserId(email, customerId)
+                        Log.d("UserRegistration", "Shopify User ID saved in SharedPreferences: $customerId")
+                    } else {
+                        Log.e("UserRegistration", "Failed to fetch Shopify user ID")
                     }
-                    if (shopifyUserId != null) {
-                        getCustomerById(shopifyUserId)
-                    }
+
                     return shopifyUserId
                 }
             } else {
-                // Log Firebase registration failure
                 Log.e("UserRegistration", "Failed to create Firebase user")
                 throw Exception("Failed to create Firebase user")
             }
@@ -129,8 +193,23 @@ class Repo
             throw e
         }
     }
+    // --------------------------- get customer data  --------------------------------
+    // --------------------------- get customer by email --------------------------------
+    suspend fun getCustomerByEmail(email: String): String? {
+        val client = ApolloClient.apolloClient
+        val response = client.query(GetCustomerByEmailQuery(email = email)).execute()
 
-    // Fetch customer data by ID
+        if (response.hasErrors()) {
+            Log.e("GetCustomerByEmail", "Error fetching customer by email: ${response.errors}")
+            throw Exception("Error fetching customer by email: ${response.errors}")
+        }
+
+        // Extract customer ID from the response
+        val customerId = response.data?.customers?.edges?.firstOrNull()?.node?.id
+        return customerId
+    }
+
+    // --------------------------- get customer by id --------------------------------
     suspend fun getCustomerById(customerId: String): GetCustomerByIdQuery.Customer? {
         val client = ApolloClient.apolloClient
         val response = client.query(GetCustomerByIdQuery(id = customerId)).execute()
@@ -160,8 +239,8 @@ class Repo
                 }
             )
         }
-        return null
     }
+
     // ----------------------------------- product details --------------------------------
     override fun getProductDetails(productId: String): Flow<ApiState<ProductQuery.Data>> = flow {
         try {
@@ -171,6 +250,7 @@ class Repo
             emit(ApiState.Error(e.message ?: "Unknown Error"))
         }
     }
+
     // ------------------------ get & save shopify user id --------------------------------
     override fun getShopifyUserId(email: String): String? {
         return sharedPreference.getShopifyUserId(email)
@@ -180,7 +260,15 @@ class Repo
         sharedPreference.saveShopifyUserId(email, userId)
     }
 
-// --------------------------- Add product to favorite --------------------------------
+    override fun saveDraftOrderTag(userId: String, tag: String) {
+        sharedPreference.saveDraftOrderTag(userId, tag)
+    }
+
+    override fun getDraftOrderTag(userId: String): String? {
+        return sharedPreference.getDraftOrderTag(userId)
+    }
+
+    // --------------------------- Add product to favorite --------------------------------
 override suspend fun addProductToFavorites(customerId: String, productId: String) {
     try {
         val currentFavorites = getCurrentFavorites(customerId) ?: listOf()
@@ -229,7 +317,6 @@ override suspend fun addProductToFavorites(customerId: String, productId: String
         Log.d("GetFavorites", "Current favorites: $favoriteProducts")
         return favoriteProducts
     }
-
     override suspend fun removeProductFromFavorites(customerId: String, productId: String) {
         try {
             val currentFavorites = getCurrentFavorites(customerId) ?: listOf()
@@ -260,9 +347,8 @@ override suspend fun addProductToFavorites(customerId: String, productId: String
             }
         } catch (e: Exception) {
             Log.e("RemoveFavorite", "Error: ${e.message}")
+           }
         }
-    }
-
 
     override fun getCupones(): Flow<ApolloResponse<GetCuponCodesQuery.Data>> {
         return remoteData.getCupones()

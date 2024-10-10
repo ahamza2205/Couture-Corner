@@ -1,6 +1,4 @@
 package com.example.couturecorner.home.ui
-
-
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
