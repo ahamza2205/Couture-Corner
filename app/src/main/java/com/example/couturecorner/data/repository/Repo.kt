@@ -4,6 +4,8 @@ import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Optional
 import com.example.couturecorner.data.local.SharedPreference
 import com.example.couturecorner.data.model.ApiState
+import com.example.couturecorner.data.model.ConvertResponse
+import com.example.couturecorner.data.remote.CurrencyApiService
 import com.example.couturecorner.data.remote.IremoteData
 import com.example.couturecorner.network.ApolloClient
 import com.example.couturecorner.network.ApolloClient.apolloClient
@@ -36,10 +38,10 @@ import javax.inject.Inject
 
 class Repo
     @Inject constructor(
-    private val remoteData: IremoteData,
-    private val sharedPreference: SharedPreference
-
-) : Irepo {
+        private val remoteData: IremoteData,
+        private val sharedPreference: SharedPreference,
+        private val apiService: CurrencyApiService
+    ) : Irepo {
 
     override fun getProducts(): Flow<ApolloResponse<GetProductsQuery.Data>> {
         return remoteData.getProducts()
@@ -348,4 +350,36 @@ override suspend fun addProductToFavorites(customerId: String, productId: String
     override fun updateCustomer(input: CustomerInput): Flow<ApolloResponse<UpdateCustomerMetafieldsMutation.Data>> {
         return remoteData.updateCustomer(input)
     }
-}
+   // ----------------------------------- currency --------------------------------
+
+
+    suspend fun convertCurrency(from: String, to: String, amount: Double, apiKey: String): ConvertResponse? {
+        Log.d("CurrencyConversion", "Request to convert currency: From = $from, To = $to, Amount = $amount")
+
+        val response = apiService.convertCurrency(from, to, amount, apiKey)
+
+        Log.d("CurrencyConversion", "API Response: ${response.code()} - ${response.message()}")
+
+        return if (response.isSuccessful) {
+            Log.d("CurrencyConversion", "Successful conversion: ${response.body()}")
+            response.body()
+        } else {
+            Log.e("CurrencyConversion", "Failed to convert currency. Error: ${response.errorBody()?.string()}")
+            null
+        }
+    }
+
+
+    fun saveSelectedCurrency(currency: String) {
+        sharedPreference.saveSelectedCurrency(currency)
+    }
+
+    fun getSelectedCurrency(): String? {
+        return sharedPreference.getSelectedCurrency()
+    }
+    }
+
+
+
+
+

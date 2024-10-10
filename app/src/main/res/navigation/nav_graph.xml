@@ -25,7 +25,11 @@
         android:id="@+id/favoriteFragment"
         android:name="com.example.couturecorner.favorite.ui.view.FavoriteFragment"
         android:label="Favorite"
-        tools:layout="@layout/fragment_favorite" />
+        tools:layout="@layout/fragment_favorite" >
+        <action
+            android:id="@+id/action_favoriteFragment_to_productDetailsFragment"
+            app:destination="@id/productDetailsFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/categoryFragment"
@@ -38,6 +42,9 @@
         <action
             android:id="@+id/action_categoryFragment_to_homeFragment"
             app:destination="@id/homeFragment" />
+        <action
+            android:id="@+id/action_categoryFragment_to_productDetailsFragment"
+            app:destination="@id/productDetailsFragment" />
     </fragment>
 
     <fragment
@@ -69,6 +76,13 @@
         <argument
             android:name="brand"
             app:argType="string" />
+        <argument
+            android:name="productId"
+            app:argType="string"
+            android:defaultValue="" />
+        <action
+            android:id="@+id/action_brandsFragment_to_productDetailsFragment"
+            app:destination="@id/productDetailsFragment" />
     </fragment>
     <fragment
         android:id="@+id/addAdressFragment"

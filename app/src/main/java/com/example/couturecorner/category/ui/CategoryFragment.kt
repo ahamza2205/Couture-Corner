@@ -10,8 +10,9 @@ import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import com.example.couturecorner.setting.viewmodel.CurrencyViewModel
 import com.example.couturecorner.R
-import com.example.couturecorner.brand.ui.ProductBrandAdapter
 import com.example.couturecorner.category.viewModel.CategoryViewModel
 import com.example.couturecorner.data.model.ApiState
 import com.example.couturecorner.databinding.FragmentCategoryBinding
@@ -27,7 +28,7 @@ class CategoryFragment : Fragment(), OnItemClickListener {
 
     private var category: String? = null
     lateinit var binding:FragmentCategoryBinding
-
+    private val currencyViewModel: CurrencyViewModel by viewModels()
     val viewModel: CategoryViewModel by viewModels()
     val sharedViewModel: MainViewModel by activityViewModels()
 
@@ -50,7 +51,7 @@ class CategoryFragment : Fragment(), OnItemClickListener {
         super.onViewCreated(view, savedInstanceState)
 
 
-        categoryAdapter= ProductsAdapter(this)
+        categoryAdapter = ProductsAdapter(this, currencyViewModel)
         binding.productsRecycel.adapter=categoryAdapter
 
         viewModel.getFilterdProducts(category)
@@ -64,7 +65,6 @@ class CategoryFragment : Fragment(), OnItemClickListener {
                     is ApiState.Loading->showLoading(true)
                     is ApiState.Success->{
                         val products = it.data?.data?.products?.edges
-
                         showLoading(false)
                         categoryAdapter.submitList(products)
 //                        products?.forEach { edge ->
@@ -94,7 +94,8 @@ class CategoryFragment : Fragment(), OnItemClickListener {
     }
     override fun onItemClick(product: FilteredProductsQuery.Node?) {
         // Handle item click, e.g., navigate to a detailed product page
-        Log.d("BrandFragment", "Clicked on product: ${product?.title}")
+        val action = CategoryFragmentDirections.actionCategoryFragmentToProductDetailsFragment(product?.id.toString())
+        findNavController().navigate(action)
     }
 
 

@@ -10,6 +10,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.example.couturecorner.R
 import com.example.couturecorner.authentication.viewmodel.LoginViewModel
+import com.example.couturecorner.authentication.viewmodel.RegistrationState
 import com.example.couturecorner.databinding.ActivityLoginBinding
 import com.example.couturecorner.home.ui.MainActivity
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -53,7 +54,9 @@ class LoginActivity : AppCompatActivity() {
         }
 
         binding.loginBtnGuest.setOnClickListener {
-            viewModel.loginAsGuest()
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+            finish()
         }
 
         binding.loginBtnSignIn.setOnClickListener {
@@ -73,10 +76,10 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun handleSignIn() {
-        val email = binding.loginEtEmail.text.toString()
-        val password = binding.loginEtPassword.text.toString()
+        val email = binding.loginEtEmail.text.toString().trim()
+        val password = binding.loginEtPassword.text.toString().trim()
 
-        if (email.isNotEmpty() && password.isNotEmpty()) {
+        if (isValidEmail(email) && isValidPassword(password)) {
             auth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
@@ -86,7 +89,7 @@ class LoginActivity : AppCompatActivity() {
                     }
                 }
         } else {
-            showToast("Please fill in all fields")
+            showToast("Please enter a valid email and password.")
         }
     }
 
@@ -123,10 +126,8 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun signInUsingGoogle() {
-        googleSignInClient.signOut().addOnCompleteListener {
-            val signInIntent = googleSignInClient.signInIntent
-            googleSignInLauncher.launch(signInIntent)
-        }
+        val signInIntent = googleSignInClient.signInIntent
+        googleSignInLauncher.launch(signInIntent)
     }
 
     private val googleSignInLauncher = registerForActivityResult(
@@ -149,6 +150,7 @@ class LoginActivity : AppCompatActivity() {
             showToast("Sign-in failed: ${e.message}")
         }
     }
+
     private fun handleGoogleAccount(account: GoogleSignInAccount) {
         val email = account.email ?: ""
         val idToken = account.idToken ?: ""
@@ -177,6 +179,7 @@ class LoginActivity : AppCompatActivity() {
             }
         }
     }
+
     private fun registerNewUserWithGoogle(email: String, idToken: String) {
         Log.d("GoogleSignIn", "Registering new user with Google: $email")
 
@@ -210,8 +213,8 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun observeViewModel() {
-        viewModel.registrationStatus.observe(this) { isSuccess ->
-            if (isSuccess) {
+        viewModel.registrationStatus.observe(this) { registrationState ->
+            if (registrationState) {
                 showToast("Registration successful!")
                 binding.root.postDelayed({ navigateToMainActivity() }, 1500)
             } else {
@@ -219,8 +222,6 @@ class LoginActivity : AppCompatActivity() {
             }
         }
     }
-
-
     private fun signInWithFirebase(idToken: String) {
         if (idToken.isNotEmpty()) {
             val credential = GoogleAuthProvider.getCredential(idToken, null)
@@ -258,5 +259,13 @@ class LoginActivity : AppCompatActivity() {
 
     private fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun isValidEmail(email: String): Boolean {
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
+    }
+
+    private fun isValidPassword(password: String): Boolean {
+        return password.length >= 6 // You can add more validation logic here if needed
     }
 }

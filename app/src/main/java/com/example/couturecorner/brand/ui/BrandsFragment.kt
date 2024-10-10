@@ -10,6 +10,8 @@ import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import com.example.couturecorner.setting.viewmodel.CurrencyViewModel
 import com.example.couturecorner.R
 import com.example.couturecorner.brand.viewModel.BrandViewModel
 import com.example.couturecorner.data.model.ApiState
@@ -27,6 +29,8 @@ class BrandsFragment : Fragment(), OnItemClickListener {
     private var brandName: String? = null
 
     val viewModel:BrandViewModel by viewModels()
+    private val currencyViewModel: CurrencyViewModel by viewModels()
+
     val sharedViewModel: MainViewModel by activityViewModels()
 
     lateinit var binding:FragmentBrandsBinding
@@ -52,7 +56,7 @@ class BrandsFragment : Fragment(), OnItemClickListener {
         super.onViewCreated(view, savedInstanceState)
 
         // Pass 'this' as the listener
-        productsBrandAdapter = ProductsAdapter(this)
+        productsBrandAdapter = ProductsAdapter(this, currencyViewModel)
         binding.productsRecycel.adapter = productsBrandAdapter
 
         val logoResId = brandLogos[brandName] ?: R.drawable.shoz10
@@ -89,8 +93,8 @@ class BrandsFragment : Fragment(), OnItemClickListener {
 
     }
     override fun onItemClick(product: FilteredProductsQuery.Node?) {
-        // Handle item click, e.g., navigate to a detailed product page
-        Log.d("BrandFragment", "Clicked on product: ${product?.title}")
+        val action = BrandsFragmentDirections.actionBrandsFragmentToProductDetailsFragment(product?.id.toString())
+        findNavController().navigate(action)
     }
     override fun onFavoriteClick(productId: String) {
         sharedViewModel.addProductToFavorites(productId)

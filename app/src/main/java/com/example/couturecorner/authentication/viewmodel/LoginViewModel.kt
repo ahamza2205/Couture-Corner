@@ -37,18 +37,7 @@ class LoginViewModel @Inject constructor(
         repo.saveAddressState(true)
     }
 
-    fun loginAsGuest() {
-        auth.signInAnonymously().addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                // Save guest information to SharedPreferences
-                val guestEmail = "guest@example.com"
-                sharedPreference.saveUserLoggedIn(true)
-                _loginStatus.postValue(true)
-            } else {
-                _loginStatus.postValue(false)
-            }
-        }
-    }
+
     fun getCustomerData(customerId: String) {
         viewModelScope.launch {
             try {
@@ -99,7 +88,6 @@ class LoginViewModel @Inject constructor(
                 FirebaseAuth.getInstance().signInWithCredential(credential).await()
 
                 val shopifyUserId = repo.registerUser(email, password, firstName, lastName, phoneNumber, idToken)
-
                 if (shopifyUserId != null) {
                     sharedPreference.saveShopifyUserId(email, shopifyUserId)
                     _registrationStatus.postValue(true)

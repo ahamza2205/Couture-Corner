@@ -30,12 +30,11 @@ class HomeViewModel@Inject constructor(
         ApiState.Loading)
     val products : StateFlow<ApiState<ApolloResponse<FilteredProductsQuery.Data>>> =_products
 
+
+
     private val _cupons= MutableStateFlow<ApiState<ApolloResponse<GetCuponCodesQuery.Data>>>(
         ApiState.Loading)
     val cupons : StateFlow<ApiState<ApolloResponse<GetCuponCodesQuery.Data>>> =_cupons
-
-//    private val _favIdsList= MutableStateFlow<List<String>>(emptyList())
-//    val favIdsList : StateFlow<List<String>> =_favIdsList
 
 
 

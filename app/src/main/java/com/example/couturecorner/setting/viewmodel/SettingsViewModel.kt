@@ -18,6 +18,7 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
+
     fun isUserLoggedIn(): Boolean {
         return repo.isUserLoggedIn()
     }
