@@ -4,12 +4,15 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.couturecorner.setting.viewmodel.CurrencyViewModel
 import com.example.couturecorner.R
 import com.example.couturecorner.databinding.ProductItemBinding
 import com.graphql.ProductQuery
 
 class FavoriteProductsAdapter(
-    private val listener: OnFavoriteItemClickListener
+    private val listener: OnFavoriteItemClickListener,
+    private val viewModel: CurrencyViewModel
+
 ) : RecyclerView.Adapter<FavoriteProductsAdapter.FavoriteProductViewHolder>() {
 
     private val productList = mutableListOf<ProductQuery.Product>() // This should hold ProductQuery.Product objects
@@ -26,6 +29,13 @@ class FavoriteProductsAdapter(
     override fun onBindViewHolder(holder: FavoriteProductViewHolder, position: Int) {
         val product = productList[position]
         holder.binding.title.text = product.title
+        val selectedCurrency = viewModel.selectedCurrency.value ?: "EGP"
+        val originalPrice = product?.variants?.edges?.get(0)?.node?.price?.toDoubleOrNull() ?: 0.0
+        viewModel.convertCurrency("EGP", selectedCurrency, originalPrice) { convertedPrice ->
+            val priceWithSymbol = "${String.format("%.2f", convertedPrice ?: originalPrice)} ${getCurrencySymbol(selectedCurrency)}"
+            holder.binding.priceTextView.text = priceWithSymbol
+        }
+
         holder.binding.priceTextView.text = holder.itemView.context.getString(
             R.string.price,
             product?.variants?.edges?.get(0)?.node?.price,
@@ -53,7 +63,19 @@ class FavoriteProductsAdapter(
             listener.onItemClick(product)
         }
         // Set click listener for the favorite button
-
+        holder.binding.favoriteAddsButton.setOnClickListener {
+            listener.onFavoriteClick(product.id) // Trigger the remove favorite functionality
+        }
+    }
+    fun getCurrencySymbol(currency: String): String {
+        return when (currency) {
+            "USD" -> "$"
+            "EUR" -> "€"
+            "EGP" -> "EGP"
+            "SAR" -> "SAR"
+            "AED" -> "AED"
+            else -> ""
+        }
     }
     override fun getItemCount(): Int = productList.size
     fun submitList(products: List<ProductQuery.Product>) {
