@@ -9,6 +9,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
+import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.core.content.ContextCompat.startActivity
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -110,8 +112,6 @@ class FavoriteFragment : Fragment(), OnFavoriteItemClickListener {
         }
         favoriteViewModel.loadFavoriteProducts(customerId)
     }
-
-
     private fun setupRecyclerView() {
         productsAdapter = FavoriteProductsAdapter(this , currencyViewModel)
         binding.recyclerViewFavorites.apply {
@@ -122,6 +122,7 @@ class FavoriteFragment : Fragment(), OnFavoriteItemClickListener {
     override fun onItemClick(product: ProductQuery.Product) {
         val action = FavoriteFragmentDirections.actionFavoriteFragmentToProductDetailsFragment(product?.id.toString())
         findNavController().navigate(action)    }
+
     override fun onFavoriteClick(productId: String) {
         val user = FirebaseAuth.getInstance().currentUser
         if (user != null) {
@@ -137,38 +138,15 @@ class FavoriteFragment : Fragment(), OnFavoriteItemClickListener {
                 Toast.makeText(requireContext(), "Failed to get user email", Toast.LENGTH_SHORT).show()
             }
         } else {
-        }
-    }
-
             Toast.makeText(requireContext(), "User not logged in", Toast.LENGTH_SHORT).show()
+
         }
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
-
-
-    private fun showLoginRequiredDialog() {
-        val dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_login_required, null)
-        val dialog = AlertDialog.Builder(requireContext())
-            .setView(dialogView)
-            .create()
-
-        dialogView.findViewById<Button>(R.id.loginButton).setOnClickListener {
-            dialog.dismiss()
-            val intent = Intent(requireActivity(), LoginActivity::class.java)
-            startActivity(intent)
-            requireActivity().finish()
-        }
-
-        dialogView.findViewById<Button>(R.id.cancelButton).setOnClickListener {
-            dialog.dismiss()
-        }
-
-        dialog.show()
-    }
+}
 
 

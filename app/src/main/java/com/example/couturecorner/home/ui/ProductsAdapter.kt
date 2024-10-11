@@ -63,8 +63,6 @@ class ProductsAdapter(
 
         holder.binding.favoriteAddsButton.isSelected = favList.contains(product?.id)
 
-        holder.binding.ratingText.text=LocalListsData.productRatingsMap[product?.id]?.toString()
-
         Glide.with(holder.itemView.context)
             .load(product?.images?.edges?.get(0)?.node?.src)
             .into(holder.binding.ProductImageView)
@@ -75,17 +73,6 @@ class ProductsAdapter(
                 favList.remove(product?.id)
                 holder.binding.favoriteAddsButton.isSelected = false
             } else {
-
-            if (favList.contains(product?.id))
-            {
-                // delet method
-               product?.id?.let { productId ->
-                   listener.deleteFavorite(productId)
-               }
-                holder.binding.favoriteAddsButton.isSelected=false
-            }
-            else
-            {
                 product?.id?.let { productId ->
                     listener.onFavoriteClick(productId)
                 }

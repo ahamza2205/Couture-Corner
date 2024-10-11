@@ -46,6 +46,7 @@ class HomeFragment : Fragment(), OnItemClickListener {
     lateinit var productsAdapter: ProductsAdapter
     lateinit var categoryAdapter: CategoryAdapter
     lateinit var cuponAdapter: CuponAdapter
+
     @Inject
     lateinit var sharedPreference: SharedPreference
     val viewModel: HomeViewModel by viewModels()
@@ -113,17 +114,16 @@ class HomeFragment : Fragment(), OnItemClickListener {
                         cuponAdapter.submitList(cupons)
                         showLoading(false)
                     }
+
                     is ApiState.Error -> {
                         Log.d("AmrApollo", "${state.message} ")
                     }
                 }
             }
         }
-
-        updateChips()
         viewModel.getFilterdProducts(null)
 
-      // updateChips()
+        // updateChips()
 
         sharedViewModel.getFavList()
 
@@ -155,6 +155,7 @@ class HomeFragment : Fragment(), OnItemClickListener {
                         cuponAdapter.submitList(cupons)
                         showLoading(false)
                     }
+
                     is ApiState.Error -> {
                         Log.d("AmrApollo", "${state.message} ")
                     }
@@ -171,6 +172,7 @@ class HomeFragment : Fragment(), OnItemClickListener {
                         showLoading(false)
                         productsAdapter.submitList(products)
                     }
+
                     is ApiState.Error -> {
                         Log.d("AmrApollo", "${state.message} ")
                     }
@@ -189,12 +191,13 @@ class HomeFragment : Fragment(), OnItemClickListener {
 
     // Implement the onItemClick method from the interface
     override fun onItemClick(product: FilteredProductsQuery.Node?) {
-        val action = HomeFragmentDirections.actionHomeFragmentToProductDetailsFragment(product?.id.toString())
+        val action =
+            HomeFragmentDirections.actionHomeFragmentToProductDetailsFragment(product?.id.toString())
         findNavController().navigate(action)
     }
 
     override fun deleteFavorite(productId: String) {
-       sharedViewModel.removeProductFromFavorites(productId)
+        sharedViewModel.removeProductFromFavorites(productId)
         Toast.makeText(requireContext(), "Deleted to favorites", Toast.LENGTH_SHORT).show()
     }
 
@@ -253,7 +256,27 @@ class HomeFragment : Fragment(), OnItemClickListener {
 
         binding.cuponRecycle.registerOnPageChangeCallback(pageChangeCallback)
     }
+    private fun showLoginRequiredDialog() {
+        val dialogView =
+            LayoutInflater.from(requireContext()).inflate(R.layout.dialog_login_required, null)
+        val dialog = AlertDialog.Builder(requireContext())
+            .setView(dialogView)
+            .create()
 
+        dialogView.findViewById<Button>(R.id.loginButton).setOnClickListener {
+            dialog.dismiss()
+            val intent = Intent(requireActivity(), LoginActivity::class.java)
+            startActivity(intent)
+            requireActivity().finish()
+        }
+
+        dialogView.findViewById<Button>(R.id.cancelButton).setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
+    }
+}
 //    fun updateChips(){
 //
 //        binding.chip0.isChecked = true
@@ -310,18 +333,4 @@ class HomeFragment : Fragment(), OnItemClickListener {
 //    }
 
 
-        dialogView.findViewById<Button>(R.id.loginButton).setOnClickListener {
-            dialog.dismiss()
-            val intent = Intent(requireActivity(), LoginActivity::class.java)
-            startActivity(intent)
-            requireActivity().finish()
-        }
 
-        dialogView.findViewById<Button>(R.id.cancelButton).setOnClickListener {
-            dialog.dismiss()
-        }
-
-        dialog.show()
-    }
-
-}

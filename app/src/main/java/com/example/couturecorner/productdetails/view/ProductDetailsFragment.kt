@@ -184,6 +184,24 @@ class ProductDetailsFragment : Fragment() {
             }
         }
     }
+    private fun isUserGuest(): Boolean {
+        val isLoggedIn = sharedPreference.isUserLoggedIn()
+        Log.d("UserStatus", "User is logged in: $isLoggedIn")
+        val isGuest = !isLoggedIn
+        Log.d("UserStatus", "User is guest: $isGuest")
+        return isGuest
+    }
+
+    fun getCurrencySymbol(currency: String): String {
+        return when (currency) {
+            "USD" -> "$"
+            "EUR" -> "€"
+            "EGP" -> "EGP"
+            "SAR" -> "SAR"
+            "AED" -> "AED"
+            else -> ""
+        }
+    }
     private fun addToCart(variantId: String, selectedSize: String, selectedColor: String) {
         val newItem = CartItem(
             id = variantId,
