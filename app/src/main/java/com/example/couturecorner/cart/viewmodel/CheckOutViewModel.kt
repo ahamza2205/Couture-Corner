@@ -1,4 +1,4 @@
-package com.example.couturecorner.setting.viewmodel
+package com.example.couturecorner.cart.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.example.couturecorner.data.repository.Repo
@@ -11,10 +11,7 @@ class CheckOutViewModel@Inject constructor(
     private val repo: Repo
 ):ViewModel() {
 
-    fun getAddressState(): Boolean {
-        return repo.getAddressState()
-        Log.i("Final", "getAddressState: "+repo.getAddressState())
-    }
+
 
 
 

@@ -1,4 +1,4 @@
-package com.example.couturecorner.adapter
+package com.example.couturecorner.cart.ui
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup

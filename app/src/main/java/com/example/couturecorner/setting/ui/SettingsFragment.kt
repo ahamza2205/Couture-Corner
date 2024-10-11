@@ -49,6 +49,9 @@ class SettingsFragment : Fragment() {
         binding.currencyLayout.setOnClickListener {
             binding.currencySpinner.performClick()
         }
+        binding.addressLayout.setOnClickListener {
+            findNavController().navigate(R.id.action_settingsFragment_to_adressFragment)
+        }
 
         return binding.root
     }

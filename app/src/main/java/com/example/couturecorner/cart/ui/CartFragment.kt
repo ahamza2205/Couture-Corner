@@ -1,4 +1,4 @@
-package com.example.couturecorner.setting.ui
+package com.example.couturecorner.cart.ui
 
 import android.os.Bundle
 import android.util.Log
@@ -11,10 +11,9 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.couturecorner.R
-import com.example.couturecorner.adapter.CartItemAdapter
 import com.example.couturecorner.databinding.FragmentCartBinding
 import com.example.couturecorner.home.ui.MainActivity
-import com.example.couturecorner.setting.viewmodel.CartViewModel
+import com.example.couturecorner.cart.viewmodel.CartViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

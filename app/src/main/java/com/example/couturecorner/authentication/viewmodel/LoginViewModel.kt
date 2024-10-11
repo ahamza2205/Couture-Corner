@@ -33,9 +33,6 @@ class LoginViewModel @Inject constructor(
     fun isUserLoggedIn(): Boolean {
         return repo.isUserLoggedIn()
     }
-    fun haveAddress() {
-        repo.saveAddressState(true)
-    }
 
     fun loginAsGuest() {
         auth.signInAnonymously().addOnCompleteListener { task ->

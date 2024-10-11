@@ -11,22 +11,18 @@ import com.example.couturecorner.databinding.FragmentAddAdressBinding
 import dagger.hilt.android.AndroidEntryPoint
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
-import com.example.couturecorner.R
-import com.example.couturecorner.authentication.viewmodel.LoginViewModel
+import com.example.couturecorner.cart.viewmodel.UserViewModel
 import com.example.couturecorner.home.ui.MainActivity
 import com.example.couturecorner.setting.viewmodel.AddAdressViewModel
 import com.graphql.type.MailingAddressInput
-
 @AndroidEntryPoint
 class AddAdressFragment : Fragment() {
-
 
     private var _binding: FragmentAddAdressBinding? = null
     private val binding get() = _binding!!
 
     private val viewModelAddAdress: AddAdressViewModel by viewModels()
-    private val loginViewModel: LoginViewModel by viewModels()
-
+    private val userViewModel: UserViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,62 +34,108 @@ class AddAdressFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         (activity as? MainActivity)?.hideBottomNav()
-
-        loginViewModel.getCustomerDataTwo()
 
         // Observe the update status LiveData
         viewModelAddAdress.updateStatus.observe(viewLifecycleOwner, Observer { result ->
             result.onSuccess { customerId ->
-
-                Toast.makeText(requireContext(), "Customer Updated: $customerId", Toast.LENGTH_LONG).show()
-                viewModelAddAdress.saveAddressState()
-                findNavController().navigate(R.id.action_addAdressFragment_to_checkOutFragment)
-
+                Toast.makeText(requireContext(), "Customer Updated: $customerId", Toast.LENGTH_LONG)
+                    .show()
+                findNavController().popBackStack()
             }.onFailure { exception ->
-                Toast.makeText(requireContext(), "Error: ${exception.message}", Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(), "Error: ${exception.message}", Toast.LENGTH_LONG)
+                    .show()
             }
         })
 
+
+
         binding.btnConfirmAddress.setOnClickListener {
+            val addressName = binding.addressName.text.toString()
+            val addressDetails = binding.detailsOfShippingAddress.text.toString()
+            val city = binding.city.text.toString()
+            val phoneNumber = binding.phoneNumber.text.toString()
 
+            var isValid = true
 
-                val addressList = listOf(
-                    MailingAddressInput(
-                        address1 = binding.addressName.text.toString(),
-                        address2 = binding.detailsOfShippingAddress.text.toString(),
-                        city = binding.city.text.toString(),
-                        phone = binding.phoneNumber.text.toString()
-                    )
+            if (addressName.isEmpty()) {
+                binding.addressNameform.error = "Please enter address name"
+                isValid = false
+            } else {
+                binding.addressNameform.error = null
+            }
+
+            if (addressDetails.isEmpty()) {
+                binding.detailsOfShippingAddressform.error =
+                    "Please enter details of the shipping address"
+                isValid = false
+            } else {
+                binding.detailsOfShippingAddressform.error = null
+            }
+
+            if (city.isEmpty()) {
+                binding.cityform.error = "Please enter city"
+                isValid = false
+            } else {
+                binding.cityform.error = null
+            }
+
+            if (phoneNumber.isEmpty()) {
+                binding.phoneNumberform.error = "Please enter phone number"
+                isValid = false
+            } else {
+                binding.phoneNumberform.error = null
+            }
+
+            if (isValid) {
+                val newAddress = MailingAddressInput(
+                    address1 = addressName,
+                    address2 = addressDetails,
+                    city = city,
+                    phone = phoneNumber
                 )
-            loginViewModel.customerData.observe(viewLifecycleOwner){customer->
 
-                if (customer != null) {
-                    Log.i("ADDRESSSS", "onViewCreated: "+customer.id)
-                    viewModelAddAdress.updateCustomer(addressList,customer.id)
+                userViewModel.userData.observe(viewLifecycleOwner) { user ->
+                    user?.let {
+                        val addressList: List<MailingAddressInput>
 
+                        if (user.defaultAddress == null) {
+                            // No default address, send only the new address
+                            addressList = listOf(newAddress)
+                            viewModelAddAdress.updateAddressCustomer(addressList, user.id)
+                            Log.i("AddAddressFragment", "Sent new address: $addressList")
+                        } else {
+                            // Default address exists, add new address to the list
+                            val existingAddresses = user.addresses ?: emptyList()
+                            addressList = existingAddresses.map {
+                                MailingAddressInput(
+                                    address1 = it?.address1 ?: "",
+                                    address2 = it?.address2 ?: "",
+                                    city = it?.city ?: "",
+                                    phone = it?.phone ?: ""
+                                )
+                            } + newAddress // Append the new address to the list
+
+                            viewModelAddAdress.updateAddressCustomer(addressList, user.id)
+                            Log.i(
+                                "AddAddressFragment",
+                                "Appended new address to existing: $addressList"
+                            )
+
+                        }
+                    }
                 }
-                Log.i("ADDRESSSS", "onViewCreated: "+"${customer?.defaultAddress?.address1}+NOTTT")
-
             }
 
-
+            binding.detailsOfShippingAddressform.setOnClickListener {
+                findNavController().popBackStack()
+            }
         }
-        binding.detailsOfShippingAddressform.setOnClickListener(
-            {
-                findNavController().navigate(R.id.action_addAdressFragment_to_mapFragment)
-
-            }
-        )
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
+
+        override fun onDestroyView() {
+            super.onDestroyView()
+            _binding = null
+        }
     }
-}
-
-
-
-

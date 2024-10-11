@@ -20,7 +20,7 @@ import com.example.couturecorner.data.model.CartItem
 import com.example.couturecorner.databinding.FragmentProductDetailsBinding
 import com.example.couturecorner.home.viewmodel.MainViewModel
 import com.example.couturecorner.productdetails.viewmodel.ProductDetailsViewModel
-import com.example.couturecorner.setting.viewmodel.CartViewModel
+import com.example.couturecorner.cart.viewmodel.CartViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 

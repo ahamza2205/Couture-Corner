@@ -1,4 +1,4 @@
-package com.example.couturecorner.setting.ui
+package com.example.couturecorner.cart.ui
 
 import android.content.Intent
 import android.net.Uri
@@ -24,8 +24,9 @@ import com.example.couturecorner.data.model.PurchaseUnit
 import com.example.couturecorner.data.repository.PayPalRepository
 import com.example.couturecorner.databinding.FragmentCheckOutBinding
 import com.example.couturecorner.home.ui.MainActivity
-import com.example.couturecorner.setting.viewmodel.CartViewModel
-import com.example.couturecorner.setting.viewmodel.CheckOutViewModel
+import com.example.couturecorner.cart.viewmodel.CartViewModel
+import com.example.couturecorner.cart.viewmodel.CheckOutViewModel
+import com.example.couturecorner.cart.viewmodel.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
@@ -37,6 +38,7 @@ class CheckOutFragment : Fragment() {
 
     private val checkOutViewModel: CheckOutViewModel by viewModels()
     private val loginViewModel: LoginViewModel by viewModels()
+    private val userViewModel:UserViewModel by viewModels()
 private val cartViewModel: CartViewModel by viewModels()
     private lateinit var binding: FragmentCheckOutBinding
     private lateinit var payPalRepository: PayPalRepository
@@ -92,27 +94,27 @@ binding.checkOutButton.setOnClickListener {
     }
 
         private fun setupCustomerAddress() {
-        if (checkOutViewModel.getAddressState() == true) {
-            binding.curretAdress.visibility = View.VISIBLE
-            loginViewModel.customerData.observe(viewLifecycleOwner) { customer ->
-                customer?.let {
-                    binding.addressName.text = it.defaultAddress?.address1
-                    binding.addressDetails.text = it.defaultAddress?.address2
-                    val address = Address(
-                        name = it.defaultAddress?.address1 ?: "",
-                        addressDetails = it.defaultAddress?.address2 ?: "",
-                        city = it.defaultAddress?.city ?: "",
-                        phone = it.defaultAddress?.phone ?: "",
+            userViewModel.userData.observe(viewLifecycleOwner) { user ->
+                user?.let {
+                    if (user.defaultAddress != null) {
+                        binding.curretAdress.visibility = View.VISIBLE
+                        binding.addressName.text = it.defaultAddress?.address1
+                        binding.addressDetails.text = it.defaultAddress?.address2
+                        val address = Address(
+                            name = it.defaultAddress?.address1 ?: "",
+                            addressDetails = it.defaultAddress?.address2 ?: "",
+                            city = it.defaultAddress?.city ?: "",
+                            phone = it.defaultAddress?.phone ?: "",
 
-                    )
-                    Log.i("Final", "setupCustomerAddress: "+address)
-                    cartViewModel.setAddress(address)
+                            )
+                        Log.i("Final", "setupCustomerAddress: "+address)
+                        cartViewModel.setAddress(address)
 
-
+                    }
                 }
             }
+
         }
-    }
 
     private fun initializePayPal() {
         payPalRepository = PayPalRepository(

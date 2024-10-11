@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".setting.ui.CheckOutFragment">
+    tools:context=".cart.ui.CheckOutFragment">
 
     <TextView
         android:layout_width="wrap_content"
@@ -112,21 +112,21 @@
 
             <RadioButton
                 android:id="@+id/pay_with_paypal"
-                android:layout_width="50dp"
-                android:layout_height="wrap_content"
+                android:layout_width="43dp"
+                android:layout_height="52dp"
                 android:buttonTint="@color/black"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
                 android:layout_width="140dp"
                 android:layout_height="30dp"
+                android:layout_marginStart="4dp"
                 android:src="@drawable/paypal"
-                android:layout_marginStart="10dp"
+                app:layout_constraintBottom_toBottomOf="@id/pay_with_paypal"
                 app:layout_constraintStart_toEndOf="@id/pay_with_paypal"
-                app:layout_constraintTop_toTopOf="@id/pay_with_paypal"
-                app:layout_constraintBottom_toBottomOf="@id/pay_with_paypal" />
+                app:layout_constraintTop_toTopOf="@id/pay_with_paypal" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

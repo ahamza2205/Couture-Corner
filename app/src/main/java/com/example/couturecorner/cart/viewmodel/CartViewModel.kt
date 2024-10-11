@@ -1,4 +1,4 @@
-package com.example.couturecorner.setting.viewmodel
+package com.example.couturecorner.cart.viewmodel
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
