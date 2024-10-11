@@ -8,6 +8,7 @@ import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.couturecorner.R
 import com.example.couturecorner.databinding.OrderItemBinding
 import com.graphql.GetOrdersByCustomerQuery
 import java.time.ZoneId
@@ -31,7 +32,7 @@ class OrderDiffUtill:DiffUtil.ItemCallback<GetOrdersByCustomerQuery.Edge>() {
 
 }
 
-class OrderAdapter: ListAdapter<GetOrdersByCustomerQuery.Edge, OrderAdapter.OrderViewHolder>(OrderDiffUtill()) {
+class OrderAdapter(val myListenner: (String?) -> Unit): ListAdapter<GetOrdersByCustomerQuery.Edge, OrderAdapter.OrderViewHolder>(OrderDiffUtill()) {
     lateinit var binding: OrderItemBinding
    class OrderViewHolder(var binding: OrderItemBinding): RecyclerView.ViewHolder(binding.root)
 
@@ -48,10 +49,13 @@ class OrderAdapter: ListAdapter<GetOrdersByCustomerQuery.Edge, OrderAdapter.Orde
 
        holder.binding.orderIdTextView.text=order?.name
         holder.binding.dateTextView.text=convertUtcToLocal(order?.createdAt)
-        holder.binding.totalPriceTextView.text=order?.totalPriceSet?.shopMoney?.amount
+        holder.binding.totalPriceTextView.text=holder.itemView.context.getString(
+            R.string.price,
+            order?.totalPriceSet?.shopMoney?.amount,
+            order?.totalPriceSet?.shopMoney?.currencyCode)
 
         holder.binding.seeDetailsButton.setOnClickListener {
-
+            myListenner.invoke(order?.id)
         }
     }
 

@@ -38,7 +38,9 @@ class OrdersFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        ordersAdapter=OrderAdapter()
+        ordersAdapter=OrderAdapter{
+            val reviewBottomSheet = OrderDetailFragment.newInstance(it?:"")
+            reviewBottomSheet.show(childFragmentManager, "ReviewBottomSheet")}
         binding.ordersRecyclerView.layoutManager = LinearLayoutManager(context)
         binding.ordersRecyclerView.adapter = ordersAdapter
 

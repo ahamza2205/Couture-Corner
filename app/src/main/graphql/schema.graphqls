@@ -9,7 +9,7 @@ type Query {
     draftOrders(query: String!, first: Int): DraftOrderConnection
     customers(first: Int!, query: String): CustomerConnection
     orders(first: Int, query: String): OrderConnection
-    order(id: String!): Order
+    order(id: ID!): Order
 
 
 }
@@ -72,6 +72,7 @@ type Image {
     src: String!
     url: String
 }
+
 
 # Connection type for variants
 type VariantConnection {
@@ -334,6 +335,7 @@ type LineItem {
     name: String!
     quantity: Int!
     originalUnitPriceSet: MoneyBag
+    image: Image
 }
 
 

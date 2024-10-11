@@ -1,4 +1,4 @@
-query OrderById($id: String!) {
+query OrderById($id: ID!) {
     order(id: $id) {
         billingAddress {
             address1
@@ -16,8 +16,19 @@ query OrderById($id: String!) {
                             currencyCode
                         }
                     }
+                    image {
+                        src
+                    }
                 }
             }
         }
+        totalPriceSet {
+            shopMoney {
+                amount
+                currencyCode
+            }
+        }
+
     }
+
 }
