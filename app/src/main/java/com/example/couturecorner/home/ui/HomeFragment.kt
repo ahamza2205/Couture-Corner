@@ -85,10 +85,6 @@ class HomeFragment : Fragment(), OnItemClickListener {
         // Initialize productsAdapter--------------------------------------------------------------------
         productsAdapter = ProductsAdapter(this, currencyViewModel)
         binding.productsRecycel.adapter = productsAdapter
-        currencyViewModel.convertedCurrency.observe(viewLifecycleOwner) { convertedValue ->
-            Log.d("HomeFragment", "Converted currency value: $convertedValue")
-        }
-        //------------------------------------------------------------------------------------------------
         // Initialize categoryAdapter
         categoryAdapter = CategoryAdapter {
             val action = HomeFragmentDirections.actionHomeFragmentToCategoryFragment(it)
@@ -131,6 +127,9 @@ class HomeFragment : Fragment(), OnItemClickListener {
             sharedViewModel.favIdsList.collect {
                 if (it.isNotEmpty()) {
                     productsAdapter.favListUpdate(it.toMutableList())
+                    currencyViewModel.convertedCurrency.observe(viewLifecycleOwner) { convertedValue ->
+                        Log.d("HomeFragment", "Converted currency value: $convertedValue")
+                    }
                 }
             }
         }
@@ -142,9 +141,7 @@ class HomeFragment : Fragment(), OnItemClickListener {
         // Fetch the filtered products and cupons again when the fragment resumes
         viewModel.getFilterdProducts(null)
         viewModel.getCupons()
-        currencyViewModel.convertedCurrency.observe(viewLifecycleOwner) { convertedValue ->
-            Log.d("HomeFragment", "Converted currency value: $convertedValue")
-        }
+
 
         lifecycleScope.launch {
             viewModel.cupons.collect { state ->
@@ -171,6 +168,9 @@ class HomeFragment : Fragment(), OnItemClickListener {
                         val products = state.data?.data?.products?.edges
                         showLoading(false)
                         productsAdapter.submitList(products)
+                        currencyViewModel.convertedCurrency.observe(viewLifecycleOwner) { convertedValue ->
+                            Log.d("HomeFragment", "Converted currency value: $convertedValue")
+                        }
                     }
 
                     is ApiState.Error -> {

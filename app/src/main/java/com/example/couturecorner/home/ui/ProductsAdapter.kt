@@ -67,21 +67,25 @@ class ProductsAdapter(
             .load(product?.images?.edges?.get(0)?.node?.src)
             .into(holder.binding.ProductImageView)
 
-        // Handling favorite button click
         holder.binding.favoriteAddsButton.setOnClickListener {
-            if (favList.contains(product?.id)) {
-                favList.remove(product?.id)
-                holder.binding.favoriteAddsButton.isSelected = false
-            } else {
+
+            if (favList.contains(product?.id))
+            {
+                // delet method
+                product?.id?.let { productId ->
+                    listener.deleteFavorite(productId)
+                }
+                holder.binding.favoriteAddsButton.isSelected=false
+            }
+            else
+            {
                 product?.id?.let { productId ->
                     listener.onFavoriteClick(productId)
                 }
-                favList.add(product?.id ?: "")
-                holder.binding.favoriteAddsButton.isSelected = true
+                holder.binding.favoriteAddsButton.isSelected=true
             }
 
         }
-
         holder.itemView.setOnClickListener {
             listener.onItemClick(product)
         }
