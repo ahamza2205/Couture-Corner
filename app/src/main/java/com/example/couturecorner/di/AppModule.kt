@@ -2,6 +2,7 @@ package com.example.couturecorner.di
 
 import android.content.Context
 import com.example.couturecorner.data.local.SharedPreference
+import com.example.couturecorner.data.remote.CurrencyApiService
 import com.example.couturecorner.data.remote.IremoteData
 import com.example.couturecorner.data.remote.RemoteData
 import com.example.couturecorner.data.repository.Irepo
@@ -21,20 +22,23 @@ object DataModule {
     @Provides
     @Singleton
     fun provideRemoteData(): IremoteData {
-        return RemoteData()
+        return RemoteData() // Ensure RemoteData is set up properly
     }
 
-    // Provide Irepo implementation
-    @Provides
-    @Singleton
-    fun provideRepo(remoteData: IremoteData, sharedPreference: SharedPreference): Irepo {
-        return Repo(remoteData, sharedPreference)
-    }
-
-
+    // Provide SharedPreference implementation
     @Provides
     @Singleton
     fun provideSharedPreferences(@ApplicationContext context: Context): SharedPreference {
         return SharedPreference(context)
     }
+
+    // Provide Irepo implementation
+    @Provides
+    @Singleton
+    fun provideRepo(remoteData: IremoteData, sharedPreference: SharedPreference, currencyApi: CurrencyApiService): Irepo {
+        return Repo(remoteData, sharedPreference, currencyApi)
+    }
+
 }
+
+

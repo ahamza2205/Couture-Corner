@@ -1,15 +1,23 @@
 package com.example.couturecorner.favorite.ui.view
 
+import android.app.AlertDialog
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.Toast
+import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.core.content.ContextCompat.startActivity
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.couturecorner.R
+import com.example.couturecorner.authentication.view.LoginActivity
+import com.example.couturecorner.setting.viewmodel.CurrencyViewModel
 import com.example.couturecorner.data.local.SharedPreference
 import com.example.couturecorner.favorite.ui.viewmodel.FavoriteViewModel
 import com.example.couturecorner.data.model.ApiState
@@ -28,6 +36,7 @@ class FavoriteFragment : Fragment(), OnFavoriteItemClickListener {
     lateinit var sharedPreference: SharedPreference
 
     private val favoriteViewModel: FavoriteViewModel by viewModels()
+    private val currencyViewModel: CurrencyViewModel by viewModels()
     val sharedViewModel: MainViewModel by activityViewModels()
 
     private lateinit var productsAdapter: FavoriteProductsAdapter
@@ -66,12 +75,37 @@ class FavoriteFragment : Fragment(), OnFavoriteItemClickListener {
         favoriteViewModel.favoriteProducts.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is ApiState.Loading -> {
+                    binding.progressBar2.visibility = View.VISIBLE
+                    binding.recyclerViewFavorites.visibility = View.GONE
                 }
                 is ApiState.Success<List<ProductQuery.Product>> -> {
                     val products = state.data ?: emptyList()
-                    productsAdapter.submitList(products)
+                    binding.progressBar2.visibility = View.GONE
+
+                    if (products.isEmpty()) {
+                        binding.recyclerViewFavorites.visibility = View.GONE
+                        binding.imageView3.visibility = View.VISIBLE
+                        binding.textView4.visibility = View.VISIBLE
+                    } else {
+                        binding.imageView3.visibility = View.GONE
+                        binding.textView4.visibility = View.GONE
+
+                        binding.recyclerViewFavorites.apply {
+                            visibility = View.VISIBLE
+                            alpha = 0f
+                            animate()
+                                .alpha(1f)
+                                .setDuration(1000)
+                                .start()
+                        }
+                        productsAdapter.submitList(products)
+                    }
                 }
                 is ApiState.Error -> {
+                    binding.progressBar2.visibility = View.GONE
+                    binding.recyclerViewFavorites.visibility = View.GONE
+                    binding.imageView3.visibility = View.VISIBLE
+                    binding.textView4.visibility = View.VISIBLE
                     Toast.makeText(requireContext(), "Error: ${state.message}", Toast.LENGTH_SHORT).show()
                 }
             }
@@ -79,15 +113,16 @@ class FavoriteFragment : Fragment(), OnFavoriteItemClickListener {
         favoriteViewModel.loadFavoriteProducts(customerId)
     }
     private fun setupRecyclerView() {
-        productsAdapter = FavoriteProductsAdapter(this)
+        productsAdapter = FavoriteProductsAdapter(this , currencyViewModel)
         binding.recyclerViewFavorites.apply {
-            layoutManager = GridLayoutManager(context, 2)
+            layoutManager = GridLayoutManager(context, 1)
             adapter = productsAdapter
         }
     }
     override fun onItemClick(product: ProductQuery.Product) {
-        Toast.makeText(requireContext(), "Clicked on: ${product.title}", Toast.LENGTH_SHORT).show()
-    }
+        val action = FavoriteFragmentDirections.actionFavoriteFragmentToProductDetailsFragment(product?.id.toString())
+        findNavController().navigate(action)    }
+
     override fun onFavoriteClick(productId: String) {
         val user = FirebaseAuth.getInstance().currentUser
         if (user != null) {
@@ -104,12 +139,14 @@ class FavoriteFragment : Fragment(), OnFavoriteItemClickListener {
             }
         } else {
             Toast.makeText(requireContext(), "User not logged in", Toast.LENGTH_SHORT).show()
+
         }
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
 }
+
+

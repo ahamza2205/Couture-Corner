@@ -22,6 +22,7 @@ class SharedPreference @Inject constructor(context: Context) {
     }
 
 
+
     // ---------------------- shopify user id -----------------------------
     fun saveShopifyUserId(email: String, userId: String) {
         sharedPreferences.edit().putString(email, userId).apply()
@@ -31,7 +32,7 @@ class SharedPreference @Inject constructor(context: Context) {
         return sharedPreferences.getString(email, null)
     }
     // ---------------------- Address state  -----------------------------
-    // ---------------------- Address state  ------------------------------
+
 
 
     fun saveAddressState(haveAddress: Boolean){
@@ -64,6 +65,12 @@ class SharedPreference @Inject constructor(context: Context) {
     fun deleteDraftOrderId(userId: String) {
         sharedPreferences.edit().remove("${userId}_draftOrderId").apply()
     }
-
+// ----------------------  Selected Currency -----------------------------
+    fun saveSelectedCurrency(currency: String) {
+        sharedPreferences.edit().putString("selected_currency", currency).apply()
+    }
+    fun getSelectedCurrency(): String? {
+        return sharedPreferences.getString("selected_currency", "EGP")
+    }
 
 }
