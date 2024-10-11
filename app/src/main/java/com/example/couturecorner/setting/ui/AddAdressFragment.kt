@@ -10,6 +10,7 @@ import androidx.lifecycle.Observer
 import com.example.couturecorner.databinding.FragmentAddAdressBinding
 import dagger.hilt.android.AndroidEntryPoint
 import android.widget.Toast
+import androidx.fragment.app.setFragmentResult
 import androidx.navigation.fragment.findNavController
 import com.example.couturecorner.cart.viewmodel.UserViewModel
 import com.example.couturecorner.home.ui.MainActivity
@@ -39,8 +40,9 @@ class AddAdressFragment : Fragment() {
         // Observe the update status LiveData
         viewModelAddAdress.updateStatus.observe(viewLifecycleOwner, Observer { result ->
             result.onSuccess { customerId ->
-                Toast.makeText(requireContext(), "Customer Updated: $customerId", Toast.LENGTH_LONG)
+                Toast.makeText(requireContext(), "Address added successfully", Toast.LENGTH_LONG)
                     .show()
+                userViewModel.getCustomerData()
                 findNavController().popBackStack()
             }.onFailure { exception ->
                 Toast.makeText(requireContext(), "Error: ${exception.message}", Toast.LENGTH_LONG)
@@ -56,6 +58,7 @@ class AddAdressFragment : Fragment() {
             val city = binding.city.text.toString()
             val phoneNumber = binding.phoneNumber.text.toString()
 
+            // Validate inputs
             var isValid = true
 
             if (addressName.isEmpty()) {
