@@ -1,5 +1,6 @@
 package com.example.couturecorner.data.repository
 import android.util.Log
+import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Optional
 import com.example.couturecorner.data.local.SharedPreference
@@ -7,8 +8,8 @@ import com.example.couturecorner.data.model.ApiState
 import com.example.couturecorner.data.model.ConvertResponse
 import com.example.couturecorner.data.remote.CurrencyApiService
 import com.example.couturecorner.data.remote.IremoteData
-import com.example.couturecorner.network.ApolloClient
-import com.example.couturecorner.network.ApolloClient.apolloClient
+import com.example.couturecorner.network.MyApolloClient
+import com.example.couturecorner.network.MyApolloClient.apolloClient
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.gson.Gson
@@ -37,12 +38,12 @@ import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 
-class Repo
-    @Inject constructor(
-        private val remoteData: IremoteData,
-        private val sharedPreference: SharedPreference,
-        private val apiService: CurrencyApiService
-    ) : Irepo {
+class Repo @Inject constructor(
+    private val remoteData: IremoteData,
+    private val sharedPreference: SharedPreference,
+    private val apiService: CurrencyApiService,
+    private val apolloClient: ApolloClient
+) : Irepo {
 
     override fun getProducts(): Flow<ApolloResponse<GetProductsQuery.Data>> {
         return remoteData.getProducts()
@@ -134,7 +135,6 @@ class Repo
         idToken: String? = null,
     ): String? {
         if (email.isNullOrEmpty() || firstName.isNullOrEmpty() || lastName.isNullOrEmpty()) {
-            Log.e("UserRegistration", "Error: One or more input fields are empty or null.")
             throw IllegalArgumentException("All fields except password and phoneNumber must be provided.")
         }
 
@@ -153,7 +153,7 @@ class Repo
 
             if (firebaseUserId.user != null) {
                 // Proceed with Shopify registration
-                val client = ApolloClient.apolloClient
+                val client = MyApolloClient.apolloClient
                 val mutation = CustomerCreateMutation(
                     input = CustomerInput(
                         email = Optional.Present(email),
@@ -198,7 +198,7 @@ class Repo
     // --------------------------- get customer data  --------------------------------
     // --------------------------- get customer by email --------------------------------
     suspend fun getCustomerByEmail(email: String): String? {
-        val client = ApolloClient.apolloClient
+        val client = MyApolloClient.apolloClient
         val response = client.query(GetCustomerByEmailQuery(email = email)).execute()
 
         if (response.hasErrors()) {
@@ -213,7 +213,7 @@ class Repo
 
     // --------------------------- get customer by id --------------------------------
     suspend fun getCustomerById(customerId: String): GetCustomerByIdQuery.Customer? {
-        val client = ApolloClient.apolloClient
+        val client = MyApolloClient.apolloClient
         val response = client.query(GetCustomerByIdQuery(id = customerId)).execute()
 
         if (response.hasErrors()) {
@@ -244,14 +244,10 @@ class Repo
     }
 
     // ----------------------------------- product details --------------------------------
-    override fun getProductDetails(productId: String): Flow<ApiState<ProductQuery.Data>> = flow {
-        try {
-            val response = apolloClient.query(ProductQuery(productId)).execute()
-            emit(ApiState.Success(response.data!!))
-        } catch (e: Exception) {
-            emit(ApiState.Error(e.message ?: "Unknown Error"))
-        }
+    override  suspend fun getProductDetails(productId: String): Flow<ApiState<ProductQuery.Data?>>  {
+       return remoteData.getProductDetails(productId)
     }
+
 
     // ------------------------ get & save shopify user id --------------------------------
     override fun getShopifyUserId(email: String): String? {
@@ -271,87 +267,19 @@ class Repo
     }
 
     // --------------------------- Add product to favorite --------------------------------
-override suspend fun addProductToFavorites(customerId: String, productId: String) {
-    try {
-        val currentFavorites = getCurrentFavorites(customerId) ?: listOf()
-        val updatedFavorites = (currentFavorites + productId).distinct() // distinct avoid duplicates
-        val jsonProductIds = Gson().toJson(updatedFavorites)
-        val mutation = AddFavoriteProductMutation(
-            customerId = customerId,
-            productIds = jsonProductIds // Convert the list to a JSON string
-        )
-        val response = apolloClient.mutation(mutation).execute()
-        // Check for errors
-        if (response.data?.customerUpdate?.userErrors?.isNotEmpty() == true) {
-            for (error in response.data!!.customerUpdate?.userErrors!!) {
-                Log.e("AddFavorite", "User Error: ${error.message} for field ${error.field}")
-            }
-            return
-        }
-        // Check for successful operation
-        if (response.hasErrors()) {
-            throw Exception("Error adding product to favorites: ${response.errors}")
-        } else {
-            Log.d("AddFavorite", "Product added to favorites successfully")
-        }
-    } catch (e: Exception) {
-        Log.e("AddFavorite", "Error: ${e.message}")
+    override suspend fun addProductToFavorites(customerId: String, productId: String) {
+        return remoteData.addProductToFavorites(customerId, productId)
     }
-}
 
    override suspend fun getCurrentFavorites(customerId: String): List<String>? {
-        val query = GetFavoriteProductsQuery(customerId = customerId)
-        val response = apolloClient.query(query).execute()
-        if (response.hasErrors()) {
-            throw Exception("Error fetching current favorites: ${response.errors}")
-        }
-        val favoriteProducts = response.data?.customer?.metafields?.edges?.let { edges ->
-            edges.flatMap {
-                val value = it?.node?.value
-                Log.d("GetFavorites", "Found value: $value") // Log the raw value
-                // Clean up the string by removing unwanted characters and extra brackets
-                val cleanedValue = value?.replace("""[\[\]\\""]""".toRegex(), "") // Remove unwanted characters
-                // Split the string by commas to get the product IDs
-                cleanedValue?.split(",")?.map { it.trim() } ?: listOf()
-            }
-        } ?: listOf()
-
-        Log.d("GetFavorites", "Current favorites: $favoriteProducts")
-        return favoriteProducts
+        return remoteData.getCurrentFavorites(customerId)
     }
     override suspend fun removeProductFromFavorites(customerId: String, productId: String) {
-        try {
-            val currentFavorites = getCurrentFavorites(customerId) ?: listOf()
-            // Remove the productId from the favorites list
-            val updatedFavorites = currentFavorites.filter { it != productId }
-            val jsonProductIds = Gson().toJson(updatedFavorites)
+        return remoteData.removeProductFromFavorites(customerId, productId)
+    }
 
-            val mutation = AddFavoriteProductMutation(
-                customerId = customerId,
-                productIds = jsonProductIds // Convert the updated list to a JSON string
-            )
 
-            val response = apolloClient.mutation(mutation).execute()
-
-            // Check for errors
-            if (response.data?.customerUpdate?.userErrors?.isNotEmpty() == true) {
-                for (error in response.data!!.customerUpdate?.userErrors!!) {
-                    Log.e("RemoveFavorite", "User Error: ${error.message} for field ${error.field}")
-                }
-                return
-            }
-
-            // Check for successful operation
-            if (response.hasErrors()) {
-                throw Exception("Error removing product from favorites: ${response.errors}")
-            } else {
-                Log.d("RemoveFavorite", "Product removed from favorites successfully")
-            }
-        } catch (e: Exception) {
-            Log.e("RemoveFavorite", "Error: ${e.message}")
-           }
-        }
-
+    // ----------------------------------- cupones --------------------------------
     override fun getCupones(): Flow<ApolloResponse<GetCuponCodesQuery.Data>> {
         return remoteData.getCupones()
     }

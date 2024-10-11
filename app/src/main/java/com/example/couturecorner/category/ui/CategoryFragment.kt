@@ -62,7 +62,7 @@ class CategoryFragment : Fragment(), OnItemClickListener {
         val logoResId = categoryLogos[category] ?: R.drawable.shoz10
         binding.categoryImageView.setImageResource(logoResId)
 
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             viewModel.productsCategory.collect{
                 when(it){
                     is ApiState.Loading->showLoading(true)
@@ -86,7 +86,7 @@ class CategoryFragment : Fragment(), OnItemClickListener {
 
         sharedViewModel.getFavList()
 
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             sharedViewModel.favIdsList.collect{
                 if(it.isNotEmpty()){
                     categoryAdapter.favListUpdate(it.toMutableList())

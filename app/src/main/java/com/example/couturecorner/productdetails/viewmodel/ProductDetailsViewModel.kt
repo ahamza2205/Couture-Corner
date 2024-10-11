@@ -18,7 +18,7 @@ class ProductDetailsViewModel @Inject constructor(private val repository: Repo )
     fun getProductDetails(productId: String) {
         viewModelScope.launch {
             repository.getProductDetails(productId).collect {
-                _productDetails.value = it
+                _productDetails.value = it as ApiState<ProductQuery.Data>
             }
         }
     }

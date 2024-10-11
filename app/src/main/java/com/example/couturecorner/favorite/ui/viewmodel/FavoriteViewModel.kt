@@ -6,9 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.couturecorner.data.model.ApiState
 import com.example.couturecorner.data.repository.Repo
-import com.example.couturecorner.network.ApolloClient.apolloClient
-import com.graphql.GetFavoriteProductsQuery
-import com.graphql.HomeProductsQuery
+import com.example.couturecorner.network.MyApolloClient.apolloClient
 import com.graphql.ProductQuery
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow

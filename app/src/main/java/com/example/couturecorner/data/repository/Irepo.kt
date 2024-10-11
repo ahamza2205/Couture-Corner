@@ -28,7 +28,7 @@ interface Irepo {
 
     fun getHomeProducts(): Flow<ApolloResponse<HomeProductsQuery.Data>>
 
-    fun getProductDetails(productId: String): Flow<ApiState<ProductQuery.Data>>
+    suspend fun getProductDetails(productId: String): Flow<ApiState<ProductQuery.Data?>>
 
     fun getFilterdProducts(vendor: String?): Flow<ApolloResponse<FilteredProductsQuery.Data>>
 

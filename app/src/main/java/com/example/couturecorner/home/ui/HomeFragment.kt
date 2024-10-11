@@ -160,7 +160,7 @@ class HomeFragment : Fragment(), OnItemClickListener {
             }
         }
 
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             viewModel.products.collect { state ->
                 when (state) {
                     is ApiState.Loading -> showLoading(true)
@@ -179,7 +179,16 @@ class HomeFragment : Fragment(), OnItemClickListener {
                 }
             }
         }
-
+        lifecycleScope.launch {
+            sharedViewModel.favIdsList.collect {
+                if (it.isNotEmpty()) {
+                    productsAdapter.favListUpdate(it.toMutableList())
+                    currencyViewModel.convertedCurrency.observe(viewLifecycleOwner) { convertedValue ->
+                        Log.d("HomeFragment", "Converted currency value: $convertedValue")
+                    }
+                }
+            }
+        }
         // Reload the favorites list to reflect any changes
         sharedViewModel.getFavList()
     }
