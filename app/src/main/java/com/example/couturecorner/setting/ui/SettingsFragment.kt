@@ -28,7 +28,6 @@ class SettingsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentSettingsBinding.inflate(inflater, container, false)
-
         binding.logoutLayout.setOnClickListener {
             settingsViewModel.logoutUser()
             Toast.makeText(requireContext(), "You have successfully logged out", Toast.LENGTH_SHORT).show()

@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -22,7 +21,7 @@ class AdressFragment : Fragment(), OnAddressDeleteListener {
     lateinit var binding: FragmentAdressBinding
     val userViewModel: UserViewModel by viewModels()
     val addressViewModel: AddAdressViewModel by viewModels()
-    lateinit var addressAdapter: AddressAdapter
+    lateinit var addressAdapter: AddressCardAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,7 +33,7 @@ class AdressFragment : Fragment(), OnAddressDeleteListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        addressAdapter = AddressAdapter(this)
+        addressAdapter = AddressCardAdapter(this)
 
         binding.recyclerViewAddress.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)

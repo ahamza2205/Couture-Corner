@@ -1,318 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
-    tools:context=".cart.ui.CheckOutFragment">
+    android:padding="16dp"
+    tools:context=".cart.ui.CheckOutFragment"
+    android:background="@drawable/bottom_sheet_background">
 
+    <!-- Title Section -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:textSize="28sp"
-        android:textColor="@color/colorPrimary"
+        android:text="CHECK OUT"
+        android:textSize="24sp"
         android:textStyle="bold"
-        android:text="CHECK OUT " />
+        android:textColor="@color/colorPrimary"
+        android:paddingBottom="8dp" />
 
+    <!-- Address Section -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Shipping Address"
+        android:textSize="20sp"
         android:textColor="@color/black"
-        android:textSize="22sp"
-        android:layout_marginStart="10dp"
-      />
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"
+        android:textStyle="bold" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:visibility="gone"
-        android:id="@+id/curret_adress"
+    <!-- Address RecyclerView in a CardView for better appearance -->
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:layout_marginTop="10dp">
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:elevation="4dp"
+        android:visibility="visible"
+        app:cardCornerRadius="8dp">
 
-        <ImageView
-            android:id="@+id/imageView2"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@drawable/location_on"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/address_name"
-            android:layout_width="wrap_content"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewAddress"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:text="Current Address"
-            android:textColor="@color/black"
-            android:layout_marginTop="20dp"
-            android:textSize="16sp"
-            app:layout_constraintBottom_toBottomOf="@+id/address_details"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.025"
-            app:layout_constraintStart_toEndOf="@+id/imageView2"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0" />
+            android:padding="8dp" />
+    </androidx.cardview.widget.CardView>
 
-        <TextView
-            android:id="@+id/address_details"
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"
-            android:layout_marginStart="20dp"
-
-            android:text="18 street borg el harm el shorouk"
-            android:textColor="@color/black"
-            android:textSize="12sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toEndOf="@+id/imageView2"
-            app:layout_constraintTop_toBottomOf="@+id/address_name"
-            app:layout_constraintVertical_bias="0.428" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-
-      <Button
-          android:layout_gravity="center"
-          android:id="@+id/btn_add_new_address"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_marginTop="10dp"
-          android:textColor="@color/colorPrimary"
-          android:textSize="16sp"
-          android:layout_margin="20dp"
-          android:backgroundTint="@color/light_gray"
-          android:text="+ Add New Shipping Address" />
-
-
+    <!-- Button to Add New Address -->
+    <Button
+        android:layout_gravity="center"
+        android:id="@+id/btn_add_new_address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/colorPrimary"
+        android:textSize="16sp"
+        android:layout_margin="20dp"
+        android:backgroundTint="@color/light_gray"
+        android:text="+ Add New Shipping Address" />
+    <!-- Payment Method Section -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Payment Method"
         android:textColor="@color/black"
-        android:textSize="22sp"
-        android:layout_marginStart="10dp"
-        />
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp" />
 
+    <!-- Payment Options -->
     <RadioGroup
         android:id="@+id/radio_group_payment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="8dp">
 
-        <!-- ConstraintLayout to group RadioButton and ImageView -->
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+        <!-- PayPal Option -->
+        <RadioButton
+            android:id="@+id/pay_with_paypal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Pay with PayPal"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:drawablePadding="8dp"
+            android:buttonTint="@color/colorPrimary" />
 
-            <RadioButton
-                android:id="@+id/pay_with_paypal"
-                android:layout_width="43dp"
-                android:layout_height="52dp"
-                android:buttonTint="@color/black"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <ImageView
-                android:layout_width="140dp"
-                android:layout_height="30dp"
-                android:layout_marginStart="4dp"
-                android:src="@drawable/paypal"
-                app:layout_constraintBottom_toBottomOf="@id/pay_with_paypal"
-                app:layout_constraintStart_toEndOf="@id/pay_with_paypal"
-                app:layout_constraintTop_toTopOf="@id/pay_with_paypal" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
+        <!-- Cash on Delivery Option -->
         <RadioButton
             android:id="@+id/cash_on_delivery"
-            android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:padding="8dp"
-            android:text="Cash On Delivery"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:text="Cash on Delivery"
             android:textColor="@color/black"
-            android:textSize="20sp"
-            android:buttonTint="@color/black" />
+            android:textSize="16sp"
+            android:drawablePadding="8dp"
+            android:buttonTint="@color/colorPrimary" />
     </RadioGroup>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Promo Code"
-        android:textColor="@color/black"
-        android:textSize="22sp"
-        android:layout_marginStart="10dp"
-        />
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_gravity="center"
-        android:id="@+id/textInputLayout"
-        android:layout_width="220dp"
-        android:layout_height="80dp"
-        app:boxBackgroundMode="outline"
-        app:boxCornerRadiusBottomEnd="15dp"
-        app:boxCornerRadiusBottomStart="15dp"
-        app:boxCornerRadiusTopEnd="15dp"
-        android:textAlignment="center"
-        app:boxCornerRadiusTopStart="15dp"
-        app:boxStrokeColor="@color/colorPrimary"
-        app:boxStrokeWidth="1dp"
-        app:endIconDrawable="@drawable/check"
-        app:endIconMode="custom"
-        app:endIconTint="@color/colorPrimary"
-        app:boxBackgroundColor="@color/light_gray"
-
-   >
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/text_cuponcode"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:gravity="top"
-            android:hint="Enter  Coupon Code"
-            android:textColorHint="@color/colorPrimary" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="2"
-        android:paddingStart="20dp"
-        android:paddingEnd="10dp">
-
-
-        <TextView
-            android:id="@+id/textViewSubtotalLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Subtotal"
-            android:textColor="@color/black"
-            android:textSize="16sp"
-            app:layout_constraintEnd_toStartOf="@+id/textViewSubtotalValue"
-            app:layout_constraintHorizontal_bias="0.045"
-            app:layout_constraintHorizontal_chainStyle="spread_inside"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:ignore="MissingConstraints" />
-
-        <TextView
-            android:id="@+id/textViewSubtotalValue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="$100"
-            android:textColor="@color/black"
-            android:textSize="16sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/textViewSubtotalLabel" />
-
-        <!-- Delivery Fee Row -->
-
-        <TextView
-            android:id="@+id/textViewDeliveryFeeLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Delivery Fee"
-            android:textColor="@color/black"
-            android:textSize="16sp"
-            app:layout_constraintEnd_toStartOf="@+id/textViewDeliveryFeeValue"
-            app:layout_constraintHorizontal_bias="0.047"
-            app:layout_constraintHorizontal_chainStyle="spread_inside"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textViewSubtotalLabel" />
-
-        <TextView
-            android:id="@+id/textViewDeliveryFeeValue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="$5"
-            android:textColor="@color/black"
-            android:textSize="16sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/textViewDeliveryFeeLabel" />
-
-        <!-- Discount Row -->
-
-        <TextView
-            android:id="@+id/textViewDiscountLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Discount"
-            android:textColor="@color/black"
-            android:textSize="16sp"
-            app:layout_constraintEnd_toStartOf="@+id/textViewDiscountValue"
-            app:layout_constraintHorizontal_bias="0.045"
-            app:layout_constraintHorizontal_chainStyle="spread_inside"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textViewDeliveryFeeLabel" />
-
-        <TextView
-            android:id="@+id/textViewDiscountValue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="-$10"
-            android:textColor="@color/black"
-            android:textSize="16sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/textViewDiscountLabel" />
-
-        <!-- Divider Line -->
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginHorizontal="20dp"
-            android:layout_marginBottom="2dp"
-            android:background="@color/colorPrimary"
-            android:id="@+id/divider"
-            android:layout_marginVertical="16dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textViewDiscountLabel" />
-
-        <!-- Total Row -->
-
-        <TextView
-            android:id="@+id/textViewTotalLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Total"
-            android:textColor="@color/black"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toStartOf="@+id/textViewTotalValue"
-            app:layout_constraintHorizontal_bias="0.042"
-            app:layout_constraintHorizontal_chainStyle="spread_inside"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/divider" />
-
-        <TextView
-            android:id="@+id/textViewTotalValue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="$95"
-            android:textColor="@color/black"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/textViewTotalLabel" />
-
-        <!-- Apply Button -->
-        <Button
-            android:id="@+id/check_out_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="Confirm Order"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textViewTotalLabel" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </LinearLayout>

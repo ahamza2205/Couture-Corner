@@ -1,5 +1,4 @@
 package com.example.couturecorner.cart.ui
-
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -8,10 +7,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.couturecorner.R
 import com.example.couturecorner.authentication.viewmodel.LoginViewModel
 import com.example.couturecorner.data.model.Address
@@ -27,21 +26,22 @@ import com.example.couturecorner.home.ui.MainActivity
 import com.example.couturecorner.cart.viewmodel.CartViewModel
 import com.example.couturecorner.cart.viewmodel.CheckOutViewModel
 import com.example.couturecorner.cart.viewmodel.UserViewModel
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 import java.util.UUID
 
 @AndroidEntryPoint
-class CheckOutFragment : Fragment() {
+class CheckOutFragment : BottomSheetDialogFragment() , OnAddressClickListener {
     private var isTokenFetched = false
-
     private val checkOutViewModel: CheckOutViewModel by viewModels()
     private val loginViewModel: LoginViewModel by viewModels()
     private val userViewModel:UserViewModel by viewModels()
 private val cartViewModel: CartViewModel by viewModels()
     private lateinit var binding: FragmentCheckOutBinding
     private lateinit var payPalRepository: PayPalRepository
+    private lateinit var addressItemAdapter:AddressItemAdapter
 
     // PayPal settings
     private val returnUrl = "com.example.couturecorner://paypalreturn"
@@ -63,14 +63,19 @@ private val cartViewModel: CartViewModel by viewModels()
         loginViewModel.getCustomerDataTwo()
         setupCustomerAddress()
         cartViewModel.getCartItems()
-        observeViewModel()
+//        observeViewModel()
+addressItemAdapter =AddressItemAdapter(this)
+        binding.recyclerViewAddress.layoutManager =
+            LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        binding.recyclerViewAddress.adapter = addressItemAdapter
+
 
         binding.btnAddNewAddress.setOnClickListener {
             findNavController().navigate(R.id.action_checkOutFragment_to_addAdressFragment)
         }
-binding.checkOutButton.setOnClickListener {
-    initializePayPal()
-}
+//binding.checkOutButton.setOnClickListener {
+//    initializePayPal()
+//}
         binding.radioGroupPayment.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
                 R.id.pay_with_paypal -> {
@@ -96,25 +101,31 @@ binding.checkOutButton.setOnClickListener {
         private fun setupCustomerAddress() {
             userViewModel.userData.observe(viewLifecycleOwner) { user ->
                 user?.let {
-                    if (user.defaultAddress != null) {
-                        binding.curretAdress.visibility = View.VISIBLE
-                        binding.addressName.text = it.defaultAddress?.address1
-                        binding.addressDetails.text = it.defaultAddress?.address2
-                        val address = Address(
-                            name = it.defaultAddress?.address1 ?: "",
-                            addressDetails = it.defaultAddress?.address2 ?: "",
-                            city = it.defaultAddress?.city ?: "",
-                            phone = it.defaultAddress?.phone ?: "",
-
+                    if (user.addresses != null) {
+                        val addressList = user.addresses?.map { apiAddress ->
+                            Address(
+                                name = apiAddress?.address1 ?: "",
+                                addressDetails = apiAddress?.address2 ?: "",
+                                city = apiAddress?.city ?: "",
+                                phone = apiAddress?.phone ?: ""
                             )
-                        Log.i("Final", "setupCustomerAddress: "+address)
-                        cartViewModel.setAddress(address)
+                        } ?: emptyList()
+
+                        addressItemAdapter.setAddressItems(addressList)
+
+
 
                     }
                 }
             }
 
         }
+    override fun onAddressClick(address: Address) {
+        Log.i("onAddressClick", "onAddressClick: "+address)
+
+        cartViewModel.setAddress(address)
+
+    }
 
     private fun initializePayPal() {
         payPalRepository = PayPalRepository(
@@ -208,4 +219,8 @@ binding.checkOutButton.setOnClickListener {
     companion object {
         const val TAG = "PayPalExample"
     }
+
+
+
+
 }

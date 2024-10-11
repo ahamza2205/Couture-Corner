@@ -5,16 +5,16 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.couturecorner.data.model.Address
-import com.example.couturecorner.databinding.AddtessitemBinding
+import com.example.couturecorner.databinding.AddressCardBinding
 
-class AddressAdapter(
+class AddressCardAdapter(
     private val deleteListener: OnAddressDeleteListener
-) : RecyclerView.Adapter<AddressAdapter.AddressItemViewHolder>() {
+) : RecyclerView.Adapter<AddressCardAdapter.AddressItemViewHolder>() {
 
     // Use a mutable list to hold address items
     private val addressItems = mutableListOf<Address>()
 
-    inner class AddressItemViewHolder(private val binding: AddtessitemBinding) :
+    inner class AddressItemViewHolder(private val binding: AddressCardBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         @SuppressLint("NotifyDataSetChanged")
@@ -31,7 +31,7 @@ class AddressAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AddressItemViewHolder {
-        val binding = AddtessitemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = AddressCardBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return AddressItemViewHolder(binding)
     }
 

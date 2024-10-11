@@ -64,9 +64,9 @@ class CartFragment : Fragment() {
     // Set up button clicks and UI elements
     private fun setupUI() {
         binding.applyButton.setOnClickListener {
-            findNavController().navigate(R.id.action_cartFragment_to_checkOutFragment)
+            val checkOutFragment = CheckOutFragment()
+            checkOutFragment.show(parentFragmentManager, "CheckOutFragment")
         }
-        binding.textViewDeliveryFeeValue.text = "$5.00"
         binding.textViewDiscountValue.text = "$5.00"
     }
 
