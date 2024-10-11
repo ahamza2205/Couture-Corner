@@ -8,8 +8,20 @@ type Query {
     HomeProducts(first: Int!): ProductConnection
     draftOrders(query: String!, first: Int): DraftOrderConnection
     customers(first: Int!, query: String): CustomerConnection
+    orders(first: Int, query: String): OrderConnection
+    order(id: String!): Order
+
 
 }
+type OrderConnection {
+    edges: [OrderEdge]
+}
+
+type OrderEdge {
+    node: Order
+}
+
+
 type CustomerConnection {
     edges: [CustomerEdge]
 }
@@ -250,7 +262,8 @@ type Address {
     address1: String!
     address2: String!
     city: String!
-    phone: String!
+    phone: String
+#    phone: String!
 }
 
 input DraftOrderInput {
@@ -304,6 +317,33 @@ enum DraftOrderAppliedDiscountType {
 }
 type Order {
     id: ID!
+    name: String!
+    createdAt: String!
+    billingAddress: Address
+    totalPriceSet: MoneyBag
+    lineItems(first: Int): LineItemConnection
+}
+
+type LineItemConnection {
+    edges: [LineItemEdge]
+}
+type LineItemEdge {
+    node: LineItem
+}
+type LineItem {
+    name: String!
+    quantity: Int!
+    originalUnitPriceSet: MoneyBag
+}
+
+
+type MoneyBag {
+    shopMoney: Money
+}
+
+type Money {
+    amount: String
+    currencyCode: String
 }
 
 type DraftOrderConnection {

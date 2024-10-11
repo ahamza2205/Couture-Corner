@@ -21,8 +21,10 @@ import com.graphql.GetCustomerByEmailQuery
 import com.graphql.GetCustomerByIdQuery
 import com.graphql.GetDraftOrdersByCustomerQuery
 import com.graphql.GetFavoriteProductsQuery
+import com.graphql.GetOrdersByCustomerQuery
 import com.graphql.GetProductsQuery
 import com.graphql.HomeProductsQuery
+import com.graphql.OrderByIdQuery
 import com.graphql.UpdateCustomerMetafieldsMutation
 import com.graphql.ProductQuery
 import com.graphql.UpdateDraftOrderMetafieldsMutation
@@ -84,6 +86,16 @@ class Repo
     override fun createOrderFromDraft(id: String): Flow<ApolloResponse<CreateOrderFromDraftOrderMutation.Data>>{
 
         return remoteData.createOrderFromDraft(id)
+    }
+
+    override fun getOrders(emai: String): Flow<ApolloResponse<GetOrdersByCustomerQuery.Data>> {
+
+        return remoteData.getOrders(emai)
+    }
+
+    override fun getOrderById(id: String): Flow<ApolloResponse<OrderByIdQuery.Data>> {
+
+        return remoteData.getOrderById(id)
     }
 
 

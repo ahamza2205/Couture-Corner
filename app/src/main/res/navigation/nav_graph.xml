@@ -48,6 +48,9 @@
         <action
             android:id="@+id/action_settingsFragment_to_cartFragment"
             app:destination="@id/cartFragment" />
+        <action
+            android:id="@+id/action_settingsFragment_to_ordersFragment"
+            app:destination="@id/ordersFragment" />
     </fragment>
     <fragment
         android:id="@+id/cartFragment"
@@ -112,5 +115,14 @@
         <action
             android:id="@+id/action_productDetailsFragment_to_homeFragment"
             app:destination="@id/homeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/ordersFragment"
+        android:name="com.example.couturecorner.order.ui.OrdersFragment"
+        android:label="fragment_orders"
+        tools:layout="@layout/fragment_orders" >
+        <action
+            android:id="@+id/action_ordersFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
     </fragment>
 </navigation>

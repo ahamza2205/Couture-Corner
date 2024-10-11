@@ -1,0 +1,23 @@
+query OrderById($id: String!) {
+    order(id: $id) {
+        billingAddress {
+            address1
+            address2
+            city
+        }
+        lineItems(first: 5) {
+            edges {
+                node {
+                    name
+                    quantity
+                    originalUnitPriceSet {
+                        shopMoney {
+                            amount
+                            currencyCode
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

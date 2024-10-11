@@ -8,10 +8,12 @@ import com.graphql.DraftOrderCreateMutation
 import com.graphql.FilteredProductsQuery
 import com.graphql.GetCuponCodesQuery
 import com.graphql.GetDraftOrdersByCustomerQuery
+import com.graphql.GetOrdersByCustomerQuery
 import com.graphql.GetProductsQuery
 import com.graphql.UpdateCustomerMetafieldsMutation
 import com.graphql.type.CustomerInput
 import com.graphql.HomeProductsQuery
+import com.graphql.OrderByIdQuery
 import com.graphql.ProductQuery
 import com.graphql.UpdateDraftOrderMetafieldsMutation
 import com.graphql.type.DraftOrderDeleteInput
@@ -34,7 +36,8 @@ interface Irepo {
     fun updateDraftOrder(input: DraftOrderInput, id: String): Flow<ApolloResponse<UpdateDraftOrderMetafieldsMutation.Data>>
     fun createOrderFromDraft(id: String): Flow<ApolloResponse<CreateOrderFromDraftOrderMutation.Data>>
 
-
+    fun getOrders(emai:String):Flow<ApolloResponse<GetOrdersByCustomerQuery.Data>>
+    fun getOrderById(id:String):Flow<ApolloResponse<OrderByIdQuery.Data>>
 
     // --------------- shared preference  -------------------------
 

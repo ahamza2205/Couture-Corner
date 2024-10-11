@@ -10,13 +10,16 @@ import com.graphql.DraftOrderCreateMutation
 import com.graphql.FilteredProductsQuery
 import com.graphql.GetCuponCodesQuery
 import com.graphql.GetDraftOrdersByCustomerQuery
+import com.graphql.GetOrdersByCustomerQuery
 import com.graphql.GetProductsQuery
 import com.graphql.HomeProductsQuery
+import com.graphql.OrderByIdQuery
 import com.graphql.UpdateCustomerMetafieldsMutation
 import com.graphql.UpdateDraftOrderMetafieldsMutation
 import com.graphql.type.CustomerInput
 import com.graphql.type.DraftOrderDeleteInput
 import com.graphql.type.DraftOrderInput
+import com.sun.mail.imap.protocol.ID
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
@@ -49,6 +52,17 @@ class RemoteData @Inject constructor() : IremoteData {
 
 //      val response = ApolloClient.apolloClient.query(FilteredProductsQuery(query =vendor)).execute()
 //        emit(response)
+    }
+
+    override fun getOrders(emai:String):Flow<ApolloResponse<GetOrdersByCustomerQuery.Data>> = flow {
+        val response = ApolloClient.apolloClient.query(GetOrdersByCustomerQuery(emai)).execute()
+        emit(response)
+    }
+
+    override fun getOrderById(id: String): Flow<ApolloResponse<OrderByIdQuery.Data>> = flow {
+
+        val response = ApolloClient.apolloClient.query(OrderByIdQuery(id)).execute()
+        emit(response)
     }
 
 
