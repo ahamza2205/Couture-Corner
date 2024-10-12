@@ -342,11 +342,12 @@ class RemoteData @Inject constructor(
                         city = address.city ?: "",
                         phone = address.phone ?: ""
                     )
-                }
+                },
+                // Add the addresses parameter, handle it as per its type (nullable or non-nullable)
+                addresses = customer.addresses ?: emptyList() // Provide a default value if it is nullable
             )
         }
     }
-
 
 }
 
