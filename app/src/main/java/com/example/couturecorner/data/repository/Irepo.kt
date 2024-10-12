@@ -7,6 +7,7 @@ import com.graphql.DeleteDraftOrderMutation
 import com.graphql.DraftOrderCreateMutation
 import com.graphql.FilteredProductsQuery
 import com.graphql.GetCuponCodesQuery
+import com.graphql.GetCustomerByIdQuery
 import com.graphql.GetDraftOrdersByCustomerQuery
 import com.graphql.GetProductsQuery
 import com.graphql.UpdateCustomerMetafieldsMutation
@@ -74,5 +75,14 @@ interface Irepo {
     suspend fun addProductToFavorites(customerId: String, productId: String)
 
     suspend fun getCurrentFavorites(customerId: String): List<String>?
-
+    suspend fun registerUser(
+        email: String?,
+        password: String?,
+        firstName: String?,
+        lastName: String?,
+        phoneNumber: String?,
+        idToken: String? = null,
+    ): String?
+    suspend fun getCustomerByEmail(email: String): String?
+    suspend fun getCustomerById(customerId: String): GetCustomerByIdQuery.Customer?
 }

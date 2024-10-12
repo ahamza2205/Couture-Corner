@@ -1,28 +1,23 @@
 package com.example.couturecorner.home.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.apollographql.apollo3.api.ApolloResponse
-import com.example.couturecorner.data.local.SharedPreference
+import com.example.couturecorner.data.local.SharedPreferenceImp
 import com.example.couturecorner.data.model.ApiState
 import com.example.couturecorner.data.repository.Irepo
-import com.google.firebase.auth.FirebaseAuth
 import com.graphql.FilteredProductsQuery
 import com.graphql.GetCuponCodesQuery
-import com.graphql.GetProductsQuery
-import com.graphql.HomeProductsQuery
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel@Inject constructor(
     private val repo: Irepo,
-    val sharedPreference: SharedPreference
+    val sharedPreference: SharedPreferenceImp
 ):ViewModel() {
 
 

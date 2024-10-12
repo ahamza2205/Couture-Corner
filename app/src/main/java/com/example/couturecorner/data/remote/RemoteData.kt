@@ -4,17 +4,23 @@ import android.util.Log
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.ApolloResponse
 import com.apollographql.apollo3.api.Optional
+import com.example.couturecorner.data.local.SharedPreference
 import com.example.couturecorner.data.model.ApiState
 import com.example.couturecorner.network.MyApolloClient
 import com.example.couturecorner.network.MyApolloClient.apolloClient
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
 import com.google.gson.Gson
 import com.graphql.AddFavoriteProductMutation
 import com.graphql.CreateOrderFromDraftOrderMutation
+import com.graphql.CustomerCreateMutation
 import com.graphql.DeleteDraftOrderMutation
 import com.graphql.DraftOrderCreateMutation
 
 import com.graphql.FilteredProductsQuery
 import com.graphql.GetCuponCodesQuery
+import com.graphql.GetCustomerByEmailQuery
+import com.graphql.GetCustomerByIdQuery
 import com.graphql.GetDraftOrdersByCustomerQuery
 import com.graphql.GetFavoriteProductsQuery
 import com.graphql.GetProductsQuery
@@ -27,10 +33,12 @@ import com.graphql.type.DraftOrderDeleteInput
 import com.graphql.type.DraftOrderInput
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class RemoteData @Inject constructor(
-    val apolloClient: ApolloClient
+    val apolloClient: ApolloClient,
+    val sharedPreference: SharedPreference
 ) : IremoteData {
 
 
@@ -209,6 +217,123 @@ class RemoteData @Inject constructor(
         } catch (e: Exception) {
         }
     }
+
+    override suspend fun registerUser(
+        email: String?,
+        password: String?,
+        firstName: String?,
+        lastName: String?,
+        phoneNumber: String?,
+        idToken: String?,
+    ): String? {
+        if (email.isNullOrEmpty() || firstName.isNullOrEmpty() || lastName.isNullOrEmpty()) {
+            throw IllegalArgumentException("All fields except password and phoneNumber must be provided.")
+        }
+
+        val auth = FirebaseAuth.getInstance()
+        try {
+            // Create Firebase user
+            val firebaseUserId = if (password != null) {
+                auth.createUserWithEmailAndPassword(email, password).await()
+            } else if (idToken != null) {
+                // Sign in using Google
+                val credential = GoogleAuthProvider.getCredential(idToken, null)
+                auth.signInWithCredential(credential).await()
+            } else {
+                throw IllegalArgumentException("Must provide either a password or an idToken for registration.")
+            }
+
+            if (firebaseUserId.user != null) {
+                // Proceed with Shopify registration
+                val client = MyApolloClient.apolloClient
+                val mutation = CustomerCreateMutation(
+                    input = CustomerInput(
+                        email = Optional.Present(email),
+                        firstName = Optional.Present(firstName),
+                        lastName = Optional.Present(lastName),
+                        phone = if (!phoneNumber.isNullOrEmpty()) Optional.Present(phoneNumber) else Optional.Absent,
+                        tags = Optional.Absent,
+                        metafields = Optional.Absent,
+                        addresses = Optional.Absent
+                    )
+                )
+                val response = client.mutation(mutation).execute()
+
+                if (response.hasErrors()) {
+                    Log.e("ShopifyRegistration", "Shopify user creation failed: ${response.errors}")
+                    throw Exception("Error creating Shopify user: ${response.errors}")
+                } else {
+                    val shopifyUserId = response.data?.customerCreate?.customer?.id
+                    Log.d("UserRegistration", "User successfully created on Shopify: $firstName $lastName, Shopify User ID: $shopifyUserId")
+
+                    // Fetch the customer ID by email
+                    val customerId = getCustomerByEmail(email)
+                    if (customerId != null) {
+                        // Save the customer ID in shared preferences
+                        sharedPreference.saveShopifyUserId(email, customerId)
+                        Log.d("UserRegistration", "Shopify User ID saved in SharedPreferences: $customerId")
+                    } else {
+                        Log.e("UserRegistration", "Failed to fetch Shopify user ID")
+                    }
+
+                    return shopifyUserId
+                }
+            } else {
+                Log.e("UserRegistration", "Failed to create Firebase user")
+                throw Exception("Failed to create Firebase user")
+            }
+        } catch (e: Exception) {
+            Log.e("UserRegistration", "Error in registration process: ${e.message}")
+            throw e
+        }
+    }
+    override suspend fun getCustomerByEmail(email: String): String? {
+        val client = MyApolloClient.apolloClient
+        val response = client.query(GetCustomerByEmailQuery(email = email)).execute()
+
+        if (response.hasErrors()) {
+            Log.e("GetCustomerByEmail", "Error fetching customer by email: ${response.errors}")
+            throw Exception("Error fetching customer by email: ${response.errors}")
+        }
+
+        // Extract customer ID from the response
+        val customerId = response.data?.customers?.edges?.firstOrNull()?.node?.id
+        return customerId
+    }
+
+
+    override suspend fun getCustomerById(customerId: String): GetCustomerByIdQuery.Customer? {
+        val client = MyApolloClient.apolloClient
+        val response = client.query(GetCustomerByIdQuery(id = customerId)).execute()
+
+        if (response.hasErrors()) {
+            Log.e("CustomerData", "Error fetching customer: ${response.errors}")
+            throw Exception("Error fetching customer: ${response.errors}")
+        }
+
+        return response.data?.customer?.let { customer ->
+            GetCustomerByIdQuery.Customer(
+                id = customer.id,
+                displayName = customer.displayName ?: "", // Handle nullable fields
+                email = customer.email,
+                firstName = customer.firstName,
+                lastName = customer.lastName,
+                phone = customer.phone,
+                createdAt = customer.createdAt,
+                updatedAt = customer.updatedAt,
+                defaultAddress = customer.defaultAddress?.let { address ->
+                    GetCustomerByIdQuery.DefaultAddress( // Correctly reference the nested DefaultAddress class
+                        address1 = address.address1 ?: "", // Handle nullable fields
+                        address2 = address.address2 ?: "",
+                        city = address.city ?: "",
+                        phone = address.phone ?: ""
+                    )
+                }
+            )
+        }
+    }
+
+
 }
 
 
