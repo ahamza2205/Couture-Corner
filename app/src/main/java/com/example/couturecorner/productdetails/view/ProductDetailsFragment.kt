@@ -3,6 +3,7 @@ package com.example.couturecorner.productdetails.view
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Intent
+import android.graphics.Paint
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -125,6 +126,7 @@ class ProductDetailsFragment : Fragment() {
                             binding.productRatingText.text=LocalListsData.productRatingsMap[productId]?.toString()
 
 
+                            binding.review.paintFlags = binding.review.paintFlags or Paint.UNDERLINE_TEXT_FLAG
                             binding.review.setOnClickListener {
                                 val reviewBottomSheet = ReviewBottomSheetFragment()
                                 reviewBottomSheet.show(childFragmentManager, "ReviewBottomSheet")
