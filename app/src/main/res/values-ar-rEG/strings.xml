@@ -22,4 +22,8 @@
     <string name="accessories">اكسسوارات</string>
     <string name="all">الكل</string>
     <string name="price">%1$s %2$s</string>
+    <string name="priceOrder">السعر: %1$s %2$s</string>
+    <string name="Totalprice">المجموع: %1$s %2$s</string>
+    <string name="order_details">تفاصيل الطلب</string>
+    <string name="adress">المدينة : %1$s البلد : %2$s</string>
 </resources>

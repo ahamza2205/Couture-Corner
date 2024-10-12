@@ -41,6 +41,9 @@ class SettingsFragment : Fragment() {
         binding.cartLayout.setOnClickListener {
             findNavController().navigate(R.id.action_settingsFragment_to_cartFragment)
         }
+       binding.orderLayout.setOnClickListener {
+           findNavController().navigate(R.id.action_settingsFragment_to_ordersFragment)
+        }
 
         val currencies = arrayOf("USD", "EUR", "EGP", "SAR", "AED")
         val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, currencies)

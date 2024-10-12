@@ -10,13 +10,16 @@ import com.graphql.GetProductsQuery
 import kotlinx.coroutines.flow.Flow
 import com.graphql.GetCuponCodesQuery
 import com.graphql.GetDraftOrdersByCustomerQuery
+import com.graphql.GetOrdersByCustomerQuery
 import com.graphql.HomeProductsQuery
 import com.graphql.ProductQuery
+import com.graphql.OrderByIdQuery
 import com.graphql.UpdateCustomerMetafieldsMutation
 import com.graphql.UpdateDraftOrderMetafieldsMutation
 import com.graphql.type.CustomerInput
 import com.graphql.type.DraftOrderDeleteInput
 import com.graphql.type.DraftOrderInput
+import com.sun.mail.imap.protocol.ID
 
 interface IremoteData   {
     fun getProducts(): Flow<ApolloResponse<GetProductsQuery.Data>>
@@ -29,6 +32,9 @@ interface IremoteData   {
     fun deleteDraftOrder(input: DraftOrderDeleteInput): Flow<ApolloResponse<DeleteDraftOrderMutation.Data>>
     fun updateDraftOrder(input: DraftOrderInput, id: String): Flow<ApolloResponse<UpdateDraftOrderMetafieldsMutation.Data>>
     fun createOrderFromDraft(id: String): Flow<ApolloResponse<CreateOrderFromDraftOrderMutation.Data>>
+    fun getOrders(emai:String):Flow<ApolloResponse<GetOrdersByCustomerQuery.Data>>
+    fun getOrderById(id:String):Flow<ApolloResponse<OrderByIdQuery.Data>>
+
     suspend fun getProductDetails(productId: String): Flow<ApiState<ProductQuery.Data?>>
     suspend fun addProductToFavorites(customerId: String, productId: String)
     suspend fun getCurrentFavorites(customerId: String): List<String>?

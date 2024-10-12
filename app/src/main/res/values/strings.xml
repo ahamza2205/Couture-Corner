@@ -22,4 +22,8 @@
     <string name="all">All</string>
     <string name="price">%1$s %2$s</string>
     <string name="default_web_client_id">983432677555-gaurraemolumvdnj9nsapeldml4t4826.apps.googleusercontent.com</string>
+    <string name="order_details">Order Details</string>
+    <string name="adress"> Address: %1$s , %2$s</string>
+    <string name="priceOrder">Price: %1$s %2$s</string>
+    <string name="Totalprice">Total price: %1$s %2$s</string>
 </resources>
