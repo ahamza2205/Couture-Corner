@@ -1,24 +1,17 @@
 package com.example.couturecorner.favorite.ui.view
 
-import android.app.AlertDialog
-import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.Toast
-import androidx.core.content.ContentProviderCompat.requireContext
-import androidx.core.content.ContextCompat.startActivity
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
-import com.example.couturecorner.R
-import com.example.couturecorner.authentication.view.LoginActivity
 import com.example.couturecorner.setting.viewmodel.CurrencyViewModel
-import com.example.couturecorner.data.local.SharedPreference
+import com.example.couturecorner.data.local.SharedPreferenceImp
 import com.example.couturecorner.favorite.ui.viewmodel.FavoriteViewModel
 import com.example.couturecorner.data.model.ApiState
 import com.example.couturecorner.databinding.FragmentFavoriteBinding
@@ -33,7 +26,7 @@ class FavoriteFragment : Fragment(), OnFavoriteItemClickListener {
     private var _binding: FragmentFavoriteBinding? = null
     private val binding get() = _binding!!
     @Inject
-    lateinit var sharedPreference: SharedPreference
+    lateinit var sharedPreference: SharedPreferenceImp
 
     private val favoriteViewModel: FavoriteViewModel by viewModels()
     private val currencyViewModel: CurrencyViewModel by viewModels()

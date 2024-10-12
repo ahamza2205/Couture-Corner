@@ -15,6 +15,7 @@ import javax.inject.Inject
 class ProductDetailsViewModel @Inject constructor(private val repository: Repo ) : ViewModel() {
     private val _productDetails = MutableStateFlow<ApiState<ProductQuery.Data>>(ApiState.Loading)
     val productDetails: StateFlow<ApiState<ProductQuery.Data>> = _productDetails
+
     fun getProductDetails(productId: String) {
         viewModelScope.launch {
             repository.getProductDetails(productId).collect {

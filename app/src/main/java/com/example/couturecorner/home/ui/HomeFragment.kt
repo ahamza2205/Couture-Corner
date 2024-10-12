@@ -1,9 +1,7 @@
 package com.example.couturecorner.home.ui
 
 import android.app.AlertDialog
-import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -26,13 +24,12 @@ import com.example.couturecorner.R
 import com.example.couturecorner.brand.ui.BrandsAdapter
 import com.example.couturecorner.authentication.view.LoginActivity
 import com.example.couturecorner.category.ui.CategoryAdapter
-import com.example.couturecorner.data.local.SharedPreference
+import com.example.couturecorner.data.local.SharedPreferenceImp
 import com.example.couturecorner.data.model.ApiState
 import com.example.couturecorner.databinding.FragmentHomeBinding
 import com.example.couturecorner.home.viewmodel.HomeViewModel
 import com.example.couturecorner.home.viewmodel.MainViewModel
 import com.example.couturecorner.setting.viewmodel.SettingsViewModel
-import com.google.android.material.chip.Chip
 import com.graphql.FilteredProductsQuery
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -48,7 +45,7 @@ class HomeFragment : Fragment(), OnItemClickListener {
     lateinit var cuponAdapter: CuponAdapter
 
     @Inject
-    lateinit var sharedPreference: SharedPreference
+    lateinit var sharedPreference: SharedPreferenceImp
     val viewModel: HomeViewModel by viewModels()
     private val currencyViewModel: CurrencyViewModel by viewModels()
     private val settingsViewModel: SettingsViewModel by viewModels()
