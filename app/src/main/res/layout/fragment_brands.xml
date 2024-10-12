@@ -32,7 +32,7 @@
                                 android:layout_height="match_parent"
                                 android:background="@drawable/rounded_image"
                                 android:scaleType="centerCrop"
-                                android:src="@drawable/adidas_logo" />
+                                 />
 
 
                             <!-- Favorite button in the top-right corner -->

@@ -16,6 +16,7 @@
         app:layout_constraintBottom_toTopOf="@+id/title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:cardElevation="4dp"
         android:outlineSpotShadowColor="@color/colorPrimary"
         android:outlineAmbientShadowColor="@color/colorPrimary"
         app:layout_constraintTop_toTopOf="parent">
