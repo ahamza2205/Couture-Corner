@@ -117,14 +117,6 @@ class Repo @Inject constructor(
     }
 
 
-    override fun saveAddressState(haveAddress: Boolean){
-        sharedPreference.saveAddressState(haveAddress) }
-
-
-    override fun getAddressState(): Boolean {
-        return sharedPreference.getAddressState()
-    }
-
     override fun saveDraftOrderId(userId: String, ID: String) {
         sharedPreference.saveDraftOrderId(userId, ID)
     }
@@ -250,7 +242,8 @@ class Repo @Inject constructor(
                         city = address.city ?: "",
                         phone = address.phone ?: ""
                     )
-                }
+                },
+                addresses = customer?.addresses
             )
         }
     }

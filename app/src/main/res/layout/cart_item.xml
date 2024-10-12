@@ -1,130 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:tools="http://schemas.android.com/tools"
-    android:clickable="true"
-    android:id="@+id/cartItemLayout"
+<androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="200dp"
-    android:orientation="horizontal">
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardElevation="4dp"
+    app:cardCornerRadius="50dp">
 
-    <!-- Profile Image -->
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="97dp"
-        android:layout_height="180dp"
-        android:src="@drawable/test"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
-
-    <!-- Main Profile Text -->
-    <TextView
-        android:id="@+id/nameItem"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:text="Profile"
-        android:textColor="@color/black"
-        android:textSize="18sp"
-        app:layout_constraintStart_toEndOf="@id/imageView"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <!-- Sub Text below Profile Text -->
-
-    <!-- Right-side ImageView -->
-
-    <TextView
-        android:id="@+id/priceItem"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:text="25$"
-        android:textColor="@color/colorPrimary"
-        android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/itemColor"
-        app:layout_constraintStart_toStartOf="@id/nameItem"
-        app:layout_constraintTop_toBottomOf="@id/nameItem"
-        app:layout_constraintVertical_bias="0.555" />
-
-    <TextView
-        android:id="@+id/itemColor"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="color"
-        app:layout_constraintBottom_toTopOf="@+id/itemSize"
-        app:layout_constraintEnd_toEndOf="@+id/priceItem"
-        app:layout_constraintStart_toEndOf="@+id/imageView" />
-
-    <TextView
-        android:id="@+id/itemSize"
-        android:layout_width="36dp"
-        android:layout_height="42dp"
-        android:layout_marginStart="12dp"
-        android:layout_marginBottom="32dp"
-        android:text="size"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imageView" />
-
-    <ImageView
-
-        android:id="@+id/addImageView"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_marginEnd="16dp"
-        android:src="@drawable/add"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/deletitem"
-        app:layout_constraintVertical_bias="0.59" />
-
-    <!-- Number beside the ImageView -->
-
-    <ImageView
-
-        android:id="@+id/deletitem"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_marginTop="56dp"
-
-        android:layout_marginEnd="36dp"
-        android:src="@drawable/delete"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/priceItem"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/quanityTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="20dp"
-        android:text="25"
-        app:layout_constraintBottom_toBottomOf="@id/addImageView"
-        app:layout_constraintEnd_toStartOf="@id/addImageView"
-        app:layout_constraintTop_toTopOf="@id/addImageView" />
-
-    <!-- ImageView between text and number -->
-    <ImageView
-        android:id="@+id/removeImageView"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:src="@drawable/remove"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/quanityTextView"
-        app:layout_constraintHorizontal_bias="0.877"
-        app:layout_constraintStart_toEndOf="@id/priceItem"
-        app:layout_constraintTop_toTopOf="@id/addImageView"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <View
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cartItemLayout"
         android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_marginHorizontal="20dp"
-        android:background="@color/colorPrimary"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:layout_height="200dp"
+        android:clickable="true">
+
+        <!-- Profile Image -->
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="150dp"
+            android:layout_height="match_parent"
+            android:src="@drawable/test"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0" />
+
+        <!-- Main Profile Text -->
+
+        <TextView
+            android:id="@+id/nameItem"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="29dp"
+            android:layout_marginTop="25dp"
+            android:text="Profile"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            app:layout_constraintStart_toEndOf="@+id/imageView"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/priceItem"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:text="25$"
+            android:textColor="@color/colorPrimary"
+            android:textSize="24sp"
+            app:layout_constraintStart_toStartOf="@+id/nameItem"
+            app:layout_constraintTop_toBottomOf="@+id/nameItem" />
+
+        <TextView
+            android:id="@+id/itemColor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="color"
+            app:layout_constraintStart_toStartOf="@+id/priceItem"
+            app:layout_constraintTop_toBottomOf="@+id/priceItem" />
+
+        <TextView
+            android:id="@+id/itemSize"
+            android:layout_width="26dp"
+            android:layout_height="19dp"
+            android:text="size"
+            app:layout_constraintBottom_toBottomOf="@+id/removeImageView"
+            app:layout_constraintStart_toStartOf="@+id/itemColor" />
+
+        <ImageView
+            android:id="@+id/addImageView"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginTop="70dp"
+            android:layout_marginEnd="20dp"
+            android:src="@drawable/add"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/deletitem" />
+
+        <ImageView
+            android:id="@+id/deletitem"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="54dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="70dp"
+            android:src="@drawable/delete"
+            app:layout_constraintBottom_toTopOf="@+id/addImageView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/quanityTextView"
+            android:layout_width="26dp"
+            android:layout_height="25dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:text="25"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/addImageView"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/removeImageView"
+            app:layout_constraintTop_toBottomOf="@+id/deletitem"
+            app:layout_constraintVertical_bias="0.769" />
+
+        <ImageView
+            android:id="@+id/removeImageView"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="88dp"
+            android:layout_marginBottom="4dp"
+            android:src="@drawable/remove"
+            app:layout_constraintBottom_toBottomOf="@+id/quanityTextView"
+            app:layout_constraintStart_toEndOf="@+id/itemSize" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

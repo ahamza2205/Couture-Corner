@@ -35,12 +35,7 @@ class SharedPreference @Inject constructor(context: Context) {
 
 
 
-    fun saveAddressState(haveAddress: Boolean){
-        sharedPreferences.edit().putBoolean("haveAddress", haveAddress).apply()
-    }
-    fun getAddressState(): Boolean {
-        return sharedPreferences.getBoolean("haveAddress", false)
-    }
+
     // ----------------------  Draft Order Tag -----------------------------
     // ----------------------  Draft Order Tag -----------------------------
 

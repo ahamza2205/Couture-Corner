@@ -6,27 +6,72 @@
     android:orientation="vertical"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".setting.ui.CartFragment">
-<ScrollView
-    android:id="@+id/scrollView"
-    android:layout_width="match_parent"
-    android:layout_height="0dp"
-    android:layout_weight="3">
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2">
 
-   <androidx.recyclerview.widget.RecyclerView
-       android:paddingTop="20dp"
-       android:paddingEnd="10dp"
-       android:id="@+id/cartRecyclerView"
-       android:layout_width="match_parent"
-       android:layout_height="wrap_content"/>
-</ScrollView>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:indeterminateTint="@color/colorPrimary"
+                android:visibility="gone" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:paddingTop="20dp"
+                android:paddingStart="20dp"
+                android:paddingEnd="10dp"
+                android:id="@+id/cartRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </LinearLayout>
+    </ScrollView>
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1.5"
+        android:layout_weight="2"
+        android:layout_gravity="bottom"
         android:paddingStart="20dp"
-        android:layout_marginTop="20dp"
         android:paddingEnd="10dp">
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputLayout"
+            android:layout_width="220dp"
+            android:layout_height="80dp"
+            app:boxBackgroundMode="outline"
+            app:boxCornerRadiusBottomEnd="15dp"
+            app:boxCornerRadiusBottomStart="15dp"
+            app:boxCornerRadiusTopEnd="15dp"
+            app:boxCornerRadiusTopStart="15dp"
+            app:boxStrokeColor="@color/colorPrimary"
+            app:boxStrokeWidth="1dp"
+            app:endIconDrawable="@drawable/check"
+            app:endIconMode="custom"
+            app:endIconTint="@color/colorPrimary"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.62"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/text_cuponcode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:hint="Enter  Coupon Code"
+                android:textColorHint="@color/colorPrimary" />
+        </com.google.android.material.textfield.TextInputLayout>
+
 
         <TextView
             android:id="@+id/textViewSubtotalLabel"
@@ -39,7 +84,7 @@
             app:layout_constraintHorizontal_bias="0.045"
             app:layout_constraintHorizontal_chainStyle="spread_inside"
             app:layout_constraintStart_toStartOf="parent"
-            tools:ignore="MissingConstraints" />
+            app:layout_constraintTop_toBottomOf="@+id/textInputLayout" />
 
         <TextView
             android:id="@+id/textViewSubtotalValue"
@@ -51,31 +96,9 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/textViewSubtotalLabel" />
 
-        <!-- Delivery Fee Row -->
 
-        <TextView
-            android:id="@+id/textViewDeliveryFeeLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Delivery Fee"
-            android:textColor="@color/black"
-            android:textSize="16sp"
-            app:layout_constraintEnd_toStartOf="@+id/textViewDeliveryFeeValue"
-            app:layout_constraintHorizontal_bias="0.047"
-            app:layout_constraintHorizontal_chainStyle="spread_inside"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textViewSubtotalLabel" />
 
-        <TextView
-            android:id="@+id/textViewDeliveryFeeValue"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="$5"
-            android:textColor="@color/black"
-            android:textSize="16sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/textViewDeliveryFeeLabel" />
+
 
         <!-- Discount Row -->
 
@@ -91,7 +114,7 @@
             app:layout_constraintHorizontal_bias="0.045"
             app:layout_constraintHorizontal_chainStyle="spread_inside"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textViewDeliveryFeeLabel" />
+            app:layout_constraintTop_toBottomOf="@+id/textViewSubtotalValue" />
 
         <TextView
             android:id="@+id/textViewDiscountValue"
