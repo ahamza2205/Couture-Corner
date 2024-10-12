@@ -6,11 +6,12 @@
     android:orientation="vertical"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".setting.ui.CartFragment">
+
     <ScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="2">
+        android:layout_weight="1">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -26,27 +27,26 @@
                 android:visibility="gone" />
 
             <androidx.recyclerview.widget.RecyclerView
-                android:paddingTop="20dp"
-                android:paddingStart="20dp"
-                android:paddingEnd="10dp"
                 android:id="@+id/cartRecyclerView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="550dp"
+                android:paddingTop="20dp"
+                android:paddingStart="20dp"
+                android:paddingEnd="10dp" />
 
         </LinearLayout>
     </ScrollView>
 
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="2"
-        android:layout_gravity="bottom"
+        android:layout_height="wrap_content"
         android:paddingStart="20dp"
-        android:paddingEnd="10dp">
+        android:paddingEnd="10dp"
+        android:paddingBottom="16dp">
+
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/textInputLayout"
-            android:layout_width="220dp"
+            android:layout_width="0dp"
             android:layout_height="80dp"
             app:boxBackgroundMode="outline"
             app:boxCornerRadiusBottomEnd="15dp"
@@ -59,19 +59,17 @@
             app:endIconMode="custom"
             app:endIconTint="@color/colorPrimary"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.62"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" >
+            app:layout_constraintTop_toTopOf="parent">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/text_cuponcode"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="16sp"
-                android:hint="Enter  Coupon Code"
+                android:hint="Enter Coupon Code"
                 android:textColorHint="@color/colorPrimary" />
         </com.google.android.material.textfield.TextInputLayout>
-
 
         <TextView
             android:id="@+id/textViewSubtotalLabel"
@@ -81,8 +79,7 @@
             android:textColor="@color/black"
             android:textSize="16sp"
             app:layout_constraintEnd_toStartOf="@+id/textViewSubtotalValue"
-            app:layout_constraintHorizontal_bias="0.045"
-            app:layout_constraintHorizontal_chainStyle="spread_inside"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textInputLayout" />
 
@@ -96,10 +93,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/textViewSubtotalLabel" />
 
-
-
-
-
         <!-- Discount Row -->
 
         <TextView
@@ -111,8 +104,7 @@
             android:textColor="@color/black"
             android:textSize="16sp"
             app:layout_constraintEnd_toStartOf="@+id/textViewDiscountValue"
-            app:layout_constraintHorizontal_bias="0.045"
-            app:layout_constraintHorizontal_chainStyle="spread_inside"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textViewSubtotalValue" />
 
@@ -128,16 +120,11 @@
 
         <!-- Divider Line -->
         <View
+            android:id="@+id/divider"
             android:layout_width="match_parent"
             android:layout_height="2dp"
             android:layout_marginTop="10dp"
-            android:layout_marginHorizontal="20dp"
-            android:layout_marginBottom="2dp"
             android:background="@color/colorPrimary"
-            android:id="@+id/divider"
-            android:layout_marginVertical="16dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textViewDiscountLabel" />
 
         <!-- Total Row -->
@@ -151,8 +138,7 @@
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toStartOf="@+id/textViewTotalValue"
-            app:layout_constraintHorizontal_bias="0.042"
-            app:layout_constraintHorizontal_chainStyle="spread_inside"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/divider" />
 
@@ -172,9 +158,12 @@
             android:id="@+id/applyButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="16dp"
             android:text="Proceed to Checkout"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.554"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textViewTotalLabel" />
 
