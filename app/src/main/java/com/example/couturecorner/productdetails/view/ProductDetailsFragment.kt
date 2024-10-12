@@ -216,9 +216,29 @@ class ProductDetailsFragment : Fragment() {
         )
         cartViewModel.addedToCart(newItem)
 
-        Log.d("ProductDetailsFragment", "Adding to cart: VariantId= $variantId, Size= $selectedSize, Color= $selectedColor")
-        Toast.makeText(requireContext(), "Added to cart: Size= $selectedSize, Color= $selectedColor", Toast.LENGTH_SHORT).show()
+        cartViewModel.addToCartState.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is ApiState.Loading -> {
+                    binding.progressBar.visibility = View.VISIBLE
+
+                }
+                is ApiState.Success -> {
+                    binding.progressBar.visibility = View.GONE
+                    Toast.makeText(requireContext(), "Added to cart: Size= $selectedSize, Color= $selectedColor", Toast.LENGTH_SHORT).show()
+                }
+                is ApiState.Error -> {
+                    // Display the error message
+                }
+            }
+        }
+
+
+
+
+
+
     }
+
 
     private fun setupSpinner(spinner: Spinner, items: List<String>, selectedItem: String?) {
         val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, items)

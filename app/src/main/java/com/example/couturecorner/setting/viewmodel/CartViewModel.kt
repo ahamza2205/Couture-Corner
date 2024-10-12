@@ -28,6 +28,9 @@ class CartViewModel @Inject constructor(
     private val _draftOrderStatus = MutableLiveData<ApiState<Any>>()
     val draftOrderStatus: LiveData<ApiState<Any>> = _draftOrderStatus
 
+
+    private val _addTOCartState = MutableLiveData<ApiState<Any>>()
+    val addToCartState: LiveData<ApiState<Any>> = _addTOCartState
     private val _address = MutableLiveData<Address>()
     val address: LiveData<Address> = _address
 
@@ -176,6 +179,10 @@ class CartViewModel @Inject constructor(
     // Function to add an item by CartItem
     fun addedToCart(cartItem: CartItem) {
         viewModelScope.launch {
+            _addTOCartState.postValue(ApiState.Loading)
+
+            var isSuccessPosted = false // Flag to ensure only one Success is posted
+
             // Check if a draft order ID exists for the user
             var draftOrderId = repo.getDraftOrderId(userID.toString())
 
@@ -189,24 +196,22 @@ class CartViewModel @Inject constructor(
                             listOf(
                                 DraftOrderLineItemInput(
                                     variantId = cartItem.id.toString(),
-                                    quantity = cartItem.quantity
-                                        ?: 1 // Use the locally updated quantity
+                                    quantity = cartItem.quantity ?: 1 // Use the locally updated quantity
                                 )
                             )
                         )
                     )
-                )
-                    .collect { response ->
-                        draftOrderId = response.data?.draftOrderCreate?.draftOrder?.id
-
-                        if (draftOrderId != null) {
-                            repo.saveDraftOrderId(userID.toString(), draftOrderId.toString())
-
+                ).collect { response ->
+                    draftOrderId = response.data?.draftOrderCreate?.draftOrder?.id
+                    if (draftOrderId != null) {
+                        repo.saveDraftOrderId(userID.toString(), draftOrderId.toString())
+                        if (!isSuccessPosted) {
+                            _addTOCartState.postValue(ApiState.Success(""))
+                            isSuccessPosted = true // Mark as success posted
                         }
                     }
+                }
             }
-
-
 
             // First check if the item already exists in the local cart
             val existingItem = cartItemList.find { it.id == cartItem.id }
@@ -214,20 +219,28 @@ class CartViewModel @Inject constructor(
             if (existingItem != null) {
                 // If it exists, we just increase its quantity
                 val updatedItem = existingItem.copy(
-                    quantity = existingItem.quantity!! + cartItem.quantity!!  // Add to existing quantity
+                    quantity = existingItem.quantity!! + cartItem.quantity!! // Add to existing quantity
                 )
                 updateLocalCartItem(updatedItem)
+                if (!isSuccessPosted) {
+                    _addTOCartState.postValue(ApiState.Success(""))
+                    isSuccessPosted = true // Mark as success posted
+                }
             } else {
                 // If it doesn't exist, add it as a new item
                 val newItem = cartItem.copy() // Make sure to copy cartItem to avoid mutations
                 updateLocalCartItem(newItem)
+                if (!isSuccessPosted) {
+                    _addTOCartState.postValue(ApiState.Success(""))
+                    isSuccessPosted = true // Mark as success posted
+                }
             }
 
             // Sync the local cart list with the Shopify draft order
             updateShopifyDraftOrder(cartItemList)
         }
-
     }
+
 
 
     // Calculate the subtotal and total price
