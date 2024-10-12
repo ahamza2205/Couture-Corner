@@ -1,6 +1,8 @@
 package com.example.couturecorner.home.viewmodel
 
 import android.util.Log
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.apollographql.apollo3.api.ApolloResponse
@@ -8,6 +10,7 @@ import com.apollographql.apollo3.api.Optional
 import com.example.couturecorner.data.local.SharedPreference
 import com.example.couturecorner.data.model.ApiState
 import com.example.couturecorner.data.repository.Irepo
+import com.example.couturecorner.data.repository.Repo
 import com.google.firebase.auth.FirebaseAuth
 import com.graphql.GetProductsQuery
 import com.graphql.type.CustomerInput
@@ -21,6 +24,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val repo: Irepo,
+    private val currencyRepo: Repo,
     val sharedPreference: SharedPreference
 ) : ViewModel() {
 
@@ -31,6 +35,9 @@ class MainViewModel @Inject constructor(
 
     private val _favIdsList= MutableStateFlow<List<String>>(emptyList())
     val favIdsList : StateFlow<List<String>> =_favIdsList
+
+    private val _convertedCurrency = MutableStateFlow<Map<String, Double?>>(emptyMap())
+    val convertedCurrency: StateFlow<Map<String, Double?>> = _convertedCurrency
 
     var selectedProductId: String? = null
 
@@ -131,6 +138,25 @@ class MainViewModel @Inject constructor(
                 Log.e("HomeViewModel", "Error: No user logged in")
             }
         }
+    }
+
+    fun convertCurrency(from: String, to: String, amount: Double, productId: String) {
+        viewModelScope.launch {
+            try {
+                val conversionResult = currencyRepo.convertCurrency(from, to, amount, "9eabc320c6-66b069c4e1-sl3z9w")
+                val result = conversionResult?.result?.get(to)
+                _convertedCurrency.value = _convertedCurrency.value?.toMutableMap()?.apply {
+                    put(productId, result)
+                } ?: mapOf(productId to result)
+            } catch (e: Exception) {
+                _convertedCurrency.value = emptyMap()
+
+            }
+        }
+    }
+
+    fun getSelectedCurrency(): String? {
+        return sharedPreference.getSelectedCurrency()
     }
 
 }

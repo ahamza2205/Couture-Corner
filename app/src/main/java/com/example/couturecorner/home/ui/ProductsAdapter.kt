@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
+import com.example.couturecorner.R
 import com.example.couturecorner.setting.viewmodel.CurrencyViewModel
 import com.example.couturecorner.databinding.ProductItemBinding
 import com.graphql.FilteredProductsQuery
@@ -30,15 +31,10 @@ class productdiifUtill():DiffUtil.ItemCallback<FilteredProductsQuery.Edge>() {
 
 class ProductsAdapter(
     private val listener: OnItemClickListener,
-    private val viewModel: CurrencyViewModel
 ) : ListAdapter<FilteredProductsQuery.Edge, ProductsAdapter.ProductsViewHolder>(productdiifUtill()) {
 
     val favList = mutableListOf<String>()
-    init {
-        viewModel.selectedCurrency.observeForever { newCurrency ->
-            notifyDataSetChanged()
-        }
-    }
+
     class ProductsViewHolder(var binding: ProductItemBinding) : ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductsViewHolder {
@@ -53,13 +49,21 @@ class ProductsAdapter(
         val title = product?.title?.split("|")
         holder.binding.title.text = title?.get(1)
 
-        val selectedCurrency = viewModel.selectedCurrency.value ?: "EGP"
-        val originalPrice = product?.variants?.edges?.get(0)?.node?.price?.toDoubleOrNull() ?: 0.0
+//        val selectedCurrency = viewModel.selectedCurrency.value ?: "EGP"
+//        val originalPrice = product?.variants?.edges?.get(0)?.node?.price?.toDoubleOrNull() ?: 0.0
+//
+//        viewModel.convertCurrency("EGP", selectedCurrency, originalPrice) { convertedPrice ->
+//            val priceWithSymbol = "${String.format("%.2f", convertedPrice ?: originalPrice)} ${getCurrencySymbol(selectedCurrency)}"
+//            holder.binding.priceTextView.text = priceWithSymbol
+//        }
 
-        viewModel.convertCurrency("EGP", selectedCurrency, originalPrice) { convertedPrice ->
-            val priceWithSymbol = "${String.format("%.2f", convertedPrice ?: originalPrice)} ${getCurrencySymbol(selectedCurrency)}"
-            holder.binding.priceTextView.text = priceWithSymbol
-        }
+        holder.binding.priceTextView.text= product?.variants?.edges?.get(0)?.node?.price
+
+//        holder.binding.priceTextView.text = holder.itemView.context.getString(
+//            R.string.price,
+//            product?.variants?.edges?.get(0)?.node?.price,
+//            getCurrencySymbol(viewModel.getSelectedCurrency() ?: "EGP")
+//        )
 
         holder.binding.favoriteAddsButton.isSelected = favList.contains(product?.id)
 
@@ -90,21 +94,21 @@ class ProductsAdapter(
             listener.onItemClick(product)
         }
     }
-    fun getCurrencySymbol(currency: String): String {
-        return when (currency) {
-            "USD" -> "$"
-            "EUR" -> "€"
-            "EGP" -> "EGP"
-            "SAR" -> "SAR"
-            "AED" -> "AED"
-            else -> ""
-        }
-    }
+//    fun getCurrencySymbol(currency: String): String {
+//        return when (currency) {
+//            "USD" -> "$"
+//            "EUR" -> "€"
+//            "EGP" -> "EGP"
+//            "SAR" -> "SAR"
+//            "AED" -> "AED"
+//            else -> ""
+//        }
+//    }
     fun favListUpdate(favs: MutableList<String>) {
         favList.clear()
         favList.addAll(favs)
 
-        val updatedList = currentList.map { edge ->
+        val updatedList =   currentList.map { edge ->
             val product = edge.node
             if (product?.id in favList) {
                 edge

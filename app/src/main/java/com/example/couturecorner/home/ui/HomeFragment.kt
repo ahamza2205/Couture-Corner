@@ -83,7 +83,7 @@ class HomeFragment : Fragment(), OnItemClickListener {
             LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
 
         // Initialize productsAdapter--------------------------------------------------------------------
-        productsAdapter = ProductsAdapter(this, currencyViewModel)
+        productsAdapter = ProductsAdapter(this)
         binding.productsRecycel.adapter = productsAdapter
         // Initialize categoryAdapter
         categoryAdapter = CategoryAdapter {
@@ -166,11 +166,13 @@ class HomeFragment : Fragment(), OnItemClickListener {
                     is ApiState.Loading -> showLoading(true)
                     is ApiState.Success -> {
                         val products = state.data?.data?.products?.edges
-                        showLoading(false)
-                        productsAdapter.submitList(products)
-                        currencyViewModel.convertedCurrency.observe(viewLifecycleOwner) { convertedValue ->
-                            Log.d("HomeFragment", "Converted currency value: $convertedValue")
-                        }
+                        showLoading(true)
+                        prepareProductsForAdapter(products ?: emptyList())
+
+                        //productsAdapter.submitList(products)
+//                        currencyViewModel.convertedCurrency.observe(viewLifecycleOwner) { convertedValue ->
+//                            Log.d("HomeFragment", "Converted currency value: $convertedValue")
+//                        }
                     }
 
                     is ApiState.Error -> {
@@ -276,61 +278,60 @@ class HomeFragment : Fragment(), OnItemClickListener {
 
         dialog.show()
     }
+
+    private fun prepareProductsForAdapter(products: List<FilteredProductsQuery.Edge?>) {
+        val updatedProducts = products.map { product ->
+            val productId = product?.node?.id
+            val originalPrice = product?.node?.variants?.edges?.get(0)?.node?.price?.toDoubleOrNull() ?: 0.0
+
+            // Trigger conversion for each product
+            sharedViewModel.convertCurrency("EGP", sharedViewModel.getSelectedCurrency() ?: "EGP", originalPrice, productId ?: "")
+
+            // Return the original product, the price will be updated later
+            product
+        }
+
+        // Observe currency conversion updates
+      lifecycleScope.launch {
+          sharedViewModel.convertedCurrency.collect { conversions ->
+              val updatedList = updatedProducts.map { product ->
+                  val productId = product?.node?.id
+                  val convertedPrice = conversions[productId] ?: product?.node?.variants?.edges?.get(0)?.node?.price?.toDoubleOrNull() ?: 0.0
+
+                  val price = product?.node?.variants?.edges?.get(0)?.node?.price
+                  // Create a copy or modify the product item with the new price
+                  product?.copy(
+                      node = product.node?.copy(
+                          variants = product.node.variants?.copy(
+                              edges = product.node.variants.edges?.map { edge ->
+                                  edge?.copy(node = edge.node?.copy(price = getString(
+                                      R.string.price,
+                                      convertedPrice.toString(),
+                                      getCurrencySymbol(sharedViewModel.getSelectedCurrency() ?: "EGP")
+                                  )))
+                              }
+                          )
+                      )
+                  )
+              }
+              Log.d("CheckForConversion", "${updatedList[0]?.node?.variants?.edges?.get(0)?.node?.price}: ")
+
+              // Submit the updated list with converted prices to the adapter
+              showLoading(false)
+              productsAdapter.submitList(updatedList)
+          }
+      }
+    }
+
+    fun getCurrencySymbol(currency: String): String {
+        return when (currency) {
+            "USD" -> "$"
+            "EUR" -> "€"
+            "EGP" -> "EGP"
+            "SAR" -> "SAR"
+            "AED" -> "AED"
+            else -> ""
+        }
+
+    }
 }
-//    fun updateChips(){
-//
-//        binding.chip0.isChecked = true
-//        binding.chip0.setChipBackgroundColorResource(R.color.colorPrimary)
-//        binding.chip0.setTextColor(Color.WHITE)
-//        Log.d("AmrChips", "chip0 selected")
-//        viewModel.getFilterdProducts(null)
-//
-//
-//        binding.chipGroup.setOnCheckedChangeListener { group, checkedId ->
-//            // If no chip is selected (checkedId is -1), re-select chip0
-////            if (checkedId == -1) {
-////                binding.chip0.isChecked = true
-////                binding.chip0.chipBackgroundColor = ContextCompat.getColorStateList(requireContext(), R.color.colorPrimary)
-////                Log.d("AmrChips", "chip0 re-selected")
-////                viewModel.getFilterdProducts(null)
-////            } else {
-//                // Reset all chips to their default background color
-//                for (i in 0 until group.childCount) {
-//                    val chip = group.getChildAt(i) as Chip
-//                    chip.setChipBackgroundColorResource(R.color.white) // Default color
-//                    chip.setTextColor(Color.BLACK)
-//                }
-//
-//                // Change the background color of the selected chip
-//                when (checkedId) {
-//                    R.id.chip0 -> {
-//                        binding.chip0.setChipBackgroundColorResource(R.color.colorPrimary)
-//                        binding.chip0.setTextColor(Color.WHITE)
-//                        Log.d("AmrChips", "chip0 selected")
-//                        viewModel.getFilterdProducts(null)
-//                    }
-//                    R.id.chip1 -> {
-//                        binding.chip1.setChipBackgroundColorResource(R.color.colorPrimary)
-//                        binding.chip1.setTextColor(Color.WHITE)
-//                        Log.d("AmrChips", "chip1 selected")
-//                        viewModel.getFilterdProducts("product_type:${binding.chip1.text}")
-//                    }
-//                    R.id.chip2 -> {
-//                        binding.chip2.setChipBackgroundColorResource(R.color.colorPrimary)
-//                        binding.chip2.setTextColor(Color.WHITE)
-//                        Log.d("AmrChips", "chip2 selected")
-//                        viewModel.getFilterdProducts("product_type:${binding.chip2.text}")
-//                    }
-//                    R.id.chip3 -> {
-//                        binding.chip3.setChipBackgroundColorResource(R.color.colorPrimary)
-//                        binding.chip3.setTextColor(Color.WHITE)
-//                        Log.d("AmrChips", "chip3 selected")
-//                        viewModel.getFilterdProducts("product_type:${binding.chip3.text}")
-//                    }
-//                }
-// //           }
-//        }
-//    }
-
-
-

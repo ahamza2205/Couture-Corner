@@ -31,7 +31,6 @@ class BrandsFragment : Fragment(), OnItemClickListener {
     private var brandName: String? = null
 
     val viewModel:BrandViewModel by viewModels()
-    private val currencyViewModel: CurrencyViewModel by viewModels()
 
     val sharedViewModel: MainViewModel by activityViewModels()
 
@@ -58,7 +57,7 @@ class BrandsFragment : Fragment(), OnItemClickListener {
         super.onViewCreated(view, savedInstanceState)
 
         // Pass 'this' as the listener
-        productsBrandAdapter = ProductsAdapter(this, currencyViewModel)
+        productsBrandAdapter = ProductsAdapter(this)
         binding.productsRecycel.adapter = productsBrandAdapter
 
         val logoResId = brandLogos[brandName] ?: R.drawable.shoz10
@@ -73,7 +72,8 @@ class BrandsFragment : Fragment(), OnItemClickListener {
                     is ApiState.Loading -> showLoading(true)
                     is ApiState.Success -> {
                         val products = it.data?.data?.products?.edges
-                        productsBrandAdapter.submitList(products)
+                        prepareProductsForAdapter(products ?: emptyList())
+//                        productsBrandAdapter.submitList(products)
                         showLoading(false)
                     }
                     is ApiState.Error -> {
@@ -174,6 +174,61 @@ class BrandsFragment : Fragment(), OnItemClickListener {
             }
             //           }
         }
+    }
+
+    private fun prepareProductsForAdapter(products: List<FilteredProductsQuery.Edge?>) {
+        val updatedProducts = products.map { product ->
+            val productId = product?.node?.id
+            val originalPrice = product?.node?.variants?.edges?.get(0)?.node?.price?.toDoubleOrNull() ?: 0.0
+
+            // Trigger conversion for each product
+            sharedViewModel.convertCurrency("EGP", sharedViewModel.getSelectedCurrency() ?: "EGP", originalPrice, productId ?: "")
+
+            // Return the original product, the price will be updated later
+            product
+        }
+
+        // Observe currency conversion updates
+        lifecycleScope.launch {
+            sharedViewModel.convertedCurrency.collect { conversions ->
+                val updatedList = updatedProducts.map { product ->
+                    val productId = product?.node?.id
+                    val convertedPrice = conversions[productId] ?: product?.node?.variants?.edges?.get(0)?.node?.price?.toDoubleOrNull() ?: 0.0
+
+                    val price = product?.node?.variants?.edges?.get(0)?.node?.price
+                    // Create a copy or modify the product item with the new price
+                    product?.copy(
+                        node = product.node?.copy(
+                            variants = product.node.variants?.copy(
+                                edges = product.node.variants.edges?.map { edge ->
+                                    edge?.copy(node = edge.node?.copy(price = getString(
+                                        R.string.price,
+                                        convertedPrice.toString(),
+                                        getCurrencySymbol(sharedViewModel.getSelectedCurrency() ?: "EGP")
+                                    )))
+                                }
+                            )
+                        )
+                    )
+                }
+                Log.d("CheckForConversion", "${updatedList[0]?.node?.variants?.edges?.get(0)?.node?.price}: ")
+
+                // Submit the updated list with converted prices to the adapter
+                showLoading(false)
+                productsBrandAdapter.submitList(updatedList)
+            }
+        }
+    }
+    fun getCurrencySymbol(currency: String): String {
+        return when (currency) {
+            "USD" -> "$"
+            "EUR" -> "€"
+            "EGP" -> "EGP"
+            "SAR" -> "SAR"
+            "AED" -> "AED"
+            else -> ""
+        }
+
     }
 
 //    override fun isFavorite(productId: String): Boolean {

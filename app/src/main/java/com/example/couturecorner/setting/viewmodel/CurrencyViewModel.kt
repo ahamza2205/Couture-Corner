@@ -40,6 +40,9 @@ class CurrencyViewModel @Inject constructor(
             }
         }
     }
+    fun getSelectedCurrency(): String? {
+        return sharedPreferences.getString("selected_currency", "EGP")
+    }
 }
 
 

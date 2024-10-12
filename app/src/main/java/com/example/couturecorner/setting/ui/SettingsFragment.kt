@@ -64,8 +64,18 @@ class SettingsFragment : Fragment() {
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
+                // Handle the case where nothing is selected if needed
             }
         }
+
+        val savedCurrency = currencyViewModel.getSelectedCurrency()
+
+        val savedCurrencyPosition = currencies.indexOf(savedCurrency)
+
+        if (savedCurrencyPosition != -1) {
+            binding.currencySpinner.setSelection(savedCurrencyPosition)
+        }
+
         return binding.root
     }
 

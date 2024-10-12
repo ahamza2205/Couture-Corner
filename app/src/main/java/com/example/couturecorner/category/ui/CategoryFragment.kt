@@ -30,7 +30,6 @@ class CategoryFragment : Fragment(), OnItemClickListener {
 
     private var category: String? = null
     lateinit var binding:FragmentCategoryBinding
-    private val currencyViewModel: CurrencyViewModel by viewModels()
     val viewModel: CategoryViewModel by viewModels()
     val sharedViewModel: MainViewModel by activityViewModels()
 
@@ -53,7 +52,7 @@ class CategoryFragment : Fragment(), OnItemClickListener {
         super.onViewCreated(view, savedInstanceState)
 
 
-        categoryAdapter = ProductsAdapter(this, currencyViewModel)
+        categoryAdapter = ProductsAdapter(this)
         binding.productsRecycel.adapter=categoryAdapter
 
        // viewModel.getFilterdProducts(category)
@@ -69,7 +68,8 @@ class CategoryFragment : Fragment(), OnItemClickListener {
                     is ApiState.Success->{
                         val products = it.data?.data?.products?.edges
                         showLoading(false)
-                        categoryAdapter.submitList(products)
+                        prepareProductsForAdapter(products ?: emptyList())
+//                        categoryAdapter.submitList(products)
 //                        products?.forEach { edge ->
 //                            val productTag = edge?.node?.tags
 //                           // productTag?.forEach { tag -> Log.d("AmrCategoryApollo", "tag: ${tag}, Description: ") }
@@ -184,6 +184,60 @@ class CategoryFragment : Fragment(), OnItemClickListener {
         }
     }
 
+    private fun prepareProductsForAdapter(products: List<FilteredProductsQuery.Edge?>) {
+        val updatedProducts = products.map { product ->
+            val productId = product?.node?.id
+            val originalPrice = product?.node?.variants?.edges?.get(0)?.node?.price?.toDoubleOrNull() ?: 0.0
+
+            // Trigger conversion for each product
+            sharedViewModel.convertCurrency("EGP", sharedViewModel.getSelectedCurrency() ?: "EGP", originalPrice, productId ?: "")
+
+            // Return the original product, the price will be updated later
+            product
+        }
+
+        // Observe currency conversion updates
+        lifecycleScope.launch {
+            sharedViewModel.convertedCurrency.collect { conversions ->
+                val updatedList = updatedProducts.map { product ->
+                    val productId = product?.node?.id
+                    val convertedPrice = conversions[productId] ?: product?.node?.variants?.edges?.get(0)?.node?.price?.toDoubleOrNull() ?: 0.0
+
+                    val price = product?.node?.variants?.edges?.get(0)?.node?.price
+                    // Create a copy or modify the product item with the new price
+                    product?.copy(
+                        node = product.node?.copy(
+                            variants = product.node.variants?.copy(
+                                edges = product.node.variants.edges?.map { edge ->
+                                    edge?.copy(node = edge.node?.copy(price = getString(
+                                        R.string.price,
+                                        convertedPrice.toString(),
+                                        getCurrencySymbol(sharedViewModel.getSelectedCurrency() ?: "EGP")
+                                    )))
+                                }
+                            )
+                        )
+                    )
+                }
+                Log.d("CheckForConversion", "${updatedList[0]?.node?.variants?.edges?.get(0)?.node?.price}: ")
+
+                // Submit the updated list with converted prices to the adapter
+                showLoading(false)
+                categoryAdapter.submitList(updatedList)
+            }
+        }
+    }
+    fun getCurrencySymbol(currency: String): String {
+        return when (currency) {
+            "USD" -> "$"
+            "EUR" -> "€"
+            "EGP" -> "EGP"
+            "SAR" -> "SAR"
+            "AED" -> "AED"
+            else -> ""
+        }
+
+    }
 
 //    override fun isFavorite(productId: String): Boolean {
 //        TODO("Not yet implemented")
