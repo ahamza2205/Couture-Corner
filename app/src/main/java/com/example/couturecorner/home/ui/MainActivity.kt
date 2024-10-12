@@ -2,8 +2,9 @@ package com.example.couturecorner.home.ui
 
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.view.Menu
+import android.view.MenuItem
+import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
@@ -21,14 +22,13 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
-
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-    val viewModel: MainViewModel by viewModels()
+    private val viewModel: MainViewModel by viewModels()
     private lateinit var bottomNav: BottomNavigationView
-
     private lateinit var productAdapter: ProductAdapter
     private lateinit var recyclerView: RecyclerView
+    private lateinit var searchView: SearchView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,27 +43,23 @@ class MainActivity : AppCompatActivity() {
         val navController = navHostFragment.navController
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            if (destination.id == R.id.productDetailsFragment) {
-                bottomNav.visibility = View.GONE
+            bottomNav.visibility = if (destination.id == R.id.productDetailsFragment) {
+                View.GONE
             } else {
-                bottomNav.visibility = View.VISIBLE
+                View.VISIBLE
             }
         }
 
-        val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_navigation)
         bottomNav.setupWithNavController(navController)
 
         NavigationUI.setupActionBarWithNavController(this, navController)
         recyclerView = findViewById(R.id.recyclerView)
         productAdapter = ProductAdapter(emptyList()) { productId ->
-            // Store the selected product ID in the ViewModel
             viewModel.selectedProductId = productId
-            // Navigate to ProductDetailsFragment directly
             navController.navigate(R.id.productDetailsFragment)
         }
         recyclerView.adapter = productAdapter
         recyclerView.layoutManager = LinearLayoutManager(this)
-        // Hide the RecyclerView initially
         recyclerView.visibility = View.GONE
         viewModel.getProducts()
 
@@ -73,7 +69,6 @@ class MainActivity : AppCompatActivity() {
                     is ApiState.Loading -> {
                         // Handle loading state if needed
                     }
-
                     is ApiState.Success -> {
                         val products = apiState.data?.data?.products?.edges
                         productAdapter = ProductAdapter(products ?: emptyList()) { productId ->
@@ -81,30 +76,22 @@ class MainActivity : AppCompatActivity() {
                             navController.navigate(R.id.productDetailsFragment)
                         }
                         recyclerView.adapter = productAdapter
-                        // Keep the RecyclerView hidden until search is performed
                     }
-
                     is ApiState.Error -> {
                         Log.d("MainActivity", "${apiState.message}")
                     }
                 }
             }
         }
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
         val searchItem = menu?.findItem(R.id.action_search)
-        val searchView = searchItem?.actionView as SearchView
+        searchView = searchItem?.actionView as SearchView
         searchView.queryHint = "Search for products..."
-        searchView.setOnQueryTextFocusChangeListener { _, hasFocus ->
-            if (hasFocus) {
-                bottomNav.visibility = View.GONE
-            } else {
-                bottomNav.visibility = View.VISIBLE
-            }
-        }
+
+        // Set up SearchView listener
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return false
@@ -112,10 +99,10 @@ class MainActivity : AppCompatActivity() {
 
             override fun onQueryTextChange(newText: String?): Boolean {
                 if (!newText.isNullOrEmpty()) {
-                    recyclerView.visibility = View.VISIBLE // Show when there's text
+                    recyclerView.visibility = View.VISIBLE
                     productAdapter.filter(newText)
                 } else {
-                    recyclerView.visibility = View.GONE // Hide when no text
+                    recyclerView.visibility = View.GONE
                 }
                 return true
             }
@@ -124,10 +111,27 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val navController = findNavController(R.id.nav_host_fragment)
+        return when (item.itemId) {
+            R.id.action_cart -> {
+                // Collapse the SearchView if it's open
+                if (!searchView.isIconified) {
+                    searchView.setIconified(true)
+                }
+                // Navigate to CartFragment when the cart item is clicked
+                navController.navigate(R.id.cartFragment)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment)
         return navController.navigateUp() || super.onSupportNavigateUp()
     }
+
     fun hideBottomNav() {
         bottomNav.visibility = View.GONE
     }
@@ -135,5 +139,4 @@ class MainActivity : AppCompatActivity() {
     fun showBottomNav() {
         bottomNav.visibility = View.VISIBLE
     }
-
 }

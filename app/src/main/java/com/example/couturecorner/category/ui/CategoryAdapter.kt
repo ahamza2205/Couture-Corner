@@ -14,7 +14,7 @@ class CategoryAdapter(
     val categoryList = listOf("women", "men", "kid","sale")
 
     val categoryLogos: Map<String, Int> = mapOf("women" to R.drawable.woman, "men" to R.drawable.men,
-        "kid" to R.drawable.shopping, "sale" to R.drawable.sale)
+        "kid" to R.drawable.boy, "sale" to R.drawable.sale)
 
     lateinit var binding: CategoryItemBinding
 

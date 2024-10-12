@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.couturecorner.data.local.SharedPreference
+import com.example.couturecorner.data.local.SharedPreferenceImp
 import com.example.couturecorner.data.repository.Repo
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
@@ -17,7 +17,8 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val repo: Repo,
-    private val sharedPreference: SharedPreference
+    private val sharedPreference: SharedPreferenceImp,
+    private val firebaseAuth: FirebaseAuth
 ) : ViewModel() {
     private val _customerData = MutableLiveData<GetCustomerByIdQuery.Customer?>()
     val customerData: LiveData<GetCustomerByIdQuery.Customer?> get() = _customerData
@@ -32,9 +33,6 @@ class LoginViewModel @Inject constructor(
 
     fun isUserLoggedIn(): Boolean {
         return repo.isUserLoggedIn()
-    }
-    fun haveAddress() {
-        repo.saveAddressState(true)
     }
 
 

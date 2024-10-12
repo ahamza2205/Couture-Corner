@@ -4,7 +4,7 @@ import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.network.okHttpClient
 import okhttp3.OkHttpClient
 
-object ApolloClient {
+object MyApolloClient {
         private const val BASE_URL = "https://android-alex-team2.myshopify.com/admin/api/2023-01/graphql.json"
 
         val apolloClient = ApolloClient.Builder()

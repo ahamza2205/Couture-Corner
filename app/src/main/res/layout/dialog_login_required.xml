@@ -11,8 +11,8 @@
     <!-- Lottie Animation -->
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/lottieAnimationView"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
+        android:layout_width="300dp"
+        android:layout_height="250dp"
         android:layout_gravity="center"
         app:lottie_autoPlay="true"
         app:lottie_loop="true"
@@ -39,7 +39,7 @@
         <!-- Cancel Button -->
         <Button
             android:id="@+id/cancelButton"
-            android:layout_width="wrap_content"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:text="Cancel"
             android:layout_marginEnd="8dp" />
@@ -47,7 +47,7 @@
         <!-- Login Button -->
         <Button
             android:id="@+id/loginButton"
-            android:layout_width="wrap_content"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:text="Login" />
     </LinearLayout>

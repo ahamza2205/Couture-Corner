@@ -6,9 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.couturecorner.data.model.ApiState
 import com.example.couturecorner.data.repository.Repo
-import com.example.couturecorner.network.ApolloClient.apolloClient
-import com.graphql.GetFavoriteProductsQuery
-import com.graphql.HomeProductsQuery
+import com.example.couturecorner.network.MyApolloClient.apolloClient
 import com.graphql.ProductQuery
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
@@ -21,6 +19,7 @@ class FavoriteViewModel @Inject constructor(
 ) : ViewModel() {
     private val _favoriteProducts = MutableLiveData<ApiState<List<ProductQuery.Product>>>()
     val favoriteProducts: LiveData<ApiState<List<ProductQuery.Product>>> get() = _favoriteProducts
+
     fun loadFavoriteProducts(customerId: String) {
         viewModelScope.launch {
             _favoriteProducts.value = ApiState.Loading

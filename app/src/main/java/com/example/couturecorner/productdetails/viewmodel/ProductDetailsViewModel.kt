@@ -15,10 +15,11 @@ import javax.inject.Inject
 class ProductDetailsViewModel @Inject constructor(private val repository: Repo ) : ViewModel() {
     private val _productDetails = MutableStateFlow<ApiState<ProductQuery.Data>>(ApiState.Loading)
     val productDetails: StateFlow<ApiState<ProductQuery.Data>> = _productDetails
+
     fun getProductDetails(productId: String) {
         viewModelScope.launch {
             repository.getProductDetails(productId).collect {
-                _productDetails.value = it
+                _productDetails.value = it as ApiState<ProductQuery.Data>
             }
         }
     }

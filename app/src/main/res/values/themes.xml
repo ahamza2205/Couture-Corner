@@ -4,7 +4,7 @@
         <item name="colorPrimaryVariant">#714930</item>
         <item name="colorSecondary">#FFFFFF</item>
         <item name="colorSecondaryVariant">#FFFFFF</item>
-        <item name="colorOnSecondary">@color/black</item>
+        <item name="colorOnSecondary">#FFFFFF</item>
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
     </style>
 </resources>

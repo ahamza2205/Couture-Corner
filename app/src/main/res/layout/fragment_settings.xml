@@ -82,6 +82,8 @@
             android:background="@color/colorPrimary" />
 
         <LinearLayout
+            android:id="@+id/addressLayout"
+            android:clickable="true"
             android:layout_width="match_parent"
             android:layout_height="70dp"
             android:orientation="horizontal"
@@ -92,14 +94,14 @@
                 android:layout_height="50dp"
                 android:layout_marginStart="10dp"
                 app:tint="@color/colorPrimary"
-                android:src="@drawable/payment" />
+                android:src="@drawable/location_on" />
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginStart="10dp"
-                android:text="Payment Method"
+                android:text="Your Address"
                 android:textSize="22sp"
                 android:textColor="@color/colorPrimary" />
 

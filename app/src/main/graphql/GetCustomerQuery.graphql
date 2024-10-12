@@ -14,5 +14,13 @@ query GetCustomerById($id: ID!) {
             city
             phone
         }
+        addresses{
+
+    address1
+    address2
+    city
+    phone
+
+        }
     }
 }

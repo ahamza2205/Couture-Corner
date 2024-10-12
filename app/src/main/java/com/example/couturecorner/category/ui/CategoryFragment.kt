@@ -36,7 +36,7 @@ class CategoryFragment : Fragment(), OnItemClickListener {
     lateinit var categoryAdapter:ProductsAdapter
 
     val categoryLogos: Map<String, Int> = mapOf("women" to R.drawable.woman, "men" to R.drawable.men,
-        "kid" to R.drawable.shopping, "sale" to R.drawable.sale)
+        "kid" to R.drawable.boy, "sale" to R.drawable.sale)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -61,7 +61,7 @@ class CategoryFragment : Fragment(), OnItemClickListener {
         val logoResId = categoryLogos[category] ?: R.drawable.shoz10
         binding.categoryImageView.setImageResource(logoResId)
 
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             viewModel.productsCategory.collect{
                 when(it){
                     is ApiState.Loading->showLoading(true)
@@ -86,7 +86,7 @@ class CategoryFragment : Fragment(), OnItemClickListener {
 
         sharedViewModel.getFavList()
 
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             sharedViewModel.favIdsList.collect{
                 if(it.isNotEmpty()){
                     categoryAdapter.favListUpdate(it.toMutableList())

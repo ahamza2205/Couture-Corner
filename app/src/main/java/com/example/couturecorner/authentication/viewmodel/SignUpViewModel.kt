@@ -5,10 +5,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.couturecorner.data.local.SharedPreference // تأكد من استيراد كلاس SharedPreference
+import com.example.couturecorner.data.local.SharedPreferenceImp // تأكد من استيراد كلاس SharedPreference
 import com.example.couturecorner.data.repository.Repo
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.GoogleAuthProvider
 import com.graphql.GetCustomerByIdQuery
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -18,7 +17,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SignUpViewModel @Inject constructor(
     private val repo: Repo,
-    private val sharedPreference: SharedPreference
+    private val sharedPreference: SharedPreferenceImp
 ) : ViewModel() {
 
     private val _registrationStatus = MutableLiveData<Boolean>()

@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.apollographql.apollo3.api.Optional
 import com.example.couturecorner.data.repository.Repo
-import com.google.firebase.auth.FirebaseAuth
 import com.graphql.type.CustomerInput
 import com.graphql.type.MailingAddressInput
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,12 +21,9 @@ class AddAdressViewModel @Inject constructor(
     private val _updateStatus = MutableLiveData<Result<String>>()
     val updateStatus: LiveData<Result<String>> get() = _updateStatus
 
-    fun saveAddressState() {
-        repo.saveAddressState(true)
-    }
 
     // Function to update the customer with the address
-    fun updateCustomer(address: List<MailingAddressInput>,userId: String) {
+    fun updateAddressCustomer(address: List<MailingAddressInput>,userId: String) {
 
 
                     val input = CustomerInput(
@@ -50,4 +46,8 @@ class AddAdressViewModel @Inject constructor(
                             }
                         }
                     }
-                }}
+                }
+
+
+
+}

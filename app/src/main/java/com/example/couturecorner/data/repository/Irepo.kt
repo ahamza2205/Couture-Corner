@@ -7,6 +7,7 @@ import com.graphql.DeleteDraftOrderMutation
 import com.graphql.DraftOrderCreateMutation
 import com.graphql.FilteredProductsQuery
 import com.graphql.GetCuponCodesQuery
+import com.graphql.GetCustomerByIdQuery
 import com.graphql.GetDraftOrdersByCustomerQuery
 import com.graphql.GetOrdersByCustomerQuery
 import com.graphql.GetProductsQuery
@@ -30,7 +31,7 @@ interface Irepo {
 
     fun getHomeProducts(): Flow<ApolloResponse<HomeProductsQuery.Data>>
 
-    fun getProductDetails(productId: String): Flow<ApiState<ProductQuery.Data>>
+    suspend fun getProductDetails(productId: String): Flow<ApiState<ProductQuery.Data?>>
 
     fun getFilterdProducts(vendor: String?): Flow<ApolloResponse<FilteredProductsQuery.Data>>
 
@@ -63,10 +64,6 @@ interface Irepo {
 
     fun getDraftOrderTag(userId: String): String?
 
-    fun saveAddressState(haveAddress: Boolean)
-
-    fun getAddressState(): Boolean
-
     fun saveDraftOrderId(userId: String, ID: String)
 
     fun getDraftOrderId(userId: String): String?
@@ -77,5 +74,14 @@ interface Irepo {
     suspend fun addProductToFavorites(customerId: String, productId: String)
 
     suspend fun getCurrentFavorites(customerId: String): List<String>?
-
+    suspend fun registerUser(
+        email: String?,
+        password: String?,
+        firstName: String?,
+        lastName: String?,
+        phoneNumber: String?,
+        idToken: String? = null,
+    ): String?
+    suspend fun getCustomerByEmail(email: String): String?
+    suspend fun getCustomerById(customerId: String): GetCustomerByIdQuery.Customer?
 }

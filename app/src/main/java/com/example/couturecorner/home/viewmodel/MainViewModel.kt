@@ -6,15 +6,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.apollographql.apollo3.api.ApolloResponse
-import com.apollographql.apollo3.api.Optional
-import com.example.couturecorner.data.local.SharedPreference
+import com.example.couturecorner.data.local.SharedPreferenceImp
 import com.example.couturecorner.data.model.ApiState
 import com.example.couturecorner.data.repository.Irepo
 import com.example.couturecorner.data.repository.Repo
 import com.google.firebase.auth.FirebaseAuth
 import com.graphql.GetProductsQuery
-import com.graphql.type.CustomerInput
-import com.graphql.type.MailingAddressInput
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -25,7 +22,7 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     private val repo: Irepo,
     private val currencyRepo: Repo,
-    val sharedPreference: SharedPreference
+    val sharedPreference: SharedPreferenceImp
 ) : ViewModel() {
 
     private val _productsApollo = MutableStateFlow<ApiState<ApolloResponse<GetProductsQuery.Data>>>(

@@ -171,14 +171,13 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/productsRecycel"
-                android:paddingHorizontal="4dp"
-                app:spanCount="2"
-                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-
-
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:paddingHorizontal="4dp"
+                android:layout_marginBottom="125dp"
+                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                app:spanCount="2" />
 
 
         </LinearLayout>

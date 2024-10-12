@@ -1,29 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="85dp"
+    android:layout_height="85dp"
     android:id="@+id/IngrediantLayout"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="4dp"
+    android:layout_margin="8dp"
+    android:outlineSpotShadowColor="@color/colorPrimary"
+    android:outlineAmbientShadowColor="@color/colorPrimary"
+    android:backgroundTint="@color/white">
 
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/vans"
+        tools:ignore="MissingConstraints" />
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/circularImageView"
-        android:layout_width="110dp"
-        android:layout_height="110dp"
-        android:layout_centerInParent="true"
-        app:civ_border_width="4dp"
-        app:civ_border_color="@color/colorPrimary"
-        android:src="@drawable/vans_logo"
-        android:paddingHorizontal="7dp"
-        app:layout_constraintBaseline_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0"
-        tools:ignore="MissingClass,MissingConstraints"
-        />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

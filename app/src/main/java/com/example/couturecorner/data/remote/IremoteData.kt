@@ -1,6 +1,7 @@
 package com.example.couturecorner.data.remote
 
 import com.apollographql.apollo3.api.ApolloResponse
+import com.example.couturecorner.data.model.ApiState
 import com.graphql.CreateOrderFromDraftOrderMutation
 import com.graphql.DeleteDraftOrderMutation
 import com.graphql.DraftOrderCreateMutation
@@ -8,9 +9,11 @@ import com.graphql.FilteredProductsQuery
 import com.graphql.GetProductsQuery
 import kotlinx.coroutines.flow.Flow
 import com.graphql.GetCuponCodesQuery
+import com.graphql.GetCustomerByIdQuery
 import com.graphql.GetDraftOrdersByCustomerQuery
 import com.graphql.GetOrdersByCustomerQuery
 import com.graphql.HomeProductsQuery
+import com.graphql.ProductQuery
 import com.graphql.OrderByIdQuery
 import com.graphql.UpdateCustomerMetafieldsMutation
 import com.graphql.UpdateDraftOrderMetafieldsMutation
@@ -33,6 +36,20 @@ interface IremoteData   {
     fun getOrders(emai:String):Flow<ApolloResponse<GetOrdersByCustomerQuery.Data>>
     fun getOrderById(id:String):Flow<ApolloResponse<OrderByIdQuery.Data>>
 
+    suspend fun getProductDetails(productId: String): Flow<ApiState<ProductQuery.Data?>>
+    suspend fun addProductToFavorites(customerId: String, productId: String)
+    suspend fun getCurrentFavorites(customerId: String): List<String>?
+    suspend fun removeProductFromFavorites(customerId: String, productId: String)
+    suspend fun registerUser(
+        email: String?,
+        password: String?,
+        firstName: String?,
+        lastName: String?,
+        phoneNumber: String?,
+        idToken: String? = null,
+    ): String?
+    suspend fun getCustomerByEmail(email: String): String?
+    suspend fun getCustomerById(customerId: String): GetCustomerByIdQuery.Customer?
 }
 
 

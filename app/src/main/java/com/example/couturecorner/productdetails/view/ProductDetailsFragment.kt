@@ -2,8 +2,8 @@ package com.example.couturecorner.productdetails.view
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
-import android.content.Context
 import android.content.Intent
+import android.graphics.Paint
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -22,7 +22,7 @@ import com.bumptech.glide.Glide
 import com.example.couturecorner.R
 import com.example.couturecorner.setting.viewmodel.CurrencyViewModel
 import com.example.couturecorner.authentication.view.LoginActivity
-import com.example.couturecorner.data.local.SharedPreference
+import com.example.couturecorner.data.local.SharedPreferenceImp
 import com.example.couturecorner.data.local.LocalListsData
 import com.example.couturecorner.data.model.ApiState
 import com.example.couturecorner.data.model.CartItem
@@ -45,7 +45,7 @@ class ProductDetailsFragment : Fragment() {
     private val currencyViewModel: CurrencyViewModel by viewModels()
     private var _binding: FragmentProductDetailsBinding? = null
     @Inject
-    lateinit var sharedPreference: SharedPreference
+    lateinit var sharedPreference: SharedPreferenceImp
     private val binding get() = _binding!!
 
     private var title: String? = null
@@ -126,6 +126,7 @@ class ProductDetailsFragment : Fragment() {
                             binding.productRatingText.text=LocalListsData.productRatingsMap[productId]?.toString()
 
 
+                            binding.review.paintFlags = binding.review.paintFlags or Paint.UNDERLINE_TEXT_FLAG
                             binding.review.setOnClickListener {
                                 val reviewBottomSheet = ReviewBottomSheetFragment()
                                 reviewBottomSheet.show(childFragmentManager, "ReviewBottomSheet")
