@@ -7,7 +7,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="16dp"
-    tools:context=".cart.ui.CheckOutFragment"
+    tools:context=".setting.ui.CheckOutFragment"
     android:background="@drawable/bottom_sheet_background">
 
     <!-- Title Section -->
@@ -101,5 +101,21 @@
             android:drawablePadding="8dp"
             android:buttonTint="@color/colorPrimary" />
     </RadioGroup>
-
+    <Button
+        android:id="@+id/ensureOrderButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_gravity="center"
+        android:text="Ensure Order"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewTotalLabel" />
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:indeterminateTint="@color/colorPrimary"
+        android:visibility="gone" />
 </LinearLayout>

@@ -10,7 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.couturecorner.R
-import com.example.couturecorner.cart.viewmodel.UserViewModel
+import com.example.couturecorner.setting.viewmodel.UserViewModel
 import com.example.couturecorner.data.model.Address
 import com.example.couturecorner.databinding.FragmentAdressBinding
 import com.example.couturecorner.setting.viewmodel.AddAdressViewModel

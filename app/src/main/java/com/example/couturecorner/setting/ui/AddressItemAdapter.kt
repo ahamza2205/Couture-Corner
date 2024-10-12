@@ -1,4 +1,4 @@
-package com.example.couturecorner.cart.ui
+package com.example.couturecorner.setting.ui
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView

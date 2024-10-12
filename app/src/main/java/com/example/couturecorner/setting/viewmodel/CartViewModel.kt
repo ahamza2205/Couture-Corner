@@ -1,4 +1,4 @@
-package com.example.couturecorner.cart.viewmodel
+package com.example.couturecorner.setting.viewmodel
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -7,11 +7,13 @@ import androidx.lifecycle.viewModelScope
 import com.apollographql.apollo3.api.Optional
 import com.example.couturecorner.Utility.CartItemMapper
 import com.example.couturecorner.data.model.Address
+import com.example.couturecorner.data.model.ApiState
 import com.example.couturecorner.data.model.CartItem
 import com.example.couturecorner.data.repository.Repo
 import com.google.firebase.auth.FirebaseAuth
 import com.graphql.type.DraftOrderAppliedDiscountInput
 import com.graphql.type.DraftOrderAppliedDiscountType
+import com.graphql.type.DraftOrderDeleteInput
 import com.graphql.type.DraftOrderInput
 import com.graphql.type.DraftOrderLineItemInput
 import com.graphql.type.MailingAddressInput
@@ -23,27 +25,31 @@ import javax.inject.Inject
 class CartViewModel @Inject constructor(
     private val repo: Repo
 ) : ViewModel() {
+    private val _draftOrderStatus = MutableLiveData<ApiState<Any>>()
+    val draftOrderStatus: LiveData<ApiState<Any>> = _draftOrderStatus
+
     private val _address = MutableLiveData<Address>()
     val address: LiveData<Address> = _address
 
     fun setAddress(address: Address) {
         _address.value = address
-        Log.i("Final", "setAddress: "+address)
+        Log.i("Final", "setAddress: " + address)
     }
 
-    private val _cartItems = MutableLiveData<List<CartItem>>()
-    val cartItems: LiveData<List<CartItem>> get() = _cartItems
+    private val _cartItems = MutableLiveData<ApiState<List<CartItem>>>()
+    val cartItems: LiveData<ApiState<List<CartItem>>> get() = _cartItems
 
-    private val _updateCartStatus = MutableLiveData<Result<List<CartItem>>>()
-    val updateCartStatus: LiveData<Result<List<CartItem>>> get() = _updateCartStatus
+    private val _updateCartStatus = MutableLiveData<ApiState<List<CartItem>>>()
+    val updateCartStatus: LiveData<ApiState<List<CartItem>>> get() = _updateCartStatus
 
     private val cartItemMapper = CartItemMapper()
     private val user = FirebaseAuth.getInstance().currentUser
     private val cartItemList = mutableListOf<CartItem>()
-    private var userID:String? = null
-    private var tag:String? = null
+    private var userID: String? = null
+    private var tag: String? = null
+
     // Prices
-    private val deliveryFee = 5.0
+
     private val discount = 5.0
 
     private val _subtotal = MutableLiveData<Double>()
@@ -59,18 +65,11 @@ class CartViewModel @Inject constructor(
                 val customerId = repo.getShopifyUserId(userEmail)
                 if (customerId != null) {
                     userID = customerId
-                    Log.i("Final", "userID: "+userID)
                     tag = repo.getDraftOrderTag(userID!!)
-                    Log.i("CartTag", "getFromSharedPref: "+tag.toString())
+                    getCartItems()
 
                 }
-                else {
-                    Log.e("Cart", "Error: Customer ID is null")
-                }
             }
-        }
-        else{
-            Log.e("Cart", "Error: User is null")
         }
     }
 
@@ -78,45 +77,37 @@ class CartViewModel @Inject constructor(
     fun getCartItems() {
 
         if (userID != null) {
+            _cartItems.postValue(ApiState.Loading)
 
             viewModelScope.launch {
                 try {
                     repo.getDraftOrderByCustomerId(userID!!)
                         .collect { response ->
-                            Log.i("CartTag", "getFromSharedPref: "+tag)
 
-                            val fetchedCartItems = cartItemMapper.mapToCartItems(response,
+                            val fetchedCartItems = cartItemMapper.mapToCartItems(
+                                response,
                                 tag.toString()
                             )
-                            Log.i("Cart", "Fetched cart items: $fetchedCartItems")
 
                             val mergedCartItems = mergeLocalAndRemoteCartItems(fetchedCartItems)
+                            _cartItems.postValue(ApiState.Success(mergedCartItems))
+                            _updateCartStatus.postValue(ApiState.Success(mergedCartItems))
 
-                            // Log after merging
-                            Log.i("Cart", "Merged Cart Items: $mergedCartItems")
-
-                            _updateCartStatus.postValue(Result.success(mergedCartItems))
-                            _cartItems.postValue(mergedCartItems)
 
                             cartItemList.clear()
                             cartItemList.addAll(mergedCartItems)
-                            Log.i("Final", "cartItemList: "+cartItemList.size)
-
                             // Calculate and update the total price
                             calculateTotal()
                         }
                 } catch (e: Exception) {
                     Log.e("Cart", "Error fetching cart items: $e")
-                    _updateCartStatus.postValue(Result.failure(e))
+                    _updateCartStatus.postValue(ApiState.Error("Error fetching cart items: $e"))
                 }
             }
         }
     }
 
 
-
-
-    // Function to Merge Local and Remote Cart Items
 // Function to Merge Local and Remote Cart Items
     private fun mergeLocalAndRemoteCartItems(remoteCartItems: List<CartItem>): List<CartItem> {
         val updatedList = mutableListOf<CartItem>()
@@ -136,10 +127,11 @@ class CartViewModel @Inject constructor(
         updatedList.addAll(cartItemList)
         return updatedList
     }
+
     // Increase quantity of a cart item
     fun increaseQuantity(cartItem: CartItem) {
         val updatedItem = cartItem.copy(quantity = cartItem.quantity!! + 1)
-        Log.i("Cart", "Increasing quantity for item: ${cartItem.id}, new quantity: ${updatedItem.quantity}")
+
         updateLocalCartItem(updatedItem)
         updateShopifyDraftOrder(cartItemList)
     }
@@ -149,10 +141,9 @@ class CartViewModel @Inject constructor(
         val newQuantity = (cartItem.quantity!!) - 1
         if (newQuantity > 0) {
             val updatedItem = cartItem.copy(quantity = newQuantity)
-            Log.i("Cart", "Decreasing quantity for item: ${cartItem.id}, new quantity: $newQuantity")
+
             updateLocalCartItem(updatedItem)
         } else {
-            Log.i("Cart", "Removing item: ${cartItem.id} as quantity reached zero")
             cartItemList.remove(cartItem)
         }
         updateShopifyDraftOrder(cartItemList)
@@ -161,34 +152,25 @@ class CartViewModel @Inject constructor(
     fun onDeleteCartItem(cartItem: CartItem) {
         // Remove the item from the local cart list
         if (cartItemList.remove(cartItem)) {
-            Log.i("Cart", "Removed item from local cart: ${cartItem.id}")
-
-            // Update LiveData to notify observers
-            _cartItems.postValue(cartItemList.toList())
-
-            // Recalculate total after deletion
+            _cartItems.postValue(ApiState.Success(cartItemList.toList()))
             calculateTotal()
-
-            // Update the Shopify draft order
             updateShopifyDraftOrder(cartItemList)
         } else {
             Log.i("Cart", "Item not found in local cart: ${cartItem.id}")
         }
     }
 
+
     // Update the local cart and post new values to LiveData
     private fun updateLocalCartItem(item: CartItem) {
         val index = cartItemList.indexOfFirst { it.id == item.id }
         if (index != -1) {
             cartItemList[index] = item
-            Log.i("Cart", "Updated local cart item: ${item.id} with quantity: ${item.quantity}")
         } else {
             cartItemList.add(item)
-            Log.i("Cart", "Added new item to local cart: ${item.id} with quantity: ${item.quantity}")
         }
-
-        _cartItems.postValue(cartItemList.toList())
-        calculateTotal()
+        _cartItems.postValue(ApiState.Success(cartItemList.toList())) // Post updated list to LiveData
+        calculateTotal() // Recalculate total price
     }
 
     // Function to add an item by CartItem
@@ -196,37 +178,34 @@ class CartViewModel @Inject constructor(
         viewModelScope.launch {
             // Check if a draft order ID exists for the user
             var draftOrderId = repo.getDraftOrderId(userID.toString())
-            Log.i("CartTag", "getFromSharedPref: "+tag)
 
             // If the draft order ID is null, create a new draft order
             if (draftOrderId == null) {
-                Log.i("CartTag", "getFromSharedPref: "+tag)
-
                 repo.createDraftOrder(
-                    DraftOrderInput(customerId = Optional.present(userID)
-                        ,
+                    DraftOrderInput(
+                        customerId = Optional.present(userID),
                         tags = Optional.present(listOf(tag.toString())),
-                        lineItems = Optional.present(listOf(   DraftOrderLineItemInput(
-                            variantId = cartItem.id.toString(),
-                            quantity = cartItem.quantity ?: 1 // Use the locally updated quantity
-                        ))
+                        lineItems = Optional.present(
+                            listOf(
+                                DraftOrderLineItemInput(
+                                    variantId = cartItem.id.toString(),
+                                    quantity = cartItem.quantity
+                                        ?: 1 // Use the locally updated quantity
+                                )
+                            )
                         )
-                    ))
+                    )
+                )
                     .collect { response ->
                         draftOrderId = response.data?.draftOrderCreate?.draftOrder?.id
 
-                        Log.i("IDDRAFT", "addedToSharedPref:"+response.data)
-                        Log.i("IDDRAFT", "addedToSharedPref:"+draftOrderId)
-
                         if (draftOrderId != null) {
                             repo.saveDraftOrderId(userID.toString(), draftOrderId.toString())
-                            Log.i("Cart", "addedToSharedPref: "+draftOrderId)
 
                         }
-                         }
+                    }
             }
 
-            Log.i("Cart", "addedToCart: $draftOrderId")
 
 
             // First check if the item already exists in the local cart
@@ -237,15 +216,10 @@ class CartViewModel @Inject constructor(
                 val updatedItem = existingItem.copy(
                     quantity = existingItem.quantity!! + cartItem.quantity!!  // Add to existing quantity
                 )
-                Log.i(
-                    "Cart",
-                    "Updated existing item: ${updatedItem.id} with new quantity: ${updatedItem.quantity}"
-                )
                 updateLocalCartItem(updatedItem)
             } else {
                 // If it doesn't exist, add it as a new item
                 val newItem = cartItem.copy() // Make sure to copy cartItem to avoid mutations
-                Log.i("Cart", "Added new item: ${newItem.id} with quantity: ${newItem.quantity}")
                 updateLocalCartItem(newItem)
             }
 
@@ -256,19 +230,14 @@ class CartViewModel @Inject constructor(
     }
 
 
-
-
     // Calculate the subtotal and total price
     private fun calculateTotal() {
         val currentItems = cartItemList
         val subtotal = currentItems.sumOf {
             (it.quantity ?: 0) * (it.price?.toDoubleOrNull() ?: 0.0)
         }
-
-        Log.i("Cart", "Calculating subtotal: $subtotal")
         _subtotal.value = subtotal
-        _totalPrice.value = subtotal + deliveryFee - discount
-        Log.i("Cart", "Total price after applying delivery fee and discount: ${_totalPrice.value}")
+        _totalPrice.value = subtotal  - discount
     }
 
     // Update Shopify draft order with new cart items
@@ -282,7 +251,7 @@ class CartViewModel @Inject constructor(
 
         viewModelScope.launch {
             try {
-                var  draftOrderID=repo.getDraftOrderId(userID.toString())
+                var draftOrderID = repo.getDraftOrderId(userID.toString())
                 // Collecting the flow response properly
                 repo.updateDraftOrder(
                     DraftOrderInput(
@@ -291,60 +260,106 @@ class CartViewModel @Inject constructor(
                     draftOrderID.toString()
 
                 ).collect { response ->
-                    Log.i("Cart", "updateShopifyDraftOrder: Response - ${response.data}")
 
                     // After updating, fetch the updated cart items to ensure they reflect the changes
                     getCartItems()
                 }
             } catch (e: Exception) {
-                Log.e("Cart", "Error updating draft order: $e")
             }
+
         }
+
     }
 
+        //create order from draft order
+        fun createDraftOrder(cartItems: ApiState<List<CartItem>>) {
+            if (cartItems !is ApiState.Success) {
+                // Handle the case when cartItems are not successfully fetched
+                _draftOrderStatus.postValue(ApiState.Error("Cart items not available"))
+                return
+            }
 
-    //create draft order to final order
-     fun createDraftOrder(cartItems: List<CartItem>) {
-        Log.i("Final", "createDraftOrder List: "+cartItemList.size)
-        val draftOrderLineItems = cartItems.map {
-            DraftOrderLineItemInput(
-                variantId = it.id.toString(),
-                quantity = it.quantity ?: 1 // Use the locally updated quantity
-            )
-        }// Make sure CartItem has quantity
-        Log.i("Final", "draftOrderLineItems: "+draftOrderLineItems.size)
-        viewModelScope.launch {
-            Log.i("Final", "userId: " + userID)
+            val draftOrderLineItems = cartItems.data?.map {
+                DraftOrderLineItemInput(
+                    variantId = it.id.toString(),
+                    quantity = it.quantity ?: 1 // Use the locally updated quantity
+                )
+            }
 
-                repo.createDraftOrder(
-                    DraftOrderInput(
-                        customerId = Optional.present(userID),
-                        lineItems = Optional.present(draftOrderLineItems),
-                        billingAddress = Optional.present(
-                            MailingAddressInput(
-                                address1 = address.value!!.name,
-                                address2 = address.value!!.addressDetails,
-                                city = address.value!!.city,
-                                phone = address.value!!.phone
-                            )
-                        ),
-                        appliedDiscount = Optional.present(
-                            DraftOrderAppliedDiscountInput(
-                                valueType = Optional.present(DraftOrderAppliedDiscountType.PERCENTAGE),
-                                value = Optional.present(10.09)
+            // Set loading state before making the API call
+            _draftOrderStatus.postValue(ApiState.Loading)
+
+            viewModelScope.launch {
+                try {
+                    val response = repo.createDraftOrder(
+                        DraftOrderInput(
+                            customerId = Optional.present(userID),
+                            lineItems = Optional.present(draftOrderLineItems),
+                            billingAddress = Optional.present(
+                                MailingAddressInput(
+                                    address1 = address.value!!.name,
+                                    address2 = address.value!!.addressDetails,
+                                    city = address.value!!.city,
+                                    phone = address.value!!.phone
+                                )
+                            ),
+                            appliedDiscount = Optional.present(
+                                DraftOrderAppliedDiscountInput(
+                                    valueType = Optional.present(DraftOrderAppliedDiscountType.PERCENTAGE),
+                                    value = Optional.present(discount)
+                                )
                             )
                         )
                     )
-                ).collect { response ->
-                    val finalDraftOrderId = response.data?.draftOrderCreate?.draftOrder?.id
-                    Log.i("Final Draft", "Response Data: finalDraftOrderId: $finalDraftOrderId")
-                    if (finalDraftOrderId != null) {
-                        repo.createOrderFromDraft(finalDraftOrderId).collect({ response ->
-                            Log.i("Final Draft", "Response Data: ${response.data}")
-                        })
 
+                    response.collect { draftOrderResponse ->
+                        val finalDraftOrderId = draftOrderResponse.data?.draftOrderCreate?.draftOrder?.id
+
+                        if (finalDraftOrderId != null) {
+                            // Proceed to create the final order from the draft
+                            repo.createOrderFromDraft(finalDraftOrderId).collect { orderResponse ->
+                                Log.i("Final Draft", "Order Response Data: ${orderResponse.data}")
+
+                                if (orderResponse.data?.draftOrderComplete?.draftOrder?.id != null) {
+                                    // Successful order creation
+
+                                    // Delete draft order after successful creation
+                                    val deleteInput = DraftOrderDeleteInput(finalDraftOrderId)
+                                    repo.deleteDraftOrder(deleteInput).collect { deleteResponse ->
+                                        Log.i("Final Draft", "Deleted Draft Order: ${deleteResponse.data}")
+
+                                    }
+
+
+                                    // Clear SharedPreferences for the draft order ID
+                                    val sharedPrefDraftOrderId = repo.getDraftOrderId(userID.toString())
+                                    if (sharedPrefDraftOrderId != null) {
+                                        val sharedPrefDeleteInput = DraftOrderDeleteInput(sharedPrefDraftOrderId)
+                                        repo.deleteDraftOrder(sharedPrefDeleteInput).collect { sharedPrefResponse ->
+                                            Log.i("Final Draft", "Deleted Shared Pref Draft Order: ${sharedPrefResponse.data}")
+                                        }
+                                    }
+
+                                    repo.deleteDraftOrderId(userID.toString())
+                                    _draftOrderStatus.postValue(ApiState.Success("Draft Order created successfully."))
+
+                                } else {
+                                    // Order creation failed
+                                    _draftOrderStatus.postValue(ApiState.Error("Order creation failed"))
+                                }
+                            }
+                        } else {
+                            // Draft Order creation failed
+                            _draftOrderStatus.postValue(ApiState.Error("Draft Order creation failed"))
+                        }
                     }
+                } catch (e: Exception) {
+                    // Handle errors and update the state with an error message
+                    Log.e("Final", "Error creating draft order: $e")
+                    _draftOrderStatus.postValue(ApiState.Error("Error creating draft order: $e"))
                 }
             }
         }
-    }
+
+
+}

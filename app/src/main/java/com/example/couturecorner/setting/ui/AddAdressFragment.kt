@@ -10,9 +10,8 @@ import androidx.lifecycle.Observer
 import com.example.couturecorner.databinding.FragmentAddAdressBinding
 import dagger.hilt.android.AndroidEntryPoint
 import android.widget.Toast
-import androidx.fragment.app.setFragmentResult
 import androidx.navigation.fragment.findNavController
-import com.example.couturecorner.cart.viewmodel.UserViewModel
+import com.example.couturecorner.setting.viewmodel.UserViewModel
 import com.example.couturecorner.home.ui.MainActivity
 import com.example.couturecorner.setting.viewmodel.AddAdressViewModel
 import com.graphql.type.MailingAddressInput
