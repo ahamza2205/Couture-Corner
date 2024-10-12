@@ -65,13 +65,13 @@ class RemoteData @Inject constructor(
     }
 
     override fun getOrders(emai:String):Flow<ApolloResponse<GetOrdersByCustomerQuery.Data>> = flow {
-        val response = ApolloClient.apolloClient.query(GetOrdersByCustomerQuery(emai)).execute()
+        val response = MyApolloClient.apolloClient.query(GetOrdersByCustomerQuery(emai)).execute()
         emit(response)
     }
 
     override fun getOrderById(id: String): Flow<ApolloResponse<OrderByIdQuery.Data>> = flow {
 
-        val response = ApolloClient.apolloClient.query(OrderByIdQuery(id)).execute()
+        val response = MyApolloClient.apolloClient.query(OrderByIdQuery(id)).execute()
         emit(response)
     }
 
