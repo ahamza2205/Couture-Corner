@@ -103,7 +103,9 @@ class RepoTest {
                 address2 = "Apt 4B",
                 city = "New York",
                 phone = "1234567890"
-            )
+            ),
+            // Add an empty list or a mock list of addresses
+            addresses = emptyList() // or you can provide a list of Address objects
         )
 
         coEvery { remoteData.getCustomerById("customer123") } returns mockCustomer
@@ -119,6 +121,7 @@ class RepoTest {
 
         coVerify { remoteData.getCustomerById("customer123") }
     }
+
 
     // ------------------------------------------ test getCustomerById with error ------------------------------------------
     @Test
