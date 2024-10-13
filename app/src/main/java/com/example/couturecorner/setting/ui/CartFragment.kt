@@ -36,10 +36,9 @@ class CartFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as? MainActivity)?.hideBottomNav()
+        observeViewModel()
         setupRecyclerView()
         setupUI()
-
-        observeViewModel()
         cuponsVeiwModel.getCupons()
         observeCouponFetching()
 
@@ -64,6 +63,7 @@ class CartFragment : Fragment() {
                 when (state) {
                     is ApiState.Loading -> {
                     }
+
                     is ApiState.Success -> {
                         observeCupons()
                     }
@@ -89,7 +89,7 @@ class CartFragment : Fragment() {
                         binding.textInputLayout.error = "Please enter a valid coupon code"
                         Toast.makeText(context, validationResult, Toast.LENGTH_SHORT).show()
                     } else {
-                        Log.i("coupon", "observeCupons: "+ validationResult)
+                        Log.i("coupon", "observeCupons: " + validationResult)
 
                         cartViewModel.setDiscount(validationResult.toDouble())
                         binding.textViewDiscountValue.text = "$validationResult % "
@@ -135,12 +135,15 @@ class CartFragment : Fragment() {
     }
 
     // Observe LiveData changes from ViewModel
+
     private fun observeViewModel() {
         // Observe cart items
         cartViewModel.cartItems.observe(viewLifecycleOwner) { apiState ->
             when (apiState) {
                 is ApiState.Loading -> {
                     binding.progressBar.visibility = View.VISIBLE
+                    binding.emptyCartImageView.visibility =
+                        View.GONE // Hide the empty cart image while loading
                 }
 
                 is ApiState.Success -> {
@@ -148,6 +151,14 @@ class CartFragment : Fragment() {
                     val cartItems = apiState.data // This is the List<CartItem>
                     cartItemAdapter.updateCartItems(cartItems!!)
                     cartItemAdapter.notifyDataSetChanged()  // Notify adapter to refresh data
+
+                    // Show or hide the empty cart image based on the cart items
+                    if (cartItems.isEmpty()) {
+                        binding.emptyCartImageView.visibility =
+                            View.VISIBLE // Show empty cart image
+                    } else {
+                        binding.emptyCartImageView.visibility = View.GONE // Hide empty cart image
+                    }
                 }
 
                 is ApiState.Error -> {
@@ -158,6 +169,8 @@ class CartFragment : Fragment() {
                         "Error fetching cart items",
                         Toast.LENGTH_SHORT
                     ).show()
+                    binding.emptyCartImageView.visibility =
+                        View.VISIBLE // Show empty cart image if there's an error
                 }
             }
         }
@@ -171,7 +184,7 @@ class CartFragment : Fragment() {
             binding.textViewTotalValue.text = "$${String.format("%.2f", subtotal)}"
         }
 
-// Observe cart update status
+        // Observe cart update status
         cartViewModel.updateCartStatus.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is ApiState.Loading -> {
@@ -183,6 +196,14 @@ class CartFragment : Fragment() {
                     val cartItems = result.data // This is the List<CartItem>
                     cartItemAdapter.updateCartItems(cartItems!!)
                     cartItemAdapter.notifyDataSetChanged()  // Notify adapter to refresh data
+
+                    // Show or hide the empty cart image based on the cart items
+                    if (cartItems.isEmpty()) {
+                        binding.emptyCartImageView.visibility =
+                            View.VISIBLE // Show empty cart image
+                    } else {
+                        binding.emptyCartImageView.visibility = View.GONE // Hide empty cart image
+                    }
                 }
 
                 is ApiState.Error -> {
@@ -193,10 +214,11 @@ class CartFragment : Fragment() {
                         "Error fetching cart items",
                         Toast.LENGTH_SHORT
                     ).show()
+                    binding.emptyCartImageView.visibility =
+                        View.VISIBLE // Show empty cart image if there's an error
                 }
             }
         }
 
     }
-
 }
