@@ -26,13 +26,6 @@ class HomeViewModel@Inject constructor(
     val products : StateFlow<ApiState<ApolloResponse<FilteredProductsQuery.Data>>> =_products
 
 
-
-    private val _cupons= MutableStateFlow<ApiState<ApolloResponse<GetCuponCodesQuery.Data>>>(
-        ApiState.Loading)
-    val cupons : StateFlow<ApiState<ApolloResponse<GetCuponCodesQuery.Data>>> =_cupons
-
-
-
     fun getFilterdProducts(productTpye: String?) {
         viewModelScope.launch {
             repo.getFilterdProducts(productTpye).collect {
@@ -80,21 +73,6 @@ class HomeViewModel@Inject constructor(
 //        }
 //    }
 
-    fun getCupons()
-    {
-        viewModelScope.launch {
-            repo.getCupones().collect {
-                if (it.hasErrors())
-                {
-                    _cupons.value= ApiState.Error(it.errors?.get(0)?.message.toString())
-                }
-                else
-                {
-                    _cupons.value= ApiState.Success(it)
-                }
-            }
-        }
-    }
 
 //    fun getFavList() {
 //        val user = FirebaseAuth.getInstance().currentUser
