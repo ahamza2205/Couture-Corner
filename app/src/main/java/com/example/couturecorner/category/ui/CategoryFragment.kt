@@ -37,7 +37,7 @@ class CategoryFragment : Fragment(), OnItemClickListener {
     lateinit var categoryAdapter:ProductsAdapter
 
     val categoryLogos: Map<String, Int> = mapOf("women" to R.drawable.woman, "men" to R.drawable.men,
-        "kid" to R.drawable.shopping, "sale" to R.drawable.sale)
+        "kid" to R.drawable.boy, "sale" to R.drawable.sale)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

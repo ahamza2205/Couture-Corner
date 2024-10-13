@@ -14,9 +14,9 @@ class BrandsAdapter(
     var brands: ArrayList<String> = arrayListOf("vans", "palladium", "asics tiger", "puma",
         "supra", "adidas", "timberland", "nike", "dr martens", "converse", "herschel", "flex fit")
 
-    val brandLogos: Map<String, Int> = mapOf("vans" to R.drawable.vans_logo, "palladium" to R.drawable.palladium_logo,
-        "asics tiger" to R.drawable.asics_tiger_logo, "puma" to R.drawable.puma_logo, "supra" to R.drawable.supra_logo,
-        "adidas" to R.drawable.adidas_logo, "timberland" to R.drawable.timberland_logo, "nike" to R.drawable.nike,
+    val brandLogos: Map<String, Int> = mapOf("vans" to R.drawable.vans, "palladium" to R.drawable.palladium_logo,
+        "asics tiger" to R.drawable.asics_tiger_logo, "puma" to R.drawable.puma, "supra" to R.drawable.supra_logo,
+        "adidas" to R.drawable.adidas, "timberland" to R.drawable.timberland_logo, "nike" to R.drawable.nike,
         "dr martens" to R.drawable.dr_martins_logo, "converse" to R.drawable.converse_logo,
         "herschel" to R.drawable.herschel_logo ,"flex fit" to R.drawable.flexfit_logo)
 
@@ -36,8 +36,8 @@ class BrandsAdapter(
     override fun onBindViewHolder(holder: BrandsViewHolder, position: Int) {
         val brand = brands[position]
         val logoResId = brandLogos[brand] ?: R.drawable.shoz10
-        holder.binding.circularImageView.setImageResource(logoResId)
-        holder.binding.circularImageView.setOnClickListener {
+        holder.binding.imageView.setImageResource(logoResId)
+        holder.binding.imageView.setOnClickListener {
             myListener.invoke(brand)
         }
     }

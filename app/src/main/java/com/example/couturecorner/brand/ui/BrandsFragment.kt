@@ -39,9 +39,9 @@ class BrandsFragment : Fragment(), OnItemClickListener {
     lateinit var productsBrandAdapter: ProductsAdapter
 
 
-    val brandLogos: Map<String, Int> = mapOf("vans" to R.drawable.vans_logo, "palladium" to R.drawable.palladium_logo,
-        "asics tiger" to R.drawable.asics_tiger_logo, "puma" to R.drawable.puma_logo, "supra" to R.drawable.supra_logo,
-        "adidas" to R.drawable.adidas_logo, "timberland" to R.drawable.timberland_logo, "nike" to R.drawable.nike,
+    val brandLogos: Map<String, Int> = mapOf("vans" to R.drawable.vans, "palladium" to R.drawable.palladium_logo,
+        "asics tiger" to R.drawable.asics_tiger_logo, "puma" to R.drawable.puma, "supra" to R.drawable.supra_logo,
+        "adidas" to R.drawable.adidas, "timberland" to R.drawable.timberland_logo, "nike" to R.drawable.nike,
         "dr martens" to R.drawable.dr_martins_logo, "converse" to R.drawable.converse_logo,
         "herschel" to R.drawable.herschel_logo ,"flex fit" to R.drawable.flexfit_logo)
 
