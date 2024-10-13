@@ -59,7 +59,6 @@
         app:boxCornerRadiusBottomStart="10dp"
         app:boxCornerRadiusTopEnd="10dp"
         app:boxCornerRadiusTopStart="10dp"
-        app:endIconDrawable="@drawable/add_location"
         app:endIconMode="custom"
         app:endIconTint="@color/colorPrimary"
         app:boxStrokeColor="@color/light_gray"

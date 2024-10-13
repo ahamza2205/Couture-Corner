@@ -27,6 +27,7 @@ import com.example.couturecorner.category.ui.CategoryAdapter
 import com.example.couturecorner.data.local.SharedPreferenceImp
 import com.example.couturecorner.data.model.ApiState
 import com.example.couturecorner.databinding.FragmentHomeBinding
+import com.example.couturecorner.home.viewmodel.CuponsVeiwModel
 import com.example.couturecorner.home.viewmodel.HomeViewModel
 import com.example.couturecorner.home.viewmodel.MainViewModel
 import com.example.couturecorner.setting.viewmodel.SettingsViewModel
@@ -48,7 +49,7 @@ class HomeFragment : Fragment(), OnItemClickListener {
     lateinit var sharedPreference: SharedPreferenceImp
     val viewModel: HomeViewModel by viewModels()
     private val currencyViewModel: CurrencyViewModel by viewModels()
-    private val settingsViewModel: SettingsViewModel by viewModels()
+    private  val cuponsVeiwModel: CuponsVeiwModel by viewModels()
     val sharedViewModel: MainViewModel by activityViewModels()
 
     private lateinit var pageChangeCallback: ViewPager2.OnPageChangeCallback
@@ -96,10 +97,10 @@ class HomeFragment : Fragment(), OnItemClickListener {
 
         updateCuponsDots()
 
-        viewModel.getCupons()
+        cuponsVeiwModel.getCupons()
 
         lifecycleScope.launch {
-            viewModel.cupons.collect { state ->
+            cuponsVeiwModel.cupons.collect { state ->
                 when (state) {
                     is ApiState.Loading -> showLoading(true)
                     is ApiState.Success -> {
@@ -137,11 +138,11 @@ class HomeFragment : Fragment(), OnItemClickListener {
 
         // Fetch the filtered products and cupons again when the fragment resumes
         viewModel.getFilterdProducts(null)
-        viewModel.getCupons()
+        cuponsVeiwModel.getCupons()
 
 
         lifecycleScope.launch {
-            viewModel.cupons.collect { state ->
+            cuponsVeiwModel.cupons.collect { state ->
                 when (state) {
                     is ApiState.Loading -> showLoading(true)
                     is ApiState.Success -> {

@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.couturecorner.R
@@ -71,7 +72,8 @@ addressItemAdapter = AddressItemAdapter(this)
 
 
         binding.btnAddNewAddress.setOnClickListener {
-           findNavController().navigate(R.id.action_checkOutFragment_to_addAdressFragment)
+            this.dismiss()
+            findNavController().navigate(R.id.action_cartFragment_to_addAdressFragment)
         }
 
         binding.radioGroupPayment.setOnCheckedChangeListener { _, checkedId ->
@@ -105,9 +107,12 @@ addressItemAdapter = AddressItemAdapter(this)
                     //made confirm dalog here
                     //navigate to order screen
                     this.dismiss()
-                    findNavController().navigate(R.id.action_checkOutFragment_to_homeFragment)
-
-
+                    findNavController().navigate(
+                        R.id.action_cartFragment_to_ordersFragment,                        null,
+                        NavOptions.Builder()
+                            .setPopUpTo(R.id.cartFragment, true)  // This ensures the cartFragment is removed from the backstack
+                            .build()
+                    )
                 }
                 is ApiState.Error -> {
                     // Show error message in UI

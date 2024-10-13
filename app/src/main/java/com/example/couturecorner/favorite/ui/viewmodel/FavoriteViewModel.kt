@@ -55,11 +55,14 @@ class FavoriteViewModel @Inject constructor(
     fun getProductDetails(productId: String): Flow<ApiState<ProductQuery.Product>> = flow {
         try {
             val response = apolloClient.query(ProductQuery(productId)).execute()
-            emit(ApiState.Success(response.data!!.product))
+            response.data?.product?.let {
+                emit(ApiState.Success(it))
+            } ?: emit(ApiState.Error("Product not found"))
         } catch (e: Exception) {
             emit(ApiState.Error(e.message ?: "Unknown Error"))
         }
     }
+
 }
 
 
