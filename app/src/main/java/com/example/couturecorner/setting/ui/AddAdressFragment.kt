@@ -42,7 +42,7 @@ class AddAdressFragment : Fragment() {
                 Toast.makeText(requireContext(), "Address added successfully", Toast.LENGTH_LONG)
                     .show()
                 userViewModel.getCustomerData()
-                findNavController().popBackStack()
+
             }.onFailure { exception ->
                 Toast.makeText(requireContext(), "Error: ${exception.message}", Toast.LENGTH_LONG)
                     .show()
@@ -130,7 +130,6 @@ class AddAdressFragment : Fragment() {
             }
 
             binding.detailsOfShippingAddressform.setOnClickListener {
-                findNavController().popBackStack()
             }
         }
     }
