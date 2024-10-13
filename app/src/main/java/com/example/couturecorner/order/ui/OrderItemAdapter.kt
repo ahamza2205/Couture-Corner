@@ -32,7 +32,9 @@ class OrderItemDiffUtill : DiffUtil.ItemCallback<OrderByIdQuery.Edge>() {
 
 }
 
-class OrderItemAdapter:ListAdapter<OrderByIdQuery.Edge,OrderItemAdapter.OrderItemViewHolder>(OrderItemDiffUtill()) {
+class OrderItemAdapter(
+    val myListener:()->String
+):ListAdapter<OrderByIdQuery.Edge,OrderItemAdapter.OrderItemViewHolder>(OrderItemDiffUtill()) {
     lateinit var binding: OrderDetailsItemBinding
     class OrderItemViewHolder(var binding: OrderDetailsItemBinding) : ViewHolder(binding.root)
 
@@ -49,7 +51,7 @@ class OrderItemAdapter:ListAdapter<OrderByIdQuery.Edge,OrderItemAdapter.OrderIte
         binding.productPriceTextView.text=holder.itemView.context.getString(
             R.string.priceOrder,
             order?.originalUnitPriceSet?.shopMoney?.amount,
-            order?.originalUnitPriceSet?.shopMoney?.currencyCode)
+            myListener.invoke())
 
         Glide.with(holder.itemView.context)
             .load(order?.image?.src)

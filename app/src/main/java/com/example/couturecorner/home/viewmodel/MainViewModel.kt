@@ -36,6 +36,9 @@ class MainViewModel @Inject constructor(
     private val _convertedCurrency = MutableStateFlow<Map<String, Double?>>(emptyMap())
     val convertedCurrency: StateFlow<Map<String, Double?>> = _convertedCurrency
 
+    private val _convertedCurrencyTotal = MutableStateFlow<Double>(0.0)
+    val convertedCurrencyTotal: StateFlow<Double> = _convertedCurrencyTotal
+
     var selectedProductId: String? = null
 
     fun getProducts() {
@@ -149,6 +152,15 @@ class MainViewModel @Inject constructor(
                 _convertedCurrency.value = emptyMap()
 
             }
+        }
+    }
+
+    fun covertCurrencyWithoutId(from: String, to: String, amount: Double)
+    {
+        viewModelScope.launch {
+            val conversionResult = currencyRepo.convertCurrency(from, to, amount, "9eabc320c6-66b069c4e1-sl3z9w")
+            val result = conversionResult?.result?.get(to)
+            _convertedCurrencyTotal.value= result?:0.0
         }
     }
 

@@ -25,7 +25,6 @@ android {
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     buildFeatures {
@@ -64,7 +63,7 @@ android {
 
 
 dependencies {
-
+    implementation ("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -74,6 +73,7 @@ dependencies {
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.androidx.cardview)
     implementation(libs.firebase.firestore.ktx)
+    implementation(libs.androidx.junit.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -132,6 +132,61 @@ dependencies {
 
 
     implementation ("com.google.android.material:material:1.8.0")
+
+// test
+
+// JUnit testing framework
+    testImplementation("junit:junit:4.13.2")
+
+// Coroutines test for handling suspend functions
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4")
+
+
+// Mockito for mocking objects
+    testImplementation("org.mockito:mockito-core:3.12.4")
+
+// MockK for mocking Kotlin classes
+    testImplementation("io.mockk:mockk:1.12.0")
+
+// Truth for better assertions
+    testImplementation("com.google.truth:truth:1.1.3")
+
+// Robolectric for testing
+    testImplementation("org.robolectric:robolectric:4.9.2")
+
+    // Timber for logging
+    implementation("com.jakewharton.timber:timber:5.0.1")
+
+    // Mockito-inline for mockito extensions
+    testImplementation("org.mockito:mockito-inline:4.6.1")
+
+    // Core testing library for LiveData and ViewModel tests
+    testImplementation("androidx.arch.core:core-testing:2.1.0")
+
+    // Mockito-Kotlin for better Kotlin integration with Mockito
+    testImplementation("org.mockito.kotlin:mockito-kotlin:4.0.0")
+
+    // Turbine for testing
+    testImplementation ("app.cash.turbine:turbine:0.6.1")
+    // For mocking dependencies
+    testImplementation ("org.mockito:mockito-core:4.5.1")
+    testImplementation ("org.mockito.kotlin:mockito-kotlin:4.0.0")
+
+    // Hilt testing dependencies
+    androidTestImplementation ("com.google.dagger:hilt-android-testing:2.48")
+    kaptAndroidTest ("com.google.dagger:hilt-android-compiler:2.48")
+
+    // Hilt testing for unit tests
+    testImplementation ("com.google.dagger:hilt-android-testing:2.48")
+    kaptTest ("com.google.dagger:hilt-android-compiler:2.48")
+
+    implementation ("com.google.firebase:firebase-bom:32.0.0")
+    implementation ("com.google.firebase:firebase-auth")
+    testImplementation ("org.robolectric:robolectric:4.9")
+    // Apollo GraphQL Testing Helpers
+    testImplementation("com.apollographql.apollo3:apollo-mockserver:3.7.3")
+    testImplementation ("org.mockito:mockito-core:4.2.0")
+    testImplementation ("org.mockito:mockito-inline:4.2.0")
 
 
 }
