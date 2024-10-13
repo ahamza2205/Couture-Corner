@@ -57,6 +57,7 @@
             app:boxStrokeWidth="1dp"
             app:endIconDrawable="@drawable/check"
             app:endIconMode="custom"
+            android:clickable="true"
             app:endIconTint="@color/colorPrimary"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -67,6 +68,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="16sp"
+                android:inputType="text"
+                android:imeOptions="actionDone"
                 android:hint="Enter Coupon Code"
                 android:textColorHint="@color/colorPrimary" />
         </com.google.android.material.textfield.TextInputLayout>

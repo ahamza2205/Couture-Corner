@@ -22,6 +22,8 @@ class CuponsVeiwModel @Inject constructor(
     private val _cupons= MutableStateFlow<ApiState<ApolloResponse<GetCuponCodesQuery.Data>>>(
         ApiState.Loading)
     val cupons : StateFlow<ApiState<ApolloResponse<GetCuponCodesQuery.Data>>> =_cupons
+    private val _validationResult = MutableStateFlow<String?>(null)
+    val validationResult: StateFlow<String?> = _validationResult
 
 
     fun getCupons()
@@ -40,6 +42,29 @@ class CuponsVeiwModel @Inject constructor(
         }
     }
 
+    fun validateCouponCode(userInput: String) {
 
+        viewModelScope.launch {
+            val coupons = (_cupons.value as? ApiState.Success)?.data?.data?.codeDiscountNodes?.nodes
 
+            if (coupons != null) {
+                val matchingCoupon = coupons.find {
+                    it?.codeDiscount?.onDiscountCodeBasic?.title == userInput
+                }
+
+                if (matchingCoupon != null) {
+                    // Coupon found, return the discount summary
+                    val discountSummary = matchingCoupon?.codeDiscount?.onDiscountCodeBasic?.summary
+                    _validationResult.value = discountSummary ?: "Discount found, but no summary available"
+                } else {
+                    // No matching coupon found, return an error message
+                    _validationResult.value = "Invalid coupon code"
+                }
+            } else {
+                _validationResult.value = "Error fetching coupons"
+            }
+        }
+    }
 }
+
+

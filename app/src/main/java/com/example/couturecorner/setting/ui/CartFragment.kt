@@ -8,10 +8,12 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.couturecorner.data.model.ApiState
 import com.example.couturecorner.databinding.FragmentCartBinding
 import com.example.couturecorner.home.ui.MainActivity
+import com.example.couturecorner.home.viewmodel.CuponsVeiwModel
 import com.example.couturecorner.setting.viewmodel.CartViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -21,6 +23,7 @@ class CartFragment : Fragment() {
     private lateinit var binding: FragmentCartBinding
     private val cartViewModel: CartViewModel by viewModels()
     private lateinit var cartItemAdapter: CartItemAdapter
+    private val cuponsVeiwModel: CuponsVeiwModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,10 +38,81 @@ class CartFragment : Fragment() {
         (activity as? MainActivity)?.hideBottomNav()
         setupRecyclerView()
         setupUI()
-        observeViewModel()
 
-binding.applyButton.visibility=View.VISIBLE
+        observeViewModel()
+        cuponsVeiwModel.getCupons()
+        observeCouponFetching()
+        observeCupons()
+
+
+
+
+
+
+
+
+        binding.textCuponcode.setOnEditorActionListener { textView, actionId, event ->
+            if (actionId == android.view.inputmethod.EditorInfo.IME_ACTION_DONE) {
+                // Get the user input from the text field
+                val userInput = textView.text.toString()
+                // Log the input to see it's working
+                Log.i("cupon", "User input: $userInput")
+                // Call the ViewModel to validate the coupon code
+                cuponsVeiwModel.validateCouponCode(userInput)
+                // Return true to indicate the action was handled
+                true
+            } else {
+                // Return false if the action was not handled
+                false
+            }
+        }
+
+
     }
+
+    private fun observeCouponFetching() {
+        lifecycleScope.launchWhenStarted {
+            cuponsVeiwModel.cupons.collect { state ->
+                when (state) {
+                    is ApiState.Loading -> {
+                        // Show loading state (e.g., ProgressBar)
+                    }
+
+                    is ApiState.Success -> {
+                        // Enable Apply button after coupons are fetched
+                        binding.applyButton.isEnabled = true
+                    }
+
+                    is ApiState.Error -> {
+                        Toast.makeText(
+                            requireContext(),
+                            "Error fetching coupons: ${state.message}",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            }
+        }
+    }
+
+
+    private fun observeCupons() {
+        lifecycleScope.launchWhenStarted {
+            cuponsVeiwModel.validationResult.collect { validationResult ->
+                if (validationResult != null) {
+                    if (validationResult.contains("Invalid")) {
+                        binding.textInputLayout.error = "Please enter a valid coupon code"
+                        Toast.makeText(context, validationResult, Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(context, "Success: $validationResult", Toast.LENGTH_SHORT)
+                            .show()
+                        binding.textInputLayout.error = null  // Clear error on success
+                    }
+                }
+            }
+        }
+    }
+
 
     // Set up RecyclerView for cart items
     private fun setupRecyclerView() {
@@ -49,7 +123,7 @@ binding.applyButton.visibility=View.VISIBLE
             onDecreaseQuantity = { cartItem ->
                 cartViewModel.decreaseQuantity(cartItem)
             },
-            ondeleteItem={ cartItem ->
+            ondeleteItem = { cartItem ->
                 cartViewModel.onDeleteCartItem(cartItem)
             }
         )
@@ -75,52 +149,61 @@ binding.applyButton.visibility=View.VISIBLE
                 is ApiState.Loading -> {
                     binding.progressBar.visibility = View.VISIBLE
                 }
+
                 is ApiState.Success -> {
                     binding.progressBar.visibility = View.GONE
                     val cartItems = apiState.data // This is the List<CartItem>
                     cartItemAdapter.updateCartItems(cartItems!!)
                     cartItemAdapter.notifyDataSetChanged()  // Notify adapter to refresh data
                 }
+
                 is ApiState.Error -> {
                     // Handle error state
                     Log.e("CartFragment", "Error fetching cart items: ")
-                    Toast.makeText(requireContext(), "Error fetching cart items", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        requireContext(),
+                        "Error fetching cart items",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
-      // Notify adapter to refresh data
         }
 
         // Observe subtotal
         cartViewModel.subtotal.observe(viewLifecycleOwner) { subtotal ->
             binding.textViewSubtotalValue.text = "$${String.format("%.2f", subtotal)}"
         }
-
-        // Observe total price
-        cartViewModel.totalPrice.observe(viewLifecycleOwner) { total ->
-            binding.textViewTotalValue.text = "$${String.format("%.2f", total)}"
+        cartViewModel.subtotal.observe(viewLifecycleOwner) { subtotal ->
+            binding.textViewSubtotalValue.text = "$${String.format("%.2f", subtotal)}"
         }
 
 // Observe cart update status
         cartViewModel.updateCartStatus.observe(viewLifecycleOwner) { result ->
-            when(result) {
+            when (result) {
                 is ApiState.Loading -> {
-                binding.progressBar.visibility = View.VISIBLE
+                    binding.progressBar.visibility = View.VISIBLE
                 }
+
                 is ApiState.Success -> {
                     binding.progressBar.visibility = View.GONE
                     val cartItems = result.data // This is the List<CartItem>
                     cartItemAdapter.updateCartItems(cartItems!!)
                     cartItemAdapter.notifyDataSetChanged()  // Notify adapter to refresh data
                 }
+
                 is ApiState.Error -> {
                     // Handle error state
                     Log.e("CartFragment", "Error fetching cart items: ")
-                    Toast.makeText(requireContext(), "Error fetching cart items", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        requireContext(),
+                        "Error fetching cart items",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
         }
 
-            }
+    }
 
-        }
 
+}
