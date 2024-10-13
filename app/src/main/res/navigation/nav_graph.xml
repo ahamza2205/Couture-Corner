@@ -50,7 +50,7 @@
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.example.couturecorner.setting.ui.SettingsFragment"
-        android:label="Settings"
+        android:label="Profile"
         tools:layout="@layout/fragment_settings" >
         <action
             android:id="@+id/action_settingsFragment_to_cartFragment"
@@ -178,7 +178,7 @@
     <fragment
         android:id="@+id/ordersFragment"
         android:name="com.example.couturecorner.order.ui.OrdersFragment"
-        android:label="fragment_orders"
+        android:label="Orders"
         tools:layout="@layout/fragment_orders" >
         <action
             android:id="@+id/action_ordersFragment_to_settingsFragment"
