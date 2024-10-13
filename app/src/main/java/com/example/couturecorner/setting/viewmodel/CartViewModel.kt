@@ -28,7 +28,6 @@ class CartViewModel @Inject constructor(
     private val _draftOrderStatus = MutableLiveData<ApiState<Any>>()
     val draftOrderStatus: LiveData<ApiState<Any>> = _draftOrderStatus
 
-
     private val _addTOCartState = MutableLiveData<ApiState<Any>>()
     val addToCartState: LiveData<ApiState<Any>> = _addTOCartState
     private val _address = MutableLiveData<Address>()
@@ -53,7 +52,9 @@ class CartViewModel @Inject constructor(
 
     // Prices
 
-    private val discount = 5.0
+    private val _discount = MutableLiveData<Double>(0.0) // Default value
+    val discount: LiveData<Double> = _discount
+
 
     private val _subtotal = MutableLiveData<Double>()
     val subtotal: LiveData<Double> = _subtotal
@@ -240,17 +241,28 @@ class CartViewModel @Inject constructor(
             updateShopifyDraftOrder(cartItemList)
         }
     }
+//get discount
+fun setDiscount(newDiscount: Double) {
+    _discount.value = newDiscount
+    calculateTotal()
+}
 
 
-
-    // Calculate the subtotal and total price
+    // Calculate the subtotal and total price with discount as a percentage
     private fun calculateTotal() {
         val currentItems = cartItemList
+        // Calculate the subtotal by summing up the price and quantity of each item
         val subtotal = currentItems.sumOf {
             (it.quantity ?: 0) * (it.price?.toDoubleOrNull() ?: 0.0)
         }
         _subtotal.value = subtotal
-        _totalPrice.value = subtotal  - discount
+
+        // Treat discount as a percentage, e.g., if discount is 10.0, it's 10%
+        val discountPercentage = (discount.value ?: 0.0) / 100.0
+        val discountAmount = subtotal * discountPercentage
+
+        // Calculate total price after applying the discount
+        _totalPrice.value = subtotal - discountAmount
     }
 
     // Update Shopify draft order with new cart items
@@ -319,7 +331,7 @@ class CartViewModel @Inject constructor(
                             appliedDiscount = Optional.present(
                                 DraftOrderAppliedDiscountInput(
                                     valueType = Optional.present(DraftOrderAppliedDiscountType.PERCENTAGE),
-                                    value = Optional.present(discount)
+                                    value = Optional.present(discount.value?: 0.0)
                                 )
                             )
                         )

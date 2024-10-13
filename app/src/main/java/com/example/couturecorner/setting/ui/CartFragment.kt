@@ -42,27 +42,15 @@ class CartFragment : Fragment() {
         observeViewModel()
         cuponsVeiwModel.getCupons()
         observeCouponFetching()
-        observeCupons()
-
-
-
-
-
 
 
 
         binding.textCuponcode.setOnEditorActionListener { textView, actionId, event ->
             if (actionId == android.view.inputmethod.EditorInfo.IME_ACTION_DONE) {
-                // Get the user input from the text field
                 val userInput = textView.text.toString()
-                // Log the input to see it's working
-                Log.i("cupon", "User input: $userInput")
-                // Call the ViewModel to validate the coupon code
                 cuponsVeiwModel.validateCouponCode(userInput)
-                // Return true to indicate the action was handled
                 true
             } else {
-                // Return false if the action was not handled
                 false
             }
         }
@@ -75,12 +63,9 @@ class CartFragment : Fragment() {
             cuponsVeiwModel.cupons.collect { state ->
                 when (state) {
                     is ApiState.Loading -> {
-                        // Show loading state (e.g., ProgressBar)
                     }
-
                     is ApiState.Success -> {
-                        // Enable Apply button after coupons are fetched
-                        binding.applyButton.isEnabled = true
+                        observeCupons()
                     }
 
                     is ApiState.Error -> {
@@ -104,9 +89,17 @@ class CartFragment : Fragment() {
                         binding.textInputLayout.error = "Please enter a valid coupon code"
                         Toast.makeText(context, validationResult, Toast.LENGTH_SHORT).show()
                     } else {
+                        Log.i("coupon", "observeCupons: "+ validationResult)
+
+                        cartViewModel.setDiscount(validationResult.toDouble())
+                        binding.textViewDiscountValue.text = "$validationResult % "
                         Toast.makeText(context, "Success: $validationResult", Toast.LENGTH_SHORT)
                             .show()
-                        binding.textInputLayout.error = null  // Clear error on success
+                        binding.textInputLayout.error = null
+                        binding.textInputLayout.helperText = "Coupon applied successfully!"
+                        // Disable the coupon code input and set the text
+                        binding.textCuponcode.isEnabled = false
+                        binding.textCuponcode.setText("You used a coupon already")
                     }
                 }
             }
@@ -173,8 +166,9 @@ class CartFragment : Fragment() {
         cartViewModel.subtotal.observe(viewLifecycleOwner) { subtotal ->
             binding.textViewSubtotalValue.text = "$${String.format("%.2f", subtotal)}"
         }
-        cartViewModel.subtotal.observe(viewLifecycleOwner) { subtotal ->
-            binding.textViewSubtotalValue.text = "$${String.format("%.2f", subtotal)}"
+
+        cartViewModel.totalPrice.observe(viewLifecycleOwner) { subtotal ->
+            binding.textViewTotalValue.text = "$${String.format("%.2f", subtotal)}"
         }
 
 // Observe cart update status
@@ -204,6 +198,5 @@ class CartFragment : Fragment() {
         }
 
     }
-
 
 }

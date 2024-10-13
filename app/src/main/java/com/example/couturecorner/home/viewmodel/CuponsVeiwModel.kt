@@ -54,8 +54,11 @@ class CuponsVeiwModel @Inject constructor(
 
                 if (matchingCoupon != null) {
                     // Coupon found, return the discount summary
-                    val discountSummary = matchingCoupon?.codeDiscount?.onDiscountCodeBasic?.summary
-                    _validationResult.value = discountSummary ?: "Discount found, but no summary available"
+                    val discountSummary = matchingCoupon.codeDiscount?.onDiscountCodeBasic?.summary
+                    val discountPercentage = discountSummary?.let {
+                        Regex("""\d+""").find(it)?.value ?: "0"
+                    } ?: "0"
+                    _validationResult.value = discountPercentage
                 } else {
                     // No matching coupon found, return an error message
                     _validationResult.value = "Invalid coupon code"
