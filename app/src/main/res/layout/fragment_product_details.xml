@@ -29,6 +29,7 @@
                 android:layout_height="match_parent"
                 android:contentDescription="Product Image"
                 android:scaleType="centerCrop" />
+
         </androidx.cardview.widget.CardView>
 
         <!-- Product Images Carousel -->
@@ -246,22 +247,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/totalPriceLabel" />
 
-        <ProgressBar
-            android:id="@+id/progressBar"
-            style="?android:attr/progressBarStyle"
-            android:layout_width="150dp"
-            android:layout_height="80dp"
-            android:drawableLeft="@drawable/baseline_shopping_cart_checkout_24"
-            android:indeterminateTint="@color/white"
-            android:padding="16dp"
-            android:text="Add to Cart"
-            android:textColor="#FFFFFF"
-            android:textSize="16sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.555"
-            app:layout_constraintStart_toEndOf="@+id/totalPriceLabel"
-            app:layout_constraintTop_toBottomOf="@+id/sizesColorsLayout" />
-
         <Button
             android:id="@+id/btnAddToCart"
             android:layout_width="180dp"
@@ -320,6 +305,26 @@
                 android:textSize="16sp" />
 
         </LinearLayout>
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="150dp"
+            android:layout_height="80dp"
+            android:layout_marginTop="15dp"
+            android:drawableLeft="@drawable/baseline_shopping_cart_checkout_24"
+            android:indeterminateTint="@color/colorPrimary"
+            android:padding="16dp"
+            android:visibility="gone"
+            android:text="Add to Cart"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toTopOf="@+id/sizesColorsLayout"
+            app:layout_constraintEnd_toStartOf="@+id/review"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/productType"
+            app:layout_constraintTop_toBottomOf="@+id/productDescription"
+            app:layout_constraintVertical_bias="1.0" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

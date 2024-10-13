@@ -151,13 +151,14 @@ class ProductDetailsFragment : Fragment() {
 
                             // Check if the user is logged in before allowing "Add to Cart"
                             binding.btnAddToCart.setOnClickListener {
+                                binding.progressBar.visibility = View.VISIBLE  // Show progress bar
                                 if (isUserGuest()) {
                                     showLoginRequiredDialog()
+                                    binding.progressBar.visibility = View.GONE  // Hide progress bar if guest
                                 } else {
                                     val selectedSize = binding.sizesSpinner.selectedItem.toString()
                                     val selectedColor = binding.colorsSpinner.selectedItem.toString()
 
-                                    // Find the matching variant by size and color
                                     val selectedVariant = variants.find { variant ->
                                         val size = variant.selectedOptions?.find { it?.name == "Size" }?.value
                                         val color = variant.selectedOptions?.find { it?.name == "Color" }?.value
@@ -167,11 +168,8 @@ class ProductDetailsFragment : Fragment() {
                                     if (selectedVariant != null) {
                                         addToCart(selectedVariant.id, selectedSize, selectedColor)
                                     } else {
-                                        Toast.makeText(
-                                            requireContext(),
-                                            "Variant not found for selected size and color",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
+                                        Toast.makeText(requireContext(), "Variant not found for selected size and color", Toast.LENGTH_SHORT).show()
+                                        binding.progressBar.visibility = View.GONE  // Hide progress bar on error
                                     }
                                 }
                             }
@@ -180,6 +178,7 @@ class ProductDetailsFragment : Fragment() {
 
                     is ApiState.Error -> {
                         Log.e("ProductDetailsFragment", "Error fetching product details: ${state.message}")
+                        binding.progressBar.visibility = View.GONE  // Hide progress bar on error
                     }
                 }
             }
@@ -215,30 +214,22 @@ class ProductDetailsFragment : Fragment() {
             inventoryQuantity = stockQuantity?.toInt(),
         )
         cartViewModel.addedToCart(newItem)
-
         cartViewModel.addToCartState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is ApiState.Loading -> {
                     binding.progressBar.visibility = View.VISIBLE
-
                 }
                 is ApiState.Success -> {
                     binding.progressBar.visibility = View.GONE
                     Toast.makeText(requireContext(), "Added to cart: Size= $selectedSize, Color= $selectedColor", Toast.LENGTH_SHORT).show()
                 }
                 is ApiState.Error -> {
-                    // Display the error message
+                    binding.progressBar.visibility = View.GONE
+                    Toast.makeText(requireContext(), "Failed to add to cart", Toast.LENGTH_SHORT).show()
                 }
             }
         }
-
-
-
-
-
-
     }
-
 
     private fun setupSpinner(spinner: Spinner, items: List<String>, selectedItem: String?) {
         val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, items)
@@ -275,7 +266,6 @@ class ProductDetailsFragment : Fragment() {
         val dialog = AlertDialog.Builder(requireContext())
             .setView(dialogView)
             .create()
-
         dialogView.findViewById<Button>(R.id.loginButton).setOnClickListener {
             dialog.dismiss()
             val intent = Intent(requireActivity(), LoginActivity::class.java)
@@ -286,7 +276,6 @@ class ProductDetailsFragment : Fragment() {
         dialogView.findViewById<Button>(R.id.cancelButton).setOnClickListener {
             dialog.dismiss()
         }
-
         dialog.show()
     }
 }
