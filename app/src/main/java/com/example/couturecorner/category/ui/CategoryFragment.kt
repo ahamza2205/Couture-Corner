@@ -114,6 +114,10 @@ class CategoryFragment : Fragment(), OnItemClickListener {
         Toast.makeText(requireContext(), "Deleted to favorites", Toast.LENGTH_SHORT).show()
     }
 
+    override fun getcurrency(): String {
+        return getCurrencySymbol(sharedViewModel.getSelectedCurrency()?: "EGP")
+    }
+
     fun showLoading(isLoading:Boolean)
     {
         if (isLoading)
@@ -185,46 +189,48 @@ class CategoryFragment : Fragment(), OnItemClickListener {
     }
 
     private fun prepareProductsForAdapter(products: List<FilteredProductsQuery.Edge?>) {
-        val updatedProducts = products.map { product ->
-            val productId = product?.node?.id
-            val originalPrice = product?.node?.variants?.edges?.get(0)?.node?.price?.toDoubleOrNull() ?: 0.0
+        if(products.isNotEmpty()){
+            val updatedProducts = products.map { product ->
+                val productId = product?.node?.id
+                val originalPrice = product?.node?.variants?.edges?.get(0)?.node?.price?.toDoubleOrNull() ?: 0.0
 
-            // Trigger conversion for each product
-            sharedViewModel.convertCurrency("EGP", sharedViewModel.getSelectedCurrency() ?: "EGP", originalPrice, productId ?: "")
+                // Trigger conversion for each product
+                sharedViewModel.convertCurrency("EGP", sharedViewModel.getSelectedCurrency() ?: "EGP", originalPrice, productId ?: "")
 
-            // Return the original product, the price will be updated later
-            product
-        }
+                // Return the original product, the price will be updated later
+                product
+            }
 
-        // Observe currency conversion updates
-        lifecycleScope.launch {
-            sharedViewModel.convertedCurrency.collect { conversions ->
-                val updatedList = updatedProducts.map { product ->
-                    val productId = product?.node?.id
-                    val convertedPrice = conversions[productId] ?: product?.node?.variants?.edges?.get(0)?.node?.price?.toDoubleOrNull() ?: 0.0
+            // Observe currency conversion updates
+            lifecycleScope.launch {
+                sharedViewModel.convertedCurrency.collect { conversions ->
+                    val updatedList = updatedProducts.map { product ->
+                        val productId = product?.node?.id
+                        val convertedPrice = conversions[productId] ?: product?.node?.variants?.edges?.get(0)?.node?.price?.toDoubleOrNull() ?: 0.0
 
-                    val price = product?.node?.variants?.edges?.get(0)?.node?.price
-                    // Create a copy or modify the product item with the new price
-                    product?.copy(
-                        node = product.node?.copy(
-                            variants = product.node.variants?.copy(
-                                edges = product.node.variants.edges?.map { edge ->
-                                    edge?.copy(node = edge.node?.copy(price = getString(
-                                        R.string.price,
-                                        convertedPrice.toString(),
-                                        getCurrencySymbol(sharedViewModel.getSelectedCurrency() ?: "EGP")
-                                    )))
-                                }
+                        val price = product?.node?.variants?.edges?.get(0)?.node?.price
+                        // Create a copy or modify the product item with the new price
+                        product?.copy(
+                            node = product.node?.copy(
+                                variants = product.node.variants?.copy(
+                                    edges = product.node.variants.edges?.map { edge ->
+                                        edge?.copy(node = edge.node?.copy(price =  convertedPrice.toString()))
+                                    }
+                                )
                             )
                         )
-                    )
-                }
-                Log.d("CheckForConversion", "${updatedList[0]?.node?.variants?.edges?.get(0)?.node?.price}: ")
+                    }
+                    Log.d("CheckForConversion", "${updatedList[0]?.node?.variants?.edges?.get(0)?.node?.price}: ")
 
-                // Submit the updated list with converted prices to the adapter
-                showLoading(false)
-                categoryAdapter.submitList(updatedList)
+                    // Submit the updated list with converted prices to the adapter
+                    showLoading(false)
+                    categoryAdapter.submitList(updatedList)
+                }
             }
+        }
+        else
+        {
+            categoryAdapter.submitList(products)
         }
     }
     fun getCurrencySymbol(currency: String): String {

@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
 import com.example.couturecorner.R
+import com.example.couturecorner.data.local.LocalListsData
 import com.example.couturecorner.setting.viewmodel.CurrencyViewModel
 import com.example.couturecorner.databinding.ProductItemBinding
 import com.graphql.FilteredProductsQuery
@@ -57,13 +58,14 @@ class ProductsAdapter(
 //            holder.binding.priceTextView.text = priceWithSymbol
 //        }
 
-        holder.binding.priceTextView.text= product?.variants?.edges?.get(0)?.node?.price
+     //   holder.binding.priceTextView.text= product?.variants?.edges?.get(0)?.node?.price
 
-//        holder.binding.priceTextView.text = holder.itemView.context.getString(
-//            R.string.price,
-//            product?.variants?.edges?.get(0)?.node?.price,
-//            getCurrencySymbol(viewModel.getSelectedCurrency() ?: "EGP")
-//        )
+        holder.binding.priceTextView.text = holder.itemView.context.getString(
+            R.string.price,
+            product?.variants?.edges?.get(0)?.node?.price,
+            listener.getcurrency()
+        )
+        holder.binding.ratingText.text=LocalListsData.productRatingsMap[product?.id]?.toString()
 
         holder.binding.favoriteAddsButton.isSelected = favList.contains(product?.id)
 

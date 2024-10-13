@@ -11,7 +11,7 @@ import com.graphql.ProductQuery
 
 class FavoriteProductsAdapter(
     private val listener: OnFavoriteItemClickListener,
-    private val viewModel: CurrencyViewModel
+//    private val viewModel: CurrencyViewModel
 
 ) : RecyclerView.Adapter<FavoriteProductsAdapter.FavoriteProductViewHolder>() {
 
@@ -29,18 +29,18 @@ class FavoriteProductsAdapter(
     override fun onBindViewHolder(holder: FavoriteProductViewHolder, position: Int) {
         val product = productList[position]
         holder.binding.title.text = product.title
-        val selectedCurrency = viewModel.selectedCurrency.value ?: "EGP"
-        val originalPrice = product?.variants?.edges?.get(0)?.node?.price?.toDoubleOrNull() ?: 0.0
-        viewModel.convertCurrency("EGP", selectedCurrency, originalPrice) { convertedPrice ->
-            val priceWithSymbol = "${String.format("%.2f", convertedPrice ?: originalPrice)} ${getCurrencySymbol(selectedCurrency)}"
-            holder.binding.priceTextView.text = priceWithSymbol
-        }
-
-        holder.binding.priceTextView.text = holder.itemView.context.getString(
+//        val selectedCurrency = viewModel.selectedCurrency.value ?: "EGP"
+//        val originalPrice = product?.variants?.edges?.get(0)?.node?.price?.toDoubleOrNull() ?: 0.0
+//        viewModel.convertCurrency("EGP", selectedCurrency, originalPrice) { convertedPrice ->
+//            val priceWithSymbol = "${String.format("%.2f", convertedPrice ?: originalPrice)} ${getCurrencySymbol(selectedCurrency)}"
+//            holder.binding.priceTextView.text = priceWithSymbol
+//        }
+        holder.binding.priceTextView.text=holder.itemView.context.getString(
             R.string.price,
-            product?.variants?.edges?.get(0)?.node?.price,
-            "EGP"
+            product.variants?.edges?.get(0)?.node?.price,
+            listener.currencySymbol()
         )
+
 
         holder.binding.favoriteAddsButton.isSelected=checkIsFavorite(product.id)
 

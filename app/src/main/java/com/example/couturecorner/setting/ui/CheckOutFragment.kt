@@ -71,7 +71,8 @@ addressItemAdapter = AddressItemAdapter(this)
 
 
         binding.btnAddNewAddress.setOnClickListener {
-            findNavController().navigate(R.id.action_checkOutFragment_to_addAdressFragment2)        }
+           findNavController().navigate(R.id.action_checkOutFragment_to_addAdressFragment)
+        }
 
         binding.radioGroupPayment.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {

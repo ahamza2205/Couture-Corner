@@ -209,6 +209,10 @@ class HomeFragment : Fragment(), OnItemClickListener {
         Toast.makeText(requireContext(), "Deleted to favorites", Toast.LENGTH_SHORT).show()
     }
 
+    override fun getcurrency(): String {
+        return getCurrencySymbol(sharedViewModel.getSelectedCurrency()?: "EGP")
+    }
+
 
     override fun onFavoriteClick(productId: String) {
         if (isUserGuest()) {
@@ -310,11 +314,7 @@ class HomeFragment : Fragment(), OnItemClickListener {
                       node = product.node?.copy(
                           variants = product.node.variants?.copy(
                               edges = product.node.variants.edges?.map { edge ->
-                                  edge?.copy(node = edge.node?.copy(price = getString(
-                                      R.string.price,
-                                      convertedPrice.toString(),
-                                      getCurrencySymbol(sharedViewModel.getSelectedCurrency() ?: "EGP")
-                                  )))
+                                  edge?.copy(node = edge.node?.copy(price = convertedPrice.toString()))
                               }
                           )
                       )
@@ -328,6 +328,8 @@ class HomeFragment : Fragment(), OnItemClickListener {
           }
       }
     }
+
+
 
     fun getCurrencySymbol(currency: String): String {
         return when (currency) {

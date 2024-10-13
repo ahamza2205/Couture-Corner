@@ -32,7 +32,10 @@ class OrderDiffUtill:DiffUtil.ItemCallback<GetOrdersByCustomerQuery.Edge>() {
 
 }
 
-class OrderAdapter(val myListenner: (String?) -> Unit): ListAdapter<GetOrdersByCustomerQuery.Edge, OrderAdapter.OrderViewHolder>(OrderDiffUtill()) {
+class OrderAdapter(
+    val myListenner: (String?) -> Unit,
+    val listennerForCurenncy:() -> String
+): ListAdapter<GetOrdersByCustomerQuery.Edge, OrderAdapter.OrderViewHolder>(OrderDiffUtill()) {
     lateinit var binding: OrderItemBinding
    class OrderViewHolder(var binding: OrderItemBinding): RecyclerView.ViewHolder(binding.root)
 
@@ -52,7 +55,7 @@ class OrderAdapter(val myListenner: (String?) -> Unit): ListAdapter<GetOrdersByC
         holder.binding.totalPriceTextView.text=holder.itemView.context.getString(
             R.string.price,
             order?.totalPriceSet?.shopMoney?.amount,
-            order?.totalPriceSet?.shopMoney?.currencyCode)
+            listennerForCurenncy.invoke())
 
         holder.binding.seeDetailsButton.setOnClickListener {
             myListenner.invoke(order?.id)
