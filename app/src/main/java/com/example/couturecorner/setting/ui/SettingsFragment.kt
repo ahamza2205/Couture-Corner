@@ -121,5 +121,14 @@ class SettingsFragment : Fragment() {
         binding.orderLayout.visibility = View.GONE
         binding.addressLayout.visibility = View.GONE
         binding.currencySpinner.visibility = View.GONE
+        binding.profileImageView.visibility = View.GONE
+        binding.divider.visibility = View.GONE
+        binding.divider2.visibility = View.GONE
+        binding.divider3.visibility = View.GONE
+        binding.divider4.visibility = View.GONE
+        binding.divider5.visibility = View.GONE
+        binding.currencyLayout.visibility = View.GONE
+        binding.helpCenterLayout.visibility = View.GONE
+        binding.nameTextView.visibility = View.GONE
     }
 }
