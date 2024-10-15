@@ -17,6 +17,7 @@ import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.couturecorner.R
+import com.example.couturecorner.Utility.NetworkUtils
 import com.example.couturecorner.data.model.ApiState
 import com.example.couturecorner.home.viewmodel.MainViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -30,19 +31,25 @@ class MainActivity : AppCompatActivity() {
     private lateinit var productAdapter: ProductAdapter
     private lateinit var recyclerView: RecyclerView
     private lateinit var searchView: SearchView
+    private lateinit var networkUtils: NetworkUtils
+    private lateinit var navController: androidx.navigation.NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        bottomNav = findViewById(R.id.bottom_navigation)
+
+        bottomNav = findViewById(R.id.bottomnavigation)
+        networkUtils = NetworkUtils(this)
 
         val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
 
+        observeNetworkState() // Check for network connection before proceeding
+
         val navHostFragment = supportFragmentManager
             .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-        val navController = navHostFragment.navController
 
+        navController = navHostFragment.navController
         navController.addOnDestinationChangedListener { _, destination, _ ->
             bottomNav.visibility = if (destination.id == R.id.productDetailsFragment) {
                 View.GONE
@@ -54,6 +61,7 @@ class MainActivity : AppCompatActivity() {
         bottomNav.setupWithNavController(navController)
 
         NavigationUI.setupActionBarWithNavController(this, navController)
+
         recyclerView = findViewById(R.id.recyclerView)
         productAdapter = ProductAdapter(emptyList()) { productId ->
             viewModel.selectedProductId = productId
@@ -62,8 +70,15 @@ class MainActivity : AppCompatActivity() {
         recyclerView.adapter = productAdapter
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.visibility = View.GONE
-        viewModel.getProducts()
 
+        // Load products after checking network connection
+        if (networkUtils.hasNetworkConnection()) {
+            viewModel.getProducts()
+            observeProductState()
+        }
+    }
+
+    private fun observeProductState() {
         lifecycleScope.launch {
             viewModel.productsApollo.collect { apiState ->
                 when (apiState) {
@@ -86,18 +101,57 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun observeNetworkState() {
+        lifecycleScope.launch {
+            networkUtils.observeNetworkState().collect { isConnected ->
+                val fragmentContainer = findViewById<View>(R.id.nav_host_fragment)
+                val toolbar = findViewById<View>(R.id.toolbar) // Get the toolbar reference
+                 val bottomnavigation = findViewById<View>(R.id.bottomnavigation)
+                if (!isConnected) {
+                    fragmentContainer.visibility = View.GONE
+                    toolbar.visibility = View.GONE
+                    bottomnavigation.visibility = View.GONE
+
+                    // Show dialog and keep it until the network is reconnected
+                    Dialog.showCustomDialog(
+                        context = this@MainActivity,
+                        message = "No internet connection. Please try again.",
+                        positiveButtonText = "Ok",
+                        negativeButtonText = "Exit",
+                        lottieAnimationResId = R.raw.network_error_animation,
+                        positiveAction = {
+                            if (networkUtils.hasNetworkConnection()) {
+                                fragmentContainer.visibility = View.VISIBLE
+                                toolbar.visibility = View.VISIBLE
+                                bottomnavigation.visibility = View.VISIBLE
+                                observeProductState()
+                            } else {
+                                observeNetworkState()
+                            }
+                        },
+                        negativeAction = {
+                            finishAffinity()
+                        }
+                    )
+                } else {
+                    fragmentContainer.visibility = View.VISIBLE
+                    toolbar.visibility = View.VISIBLE
+                    bottomnavigation.visibility = View.VISIBLE
+                }
+            }
+        }
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
         val searchItem = menu?.findItem(R.id.action_search)
         searchView = searchItem?.actionView as SearchView
         searchView.queryHint = "Search for products..."
-
         // Set up SearchView listener
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return false
             }
-
             override fun onQueryTextChange(newText: String?): Boolean {
                 if (!newText.isNullOrEmpty()) {
                     recyclerView.visibility = View.VISIBLE
@@ -113,7 +167,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val navController = findNavController(R.id.nav_host_fragment)
         return when (item.itemId) {
             R.id.action_cart -> {
                 // Collapse the SearchView if it's open
@@ -129,7 +182,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        val navController = findNavController(R.id.nav_host_fragment)
         return navController.navigateUp() || super.onSupportNavigateUp()
     }
 
@@ -141,9 +193,7 @@ class MainActivity : AppCompatActivity() {
         bottomNav.visibility = View.VISIBLE
     }
 
-
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-
     }
 }

@@ -124,12 +124,12 @@ class CartFragment : Fragment() {
             },
 
             ondeleteItem = { cartItem ->
-                    DialogUtils.showCustomDialog(
+                    Dialog.showCustomDialog(
                         context = requireContext(),
-                        message = "Do you want to delete this Product?",
+                        message = "Do you want to delete this Product From Cart?",
                         positiveButtonText = "Yes",
                         negativeButtonText = "No",
-                        lottieAnimationResId = R.raw.login,
+                        lottieAnimationResId = R.raw.warning,
                         positiveAction = {
                             cartViewModel.onDeleteCartItem(cartItem)
                             Toast.makeText(requireContext(), "Item deleted", Toast.LENGTH_SHORT).show()

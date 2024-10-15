@@ -12,7 +12,6 @@ private var confirmationDialog: Dialog? = null
 
 fun showConfirmationDialog(context: Context, message: String, onOkClick: () -> Unit) {
     if (confirmationDialog?.isShowing == true) {
-        // If the dialog is already shown, return
         return
     }
 

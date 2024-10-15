@@ -5,7 +5,7 @@ import android.widget.TextView
 import com.airbnb.lottie.LottieAnimationView
 import com.example.couturecorner.R
 
-object DialogUtils {
+object Dialog {
     fun showCustomDialog(
         context: Context,
         message: String,
@@ -14,7 +14,7 @@ object DialogUtils {
         lottieAnimationResId: Int,
         positiveAction: () -> Unit,
         negativeAction: () -> Unit
-    ) {
+    ): Dialog {  // Change return type to Dialog
         val dialog = Dialog(context)
         dialog.setContentView(R.layout.custom_dialog)
 
@@ -27,7 +27,7 @@ object DialogUtils {
         btnPositive.text = positiveButtonText
         btnPositive.setOnClickListener {
             positiveAction()
-            dialog.dismiss()
+            dialog.dismiss()  // Dismiss the dialog
         }
 
         // Set negative button text and action
@@ -35,7 +35,7 @@ object DialogUtils {
         btnNegative.text = negativeButtonText
         btnNegative.setOnClickListener {
             negativeAction()
-            dialog.dismiss()
+            dialog.dismiss()  // Dismiss the dialog
         }
 
         // Set Lottie animation
@@ -44,5 +44,7 @@ object DialogUtils {
 
         // Show the dialog
         dialog.show()
+
+        return dialog  // Return the Dialog instance
     }
 }

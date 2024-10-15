@@ -127,12 +127,12 @@ class FavoriteFragment : Fragment(), OnFavoriteItemClickListener {
             if (userEmail != null) {
                 val customerId = sharedPreference.getShopifyUserId(userEmail)
                 if (customerId != null) {
-                    DialogUtils.showCustomDialog(
-                        context = requireContext(),  // Using the correct context
+                    Dialog.showCustomDialog(
+                        context = requireContext(),
                         message = "Do you want to delete this Product?",
                         positiveButtonText = "Yes",
                         negativeButtonText = "No",
-                        lottieAnimationResId = R.raw.login,
+                        lottieAnimationResId = R.raw.warning,
                         positiveAction = {
                             favoriteViewModel.removeProductFromFavorites(customerId, productId)
                             Toast.makeText(requireContext(), "Item deleted", Toast.LENGTH_SHORT).show()

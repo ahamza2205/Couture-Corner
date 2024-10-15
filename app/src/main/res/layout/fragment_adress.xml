@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".setting.ui.AdressFragment">
 
@@ -12,19 +11,11 @@
         android:layout_width="match_parent"
         android:layout_height="500dp"
         android:layout_marginBottom="125dp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:visibility="gone" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-
-        >
-
-
+        android:layout_height="match_parent">
 
         <ImageView
             android:id="@+id/imageView3"
@@ -44,13 +35,12 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="25dp"
             android:fontFamily="sans-serif-medium"
-            android:text="You don't have any adress yet"
+            android:text="You don't have any address yet"
             android:textColor="@color/colorPrimary"
             android:textSize="24sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageView3" />
-
 
         <ProgressBar
             android:id="@+id/progressBar2"
@@ -69,21 +59,14 @@
             android:id="@+id/btnAddNewAddress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_marginStart="330dp"
-            android:layout_marginTop="175dp"
-            android:layout_marginEnd="25dp"
-            android:layout_marginBottom="150dp"
+            android:layout_marginTop="648dp"
+            android:layout_marginEnd="16dp"
             android:backgroundTint="@color/colorPrimary"
             android:clickable="true"
             android:src="@drawable/add"
-            app:flow_wrapMode="aligned"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/recyclerViewAddress" />
-
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</LinearLayout>
+</RelativeLayout>
