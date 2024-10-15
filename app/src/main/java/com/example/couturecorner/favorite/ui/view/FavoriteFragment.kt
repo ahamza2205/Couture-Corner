@@ -20,7 +20,6 @@ import com.example.couturecorner.data.model.ApiState
 import com.example.couturecorner.databinding.FragmentFavoriteBinding
 import com.example.couturecorner.home.viewmodel.MainViewModel
 import com.google.firebase.auth.FirebaseAuth
-import com.graphql.FilteredProductsQuery
 import com.graphql.ProductQuery
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -134,6 +133,7 @@ class FavoriteFragment : Fragment(), OnFavoriteItemClickListener {
                         message = "Do you want to delete this Product?",
                         positiveButtonText = "Yes",
                         negativeButtonText = "No",
+                        lottieAnimationResId = R.raw.login,
                         positiveAction = {
                             favoriteViewModel.removeProductFromFavorites(customerId, productId)
                             Toast.makeText(requireContext(), "Item deleted", Toast.LENGTH_SHORT).show()

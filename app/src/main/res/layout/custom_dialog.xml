@@ -5,6 +5,8 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="16dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
     >
 
     <!-- Message in the dialog -->
@@ -18,6 +20,13 @@
         android:textSize="24sp"
         android:gravity="center"
         android:layout_gravity="center"/>
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottieAnimationView"
+        android:layout_width="300dp"
+        android:layout_height="250dp"
+        android:layout_gravity="center"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true" />
 
     <!-- Two buttons -->
     <LinearLayout

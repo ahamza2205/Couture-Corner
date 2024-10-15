@@ -2,6 +2,7 @@ import android.app.Dialog
 import android.content.Context
 import android.widget.Button
 import android.widget.TextView
+import com.airbnb.lottie.LottieAnimationView
 import com.example.couturecorner.R
 
 object DialogUtils {
@@ -10,6 +11,7 @@ object DialogUtils {
         message: String,
         positiveButtonText: String,
         negativeButtonText: String,
+        lottieAnimationResId: Int,
         positiveAction: () -> Unit,
         negativeAction: () -> Unit
     ) {
@@ -35,6 +37,10 @@ object DialogUtils {
             negativeAction()
             dialog.dismiss()
         }
+
+        // Set Lottie animation
+        val lottieView = dialog.findViewById<LottieAnimationView>(R.id.lottieAnimationView)
+        lottieView.setAnimation(lottieAnimationResId)
 
         // Show the dialog
         dialog.show()
