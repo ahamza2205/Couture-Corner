@@ -9,10 +9,10 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.couturecorner.R
+import com.example.couturecorner.Utility.showConfirmationDialog
 import com.example.couturecorner.authentication.viewmodel.LoginViewModel
 import com.example.couturecorner.data.model.Address
 import com.example.couturecorner.data.model.Amount
@@ -44,7 +44,7 @@ private val cartViewModel: CartViewModel by viewModels()
     private lateinit var addressItemAdapter: AddressItemAdapter
 
     // PayPal settings
-    private val returnUrl = "com.example.couturecorner.setting.ui.settings://paypalreturn"
+    private val returnUrl = "com.example.couturecorner.setting://paypalreturn"
     private val cancelUrl = "https://example.com/cancelUrl"
     private var orderId = ""
 
@@ -79,10 +79,11 @@ addressItemAdapter = AddressItemAdapter(this)
         binding.radioGroupPayment.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
                 R.id.pay_with_paypal -> {
+                    observeViewModel()
                     paypall()
                     Toast.makeText(requireContext(), "Pay with PayPal selected", Toast.LENGTH_SHORT).show()
-                }
-                R.id.cash_on_delivery -> {
+                 }
+                 R.id.cash_on_delivery -> {
                     Toast.makeText(requireContext(), "Cash on Delivery selected", Toast.LENGTH_SHORT).show()
                 }
             }
@@ -105,14 +106,14 @@ addressItemAdapter = AddressItemAdapter(this)
                     binding.progressBar.visibility = View.GONE
                     Toast.makeText(requireContext(), state.data.toString(), Toast.LENGTH_SHORT).show()
                     //made confirm dalog here
-                    //navigate to order screen
+
                     this.dismiss()
-                    findNavController().navigate(
-                        R.id.action_cartFragment_to_ordersFragment,                        null,
-                        NavOptions.Builder()
-                            .setPopUpTo(R.id.cartFragment, true)  // This ensures the cartFragment is removed from the backstack
-                            .build()
-                    )
+                    showConfirmationDialog(requireActivity(), "Your order has been placed!"){
+                        findNavController().navigate(
+                            R.id.action_cartFragment_to_homeFragment,
+                        )
+                    }
+
                 }
                 is ApiState.Error -> {
                     // Show error message in UI
