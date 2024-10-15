@@ -168,7 +168,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.action_cart -> {
+   /*         R.id.action_cart -> {
                 // Collapse the SearchView if it's open
                 if (!searchView.isIconified) {
                     searchView.setIconified(true)
@@ -176,7 +176,7 @@ class MainActivity : AppCompatActivity() {
                 // Navigate to CartFragment when the cart item is clicked
                 navController.navigate(R.id.cartFragment)
                 true
-            }
+            }*/
             else -> super.onOptionsItemSelected(item)
         }
     }
