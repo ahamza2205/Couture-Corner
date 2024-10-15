@@ -12,6 +12,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import com.example.couturecorner.R
 import com.example.couturecorner.setting.viewmodel.CurrencyViewModel
 import com.example.couturecorner.data.local.SharedPreferenceImp
 import com.example.couturecorner.favorite.ui.viewmodel.FavoriteViewModel
@@ -128,7 +129,19 @@ class FavoriteFragment : Fragment(), OnFavoriteItemClickListener {
             if (userEmail != null) {
                 val customerId = sharedPreference.getShopifyUserId(userEmail)
                 if (customerId != null) {
-                    favoriteViewModel.removeProductFromFavorites(customerId, productId)
+                    DialogUtils.showCustomDialog(
+                        context = requireContext(),  // Using the correct context
+                        message = "Do you want to delete this Product?",
+                        positiveButtonText = "Yes",
+                        negativeButtonText = "No",
+                        positiveAction = {
+                            favoriteViewModel.removeProductFromFavorites(customerId, productId)
+                            Toast.makeText(requireContext(), "Item deleted", Toast.LENGTH_SHORT).show()
+                        },
+                        negativeAction = {
+                            Toast.makeText(requireContext(), "Item not deleted", Toast.LENGTH_SHORT).show()
+                        }
+                    )
                 } else {
                     Toast.makeText(requireContext(), "Failed to get customer ID", Toast.LENGTH_SHORT).show()
                 }
@@ -137,7 +150,6 @@ class FavoriteFragment : Fragment(), OnFavoriteItemClickListener {
             }
         } else {
             Toast.makeText(requireContext(), "User not logged in", Toast.LENGTH_SHORT).show()
-
         }
     }
 

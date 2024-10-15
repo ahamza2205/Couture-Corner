@@ -44,7 +44,7 @@ private val cartViewModel: CartViewModel by viewModels()
     private lateinit var addressItemAdapter: AddressItemAdapter
 
     // PayPal settings
-    private val returnUrl = "com.example.couturecorner.setting.ui.settings://paypalreturn"
+    private val returnUrl = "com.example.couturecorner.setting.ui://paypalreturn"
     private val cancelUrl = "https://example.com/cancelUrl"
     private var orderId = ""
 
