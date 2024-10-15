@@ -11,11 +11,14 @@ import com.example.couturecorner.databinding.FragmentAddAdressBinding
 import dagger.hilt.android.AndroidEntryPoint
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
+import com.example.couturecorner.R
+import com.example.couturecorner.Utility.showConfirmationDialog
 import com.example.couturecorner.setting.viewmodel.UserViewModel
 import com.example.couturecorner.home.ui.MainActivity
 import com.example.couturecorner.setting.viewmodel.AddAdressViewModel
 import com.graphql.type.MailingAddressInput
 @AndroidEntryPoint
+
 class AddAdressFragment : Fragment() {
 
     private var _binding: FragmentAddAdressBinding? = null
@@ -42,13 +45,14 @@ class AddAdressFragment : Fragment() {
                 Toast.makeText(requireContext(), "Address added successfully", Toast.LENGTH_LONG)
                     .show()
                 userViewModel.getCustomerData()
-
+                showConfirmationDialog(requireActivity(), "Address added successfully!"){
+                    findNavController().navigate(R.id.action_addAdressFragment_to_settingsFragment)
+                }
             }.onFailure { exception ->
                 Toast.makeText(requireContext(), "Error: ${exception.message}", Toast.LENGTH_LONG)
                     .show()
             }
         })
-
 
 
         binding.btnConfirmAddress.setOnClickListener {
@@ -119,10 +123,7 @@ class AddAdressFragment : Fragment() {
                             } + newAddress // Append the new address to the list
 
                             viewModelAddAdress.updateAddressCustomer(addressList, user.id)
-                            Log.i(
-                                "AddAddressFragment",
-                                "Appended new address to existing: $addressList"
-                            )
+
 
                         }
                     }

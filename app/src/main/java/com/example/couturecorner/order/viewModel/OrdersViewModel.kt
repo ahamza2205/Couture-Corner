@@ -18,13 +18,11 @@ import javax.inject.Inject
 class OrdersViewModel @Inject constructor(
    private val repo:Irepo
 ):ViewModel() {
-
    private val _orders= MutableStateFlow<ApiState<ApolloResponse<GetOrdersByCustomerQuery.Data>>>(ApiState.Loading)
    val orders: StateFlow<ApiState<ApolloResponse<GetOrdersByCustomerQuery.Data>>> = _orders
 
    private val _ordersId= MutableStateFlow<ApiState<ApolloResponse<OrderByIdQuery.Data>>>(ApiState.Loading)
    val ordersId: StateFlow<ApiState<ApolloResponse<OrderByIdQuery.Data>>> = _ordersId
-
 
    fun getOrders(){
 
