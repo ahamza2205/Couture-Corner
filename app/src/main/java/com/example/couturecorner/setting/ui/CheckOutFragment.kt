@@ -30,7 +30,10 @@ import com.example.couturecorner.setting.viewmodel.UserViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.UUID
 
 @AndroidEntryPoint
@@ -108,7 +111,7 @@ addressItemAdapter = AddressItemAdapter(this)
                     //navigate to order screen
                     this.dismiss()
                     findNavController().navigate(
-                        R.id.action_cartFragment_to_ordersFragment,                        null,
+                        R.id.action_cartFragment_to_ordersFragment,null,
                         NavOptions.Builder()
                             .setPopUpTo(R.id.cartFragment, true)  // This ensures the cartFragment is removed from the backstack
                             .build()

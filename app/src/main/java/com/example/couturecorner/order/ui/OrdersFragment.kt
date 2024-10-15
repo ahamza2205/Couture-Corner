@@ -18,6 +18,7 @@ import com.example.couturecorner.order.viewModel.OrdersViewModel
 import com.graphql.FilteredProductsQuery
 import com.graphql.GetOrdersByCustomerQuery
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -73,6 +74,8 @@ class OrdersFragment : Fragment() {
         }
 
     }
+
+
 
     private fun prepareProductsForAdapter(orders: List<GetOrdersByCustomerQuery.Edge?>) {
         if (orders.isNotEmpty())
