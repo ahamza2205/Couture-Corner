@@ -205,44 +205,7 @@
             android:layout_marginHorizontal="20dp"
             android:layout_marginBottom="2dp"
             android:background="@color/colorPrimary" />
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:id="@+id/helpCenterLayout"
-            android:layout_height="70dp"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
 
-            <ImageView
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginStart="10dp"
-                app:tint="@color/colorPrimary"
-                android:src="@drawable/info" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginStart="10dp"
-                android:text="Help Center"
-                android:textSize="22sp"
-                android:textColor="@color/colorPrimary" />
-
-            <ImageView
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginEnd="20dp"
-                app:tint="@color/colorPrimary"
-                android:src="@drawable/arrow_right" />
-        </LinearLayout>
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:id="@+id/divider5"
-            android:layout_marginTop="10dp"
-            android:layout_marginHorizontal="20dp"
-            android:layout_marginBottom="2dp"
-            android:background="@color/colorPrimary" />
         <LinearLayout
             android:id="@+id/logoutLayout"
             android:layout_width="match_parent"

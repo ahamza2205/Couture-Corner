@@ -1,5 +1,6 @@
 package com.example.couturecorner.home.ui
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -138,5 +139,11 @@ class MainActivity : AppCompatActivity() {
 
     fun showBottomNav() {
         bottomNav.visibility = View.VISIBLE
+    }
+
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+
     }
 }

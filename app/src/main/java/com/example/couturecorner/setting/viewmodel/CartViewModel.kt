@@ -21,10 +21,16 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+
 @HiltViewModel
 class CartViewModel @Inject constructor(
     private val repo: Repo
 ) : ViewModel() {
+    private val _showInventoryExceededDialog = MutableLiveData<CartItem>()
+    val showInventoryExceededDialog: LiveData<CartItem> get() = _showInventoryExceededDialog
+
+
+
     private val _draftOrderStatus = MutableLiveData<ApiState<Any>>()
     val draftOrderStatus: LiveData<ApiState<Any>> = _draftOrderStatus
 
@@ -133,12 +139,27 @@ class CartViewModel @Inject constructor(
     }
 
     // Increase quantity of a cart item
+    // Increase quantity of a cart item
     fun increaseQuantity(cartItem: CartItem) {
-        val updatedItem = cartItem.copy(quantity = cartItem.quantity!! + 1)
+        val inventoryQuantity = cartItem.inventoryQuantity ?: 0
+        val currentQuantity = cartItem.quantity ?: 0
+        Log.i("increase", "Current inventory quantity: $inventoryQuantity")
+        Log.i("increase", "Current cart quantity: $currentQuantity")
 
-        updateLocalCartItem(updatedItem)
-        updateShopifyDraftOrder(cartItemList)
+        // Check if adding one more item will exceed the inventory
+        if (currentQuantity + 1 > inventoryQuantity) {
+            Log.i("increase", "Inventory limit reached: $inventoryQuantity")
+            // Show dialog if the desired quantity exceeds the inventory
+            _showInventoryExceededDialog.postValue(cartItem)
+        } else {
+            // Update the cart item quantity by incrementing it by 1
+            val updatedItem = cartItem.copy(quantity = currentQuantity + 1)
+            updateLocalCartItem(updatedItem)
+            updateShopifyDraftOrder(cartItemList)
+            Log.i("increase", "Updated cart quantity: ${updatedItem.quantity}")
+        }
     }
+
 
     // Decrease quantity of a cart item
     fun decreaseQuantity(cartItem: CartItem) {

@@ -137,9 +137,7 @@ class SettingsFragment : Fragment() {
         binding.divider2.visibility = View.GONE
         binding.divider3.visibility = View.GONE
         binding.divider4.visibility = View.GONE
-        binding.divider5.visibility = View.GONE
         binding.currencyLayout.visibility = View.GONE
-        binding.helpCenterLayout.visibility = View.GONE
         binding.nameTextView.visibility = View.GONE
     }
 }
