@@ -102,7 +102,7 @@ class AdressFragment : Fragment(), OnAddressDeleteListener {
 
             DialogUtils.showCustomDialog(
                 context = requireContext(),
-                message = "Do you want to delete this Product?",
+                message = "Do you want to delete this Address?",
                 positiveButtonText = "Yes",
                 negativeButtonText = "No",
                 lottieAnimationResId = R.raw.login,

@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -40,8 +41,11 @@ class CartFragment : Fragment() {
         observeViewModel()
         setupRecyclerView()
         setupUI()
+
+
         cuponsVeiwModel.getCupons()
         observeCouponFetching()
+
 
 
 
@@ -57,6 +61,7 @@ class CartFragment : Fragment() {
 
 
     }
+
 
     private fun observeCouponFetching() {
         lifecycleScope.launchWhenStarted {
@@ -132,12 +137,7 @@ class CartFragment : Fragment() {
                          negativeAction = {
                             Toast.makeText(requireContext(), "Item not deleted", Toast.LENGTH_SHORT).show()
                         }
-                    )
-
-
-
-
-            }
+                    ) }
         )
         binding.cartRecyclerView.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
@@ -234,10 +234,22 @@ class CartFragment : Fragment() {
                         Toast.LENGTH_SHORT
                     ).show()
                     binding.emptyCartImageView.visibility =
-                        View.VISIBLE // Show empty cart image if there's an error
+                        View.VISIBLE
                 }
             }
         }
+        cartViewModel.showInventoryExceededDialog.observe(viewLifecycleOwner) { cartItem ->
+            showCannotDeleteDialog()
+        }
 
+    }
+    private fun showCannotDeleteDialog() {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Out of Stock")
+            .setMessage("you cannot added more than that out of stock")
+            .setPositiveButton("OK") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
     }
 }

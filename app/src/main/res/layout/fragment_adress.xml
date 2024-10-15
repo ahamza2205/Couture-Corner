@@ -10,7 +10,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewAddress"
         android:layout_width="match_parent"
-        android:layout_height="550dp"
+        android:layout_height="500dp"
         android:layout_marginBottom="125dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -73,7 +73,7 @@
             android:layout_marginStart="330dp"
             android:layout_marginTop="175dp"
             android:layout_marginEnd="25dp"
-            android:layout_marginBottom="25dp"
+            android:layout_marginBottom="150dp"
             android:backgroundTint="@color/colorPrimary"
             android:clickable="true"
             android:src="@drawable/add"
@@ -81,7 +81,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView4" />
+            app:layout_constraintTop_toBottomOf="@+id/recyclerViewAddress" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

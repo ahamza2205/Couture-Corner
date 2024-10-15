@@ -41,6 +41,7 @@ class CartItemAdapter(
             binding.removeImageView.setOnClickListener {
                 onDecreaseQuantity(cartItem)
             }
+
             binding.deletitem.setOnClickListener {
                ondeleteItem(cartItem)
                 notifyDataSetChanged()
