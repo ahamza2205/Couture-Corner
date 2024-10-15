@@ -87,7 +87,6 @@ class SettingsFragment : Fragment() {
             ) {
                 val selectedCurrency = currencies[position]
                 currencyViewModel.saveSelectedCurrency(selectedCurrency)
-                Toast.makeText(requireContext(), "Currency set to $selectedCurrency", Toast.LENGTH_SHORT).show()
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {

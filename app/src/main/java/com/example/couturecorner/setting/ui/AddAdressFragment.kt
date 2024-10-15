@@ -42,8 +42,6 @@ class AddAdressFragment : Fragment() {
         // Observe the update status LiveData
         viewModelAddAdress.updateStatus.observe(viewLifecycleOwner, Observer { result ->
             result.onSuccess { customerId ->
-                Toast.makeText(requireContext(), "Address added successfully", Toast.LENGTH_LONG)
-                    .show()
                 userViewModel.getCustomerData()
                 showConfirmationDialog(requireActivity(), "Address added successfully!"){
                     findNavController().navigate(R.id.action_addAdressFragment_to_settingsFragment)

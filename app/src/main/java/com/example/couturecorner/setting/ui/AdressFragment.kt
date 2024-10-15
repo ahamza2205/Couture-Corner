@@ -100,12 +100,12 @@ class AdressFragment : Fragment(), OnAddressDeleteListener {
             showCannotDeleteDialog()
         } else {
 
-            DialogUtils.showCustomDialog(
+            Dialog.showCustomDialog(
                 context = requireContext(),
                 message = "Do you want to delete this Address?",
                 positiveButtonText = "Yes",
                 negativeButtonText = "No",
-                lottieAnimationResId = R.raw.login,
+                lottieAnimationResId = R.raw.warning,
                 positiveAction = {
                     userViewModel.userData.observe(viewLifecycleOwner) { user ->
                         user?.let {
