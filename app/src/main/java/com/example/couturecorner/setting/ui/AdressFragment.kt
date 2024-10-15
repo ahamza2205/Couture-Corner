@@ -99,47 +99,67 @@ class AdressFragment : Fragment(), OnAddressDeleteListener {
         if (address == defaultAddress) {
             showCannotDeleteDialog()
         } else {
-            userViewModel.userData.observe(viewLifecycleOwner) { user ->
-                user?.let {
-                    val existingAddresses = user.addresses?.toMutableList() ?: mutableListOf()
 
-                    val updatedAddresses = existingAddresses.filter {
-                        it?.address1 != address.name || it?.address2 != address.addressDetails
-                    }
+            DialogUtils.showCustomDialog(
+                context = requireContext(),
+                message = "Do you want to delete this Product?",
+                positiveButtonText = "Yes",
+                negativeButtonText = "No",
+                lottieAnimationResId = R.raw.login,
+                positiveAction = {
+                    userViewModel.userData.observe(viewLifecycleOwner) { user ->
+                        user?.let {
+                            val existingAddresses = user.addresses?.toMutableList() ?: mutableListOf()
 
-                    val addressList = updatedAddresses.map {
-                        MailingAddressInput(
-                            address1 = it?.address1 ?: "",
-                            address2 = it?.address2 ?: "",
-                            city = it?.city ?: "",
-                            phone = it?.phone ?: ""
-                        )
-                    }
+                            val updatedAddresses = existingAddresses.filter {
+                                it?.address1 != address.name || it?.address2 != address.addressDetails
+                            }
 
-                    addressViewModel.updateAddressCustomer(addressList, user.id)
+                            val addressList = updatedAddresses.map {
+                                MailingAddressInput(
+                                    address1 = it?.address1 ?: "",
+                                    address2 = it?.address2 ?: "",
+                                    city = it?.city ?: "",
+                                    phone = it?.phone ?: ""
+                                )
+                            }
 
-                    addressAdapter.setAddressList(
-                        updatedAddresses.map { apiAddress ->
-                            Address(
-                                name = apiAddress?.address1 ?: "",
-                                addressDetails = apiAddress?.address2 ?: "",
-                                city = apiAddress?.city ?: "",
-                                phone = apiAddress?.phone ?: ""
+                            addressViewModel.updateAddressCustomer(addressList, user.id)
+
+                            addressAdapter.setAddressList(
+                                updatedAddresses.map { apiAddress ->
+                                    Address(
+                                        name = apiAddress?.address1 ?: "",
+                                        addressDetails = apiAddress?.address2 ?: "",
+                                        city = apiAddress?.city ?: "",
+                                        phone = apiAddress?.phone ?: ""
+                                    )
+                                }
                             )
-                        }
-                    )
 
-                    if (updatedAddresses.isEmpty()) {
-                        binding.recyclerViewAddress.visibility = View.GONE
-                        binding.textView4.visibility = View.VISIBLE
-                        binding.imageView3.visibility = View.VISIBLE
+                            if (updatedAddresses.isEmpty()) {
+                                binding.recyclerViewAddress.visibility = View.GONE
+                                binding.textView4.visibility = View.VISIBLE
+                                binding.imageView3.visibility = View.VISIBLE
+                            }
+
+                            Log.i("AddressFragment", "Updated address list sent to API: $addressList")
+
+                            Toast.makeText(requireContext(), "Address deleted", Toast.LENGTH_SHORT).show()
+                        }
                     }
 
-                    Log.i("AddressFragment", "Updated address list sent to API: $addressList")
 
-                    Toast.makeText(requireContext(), "Address deleted", Toast.LENGTH_SHORT).show()
+
+
+                    Toast.makeText(requireContext(), "Item deleted", Toast.LENGTH_SHORT).show()
+                },
+                negativeAction = {
+                    Toast.makeText(requireContext(), "Item not deleted", Toast.LENGTH_SHORT).show()
                 }
-            }
+            )
+
+
         }
     }
 
