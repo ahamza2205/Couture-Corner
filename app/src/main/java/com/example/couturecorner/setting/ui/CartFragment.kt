@@ -59,6 +59,10 @@ class CartFragment : Fragment() {
             }
         }
 
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            cuponsVeiwModel.getCupons()
+            observeViewModel()
+        }
 
     }
 
@@ -167,6 +171,7 @@ class CartFragment : Fragment() {
 
                 is ApiState.Success -> {
                     binding.progressBar.visibility = View.GONE
+                    binding.swipeRefreshLayout.isRefreshing = false
                     val cartItems = apiState.data // This is the List<CartItem>
                     cartItemAdapter.updateCartItems(cartItems!!)
                     cartItemAdapter.notifyDataSetChanged()  // Notify adapter to refresh data
