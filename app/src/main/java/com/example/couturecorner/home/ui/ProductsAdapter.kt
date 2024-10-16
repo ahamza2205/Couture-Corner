@@ -75,21 +75,51 @@ class ProductsAdapter(
 
         holder.binding.favoriteAddsButton.setOnClickListener {
 
-            if (favList.contains(product?.id))
+            if(!listener.isUserGuest())
             {
-                // delet method
-                product?.id?.let { productId ->
-                    listener.deleteFavorite(productId)
+                if (favList.contains(product?.id))
+                {
+                    // delet method
+                    product?.id?.let { productId ->
+                        listener.deleteFavorite(productId)
+                        favList.remove(productId)
+                    }
+                    holder.binding.favoriteAddsButton.isSelected=false
                 }
-                holder.binding.favoriteAddsButton.isSelected=false
+                else
+                {
+                    product?.id?.let { productId ->
+                        if (!favList.contains(productId)) {
+                            listener.onFavoriteClick(productId)
+                            favList.add(productId)
+                        }
+                    }
+                    holder.binding.favoriteAddsButton.isSelected=true
+                }
             }
             else
             {
-                product?.id?.let { productId ->
-                    listener.onFavoriteClick(productId)
-                }
-                holder.binding.favoriteAddsButton.isSelected=true
+                listener.showDialog()
             }
+//            if (favList.contains(product?.id))
+//            {
+//                // delet method
+//                product?.id?.let { productId ->
+//                    listener.deleteFavorite(productId)
+//                    favList.remove(productId)
+//                }
+//                holder.binding.favoriteAddsButton.isSelected=false
+//            }
+//            else
+//            {
+//                product?.id?.let { productId ->
+//                    if (!favList.contains(productId)) {
+//                        listener.onFavoriteClick(productId)
+//                        favList.add(productId)
+//                    }
+//                }
+//                holder.binding.favoriteAddsButton.isSelected=true
+//            }
 
         }
         holder.itemView.setOnClickListener {

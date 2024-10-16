@@ -1,5 +1,7 @@
 package com.example.couturecorner.category.ui
 
+import android.app.AlertDialog
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
@@ -7,6 +9,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -14,7 +17,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.couturecorner.setting.viewmodel.CurrencyViewModel
 import com.example.couturecorner.R
+import com.example.couturecorner.authentication.view.LoginActivity
 import com.example.couturecorner.category.viewModel.CategoryViewModel
+import com.example.couturecorner.data.local.SharedPreferenceImp
 import com.example.couturecorner.data.model.ApiState
 import com.example.couturecorner.databinding.FragmentCategoryBinding
 import com.example.couturecorner.home.ui.OnItemClickListener
@@ -24,9 +29,13 @@ import com.google.android.material.chip.Chip
 import com.graphql.FilteredProductsQuery
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class CategoryFragment : Fragment(), OnItemClickListener {
+
+    @Inject
+    lateinit var sharedPreference: SharedPreferenceImp
 
     private var category: String? = null
     lateinit var binding:FragmentCategoryBinding
@@ -116,6 +125,35 @@ class CategoryFragment : Fragment(), OnItemClickListener {
 
     override fun getcurrency(): String {
         return getCurrencySymbol(sharedViewModel.getSelectedCurrency()?: "EGP")
+    }
+
+    override fun isUserGuest(): Boolean {
+        val isLoggedIn = sharedPreference.isUserLoggedIn()
+        Log.d("UserStatus", "User is logged in: $isLoggedIn")
+        val isGuest = !isLoggedIn
+        Log.d("UserStatus", "User is guest: $isGuest")
+        return isGuest
+    }
+
+    override fun showDialog() {
+        val dialogView =
+            LayoutInflater.from(requireContext()).inflate(R.layout.dialog_login_required, null)
+        val dialog = AlertDialog.Builder(requireContext())
+            .setView(dialogView)
+            .create()
+
+        dialogView.findViewById<Button>(R.id.loginButton).setOnClickListener {
+            dialog.dismiss()
+            val intent = Intent(requireActivity(), LoginActivity::class.java)
+            startActivity(intent)
+            requireActivity().finish()
+        }
+
+        dialogView.findViewById<Button>(R.id.cancelButton).setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
     }
 
     fun showLoading(isLoading:Boolean)

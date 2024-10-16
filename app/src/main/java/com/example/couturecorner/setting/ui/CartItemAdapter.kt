@@ -10,7 +10,7 @@ import com.example.couturecorner.databinding.CartItemBinding
 class CartItemAdapter(
     private val onIncreaseQuantity: (CartItem) -> Unit,
     private val onDecreaseQuantity: (CartItem) -> Unit,
-    private val ondeleteItem: (CartItem) -> Unit,
+    private val ondeleteItem: (CartItem,()->Unit) -> Unit,
     private val getCurrency :()->String
 ) : RecyclerView.Adapter<CartItemAdapter.CartItemViewHolder>() {
 
@@ -42,11 +42,15 @@ class CartItemAdapter(
 //
             binding.removeImageView.setOnClickListener {
                 onDecreaseQuantity(cartItem)
+
             }
 
             binding.deletitem.setOnClickListener {
-               ondeleteItem(cartItem)
-                notifyDataSetChanged()
+               ondeleteItem(cartItem){
+                   cartItems.remove(cartItem)
+                   notifyDataSetChanged()
+               }
+
             }
 
 

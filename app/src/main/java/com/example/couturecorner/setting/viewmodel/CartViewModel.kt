@@ -149,6 +149,34 @@ private fun mergeLocalAndRemoteCartItems(remoteCartItems: List<CartItem>): List<
 
     // Increase quantity of a cart item
 
+//    fun increaseQuantity(cartItem: CartItem) {
+//        val inventoryQuantity = cartItem.inventoryQuantity ?: 0
+//        val currentQuantity = cartItem.quantity ?: 0
+//        Log.i("increase", "Current inventory quantity: $inventoryQuantity")
+//        Log.i("increase", "Current cart quantity: $currentQuantity")
+//
+//        // Check if adding one more item will exceed the inventory
+//        if (currentQuantity + 1 > inventoryQuantity) {
+//            Log.i("increase", "Inventory limit reached: $inventoryQuantity")
+//            // Show dialog if the desired quantity exceeds the inventory
+//            _showInventoryExceededDialog.postValue(cartItem)
+//        } else {
+//            // Update the cart item quantity by incrementing it by 1
+//            val updatedItem = cartItem.copy(quantity = currentQuantity + 1)
+//            updateLocalCartItem(updatedItem)
+//
+//            // Ensure cartItemList is updated with the new item
+//            val updatedCartList = cartItemList.map {
+//                if (it.id == updatedItem.id) updatedItem else it
+//            }
+//
+//            updateShopifyDraftOrder(updatedCartList)
+//            Log.i("increase", "increaseQuantity: $updatedCartList")
+//            Log.i("increase", "Updated cart quantity: ${updatedItem.quantity}")
+//        }
+//    }
+
+
     fun increaseQuantity(cartItem: CartItem) {
         val inventoryQuantity = cartItem.inventoryQuantity ?: 0
         val currentQuantity = cartItem.quantity ?: 0
@@ -206,7 +234,9 @@ private fun mergeLocalAndRemoteCartItems(remoteCartItems: List<CartItem>): List<
 //
 
 //         Remove the item from the local cart list
-        if (cartItemList.remove(cartItem)) {
+        val index = cartItemList.indexOfFirst { it.id == cartItem.id }
+        if (index != -1) {
+            cartItemList.removeAt(index)
             _cartItems.postValue(ApiState.Success(cartItemList.toList()))
 //            prepareProductsForAdapter(cartItemList.toList())
             calculateTotal()
@@ -439,50 +469,9 @@ fun setDiscount(newDiscount: Double) {
             }
         }
 
-    fun prepareProductsForAdapter(cartItems: List<CartItem>) {
-        if (cartItems.isNotEmpty()) {
-            viewModelScope.launch {
-                val updatedProducts = cartItems.map { item ->
-                    val productId = item.id
-                    val originalPrice = item.price?.toDoubleOrNull() ?: 0.0
-                    val convertedPrice = convertCurrency("EGP", getSelectedCurrency() ?: "EGP", originalPrice)
-                    item.copy(price = convertedPrice.toString())
-                }
-                _cartItems.postValue(ApiState.Success(updatedProducts))
-            }
-        } else {
-            _cartItems.postValue(ApiState.Success(cartItems))
-        }
-    }
 
-    fun preparForAdapter(cartItems: List<CartItem>) {
-        if (cartItems.isNotEmpty()) {
-            viewModelScope.launch {
-                val updatedProducts = cartItems.map { item ->
-                    val productId = item.id
-                    val originalPrice = item.price?.toDoubleOrNull() ?: 0.0
-                    val convertedPrice = convertCurrency("EGP", getSelectedCurrency() ?: "EGP", originalPrice)
-                    item.copy(price = convertedPrice.toString())
-                }
-                _updateCartStatus.postValue(ApiState.Success(updatedProducts))
-            }
-        } else {
-            _updateCartStatus.postValue(ApiState.Success(cartItems))
-        }
-    }
 
-    suspend fun convertCurrency(from: String, to: String, amount: Double): Double {
-        return try {
-            val conversionResult = repo.convertCurrency(from, to, amount, "9eabc320c6-66b069c4e1-sl3z9w")
-            conversionResult?.result?.get(to) ?: amount
-        } catch (e: Exception) {
-            amount // return original price if conversion fails
-        }
-    }
 
-    fun getSelectedCurrency(): String? {
-        return sharedPreference.getSelectedCurrency()
-    }
 
 
 }

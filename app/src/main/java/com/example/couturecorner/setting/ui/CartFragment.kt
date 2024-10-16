@@ -135,7 +135,7 @@ class CartFragment : Fragment() {
                 cartViewModel.decreaseQuantity(cartItem)
             },
 
-            ondeleteItem = { cartItem ->
+            ondeleteItem = { cartItem,lamda ->
                     Dialog.showCustomDialog(
                         context = requireContext(),
                         message = "Do you want to delete this Product From Cart?",
@@ -143,6 +143,7 @@ class CartFragment : Fragment() {
                         negativeButtonText = "No",
                         lottieAnimationResId = R.raw.warning,
                         positiveAction = {
+                            lamda.invoke()
                             cartViewModel.onDeleteCartItem(cartItem)
                             Toast.makeText(requireContext(), "Item deleted", Toast.LENGTH_SHORT).show()
                          },
@@ -182,9 +183,9 @@ class CartFragment : Fragment() {
                     binding.progressBar.visibility = View.GONE
 //                    binding.swipeRefreshLayouteshLayout.isRefreshing = false
                     val cartItems = apiState.data // This is the List<CartItem>
-                  //  prepareProductsForAdapter(cartItems?: emptyList())
-                    cartItemAdapter.updateCartItems(cartItems!!)
-                    cartItemAdapter.notifyDataSetChanged()  // Notify adapter to refresh data
+                    prepareProductsForAdapter(cartItems?: emptyList())
+//                    cartItemAdapter.updateCartItems(cartItems!!)
+//                    cartItemAdapter.notifyDataSetChanged()  // Notify adapter to refresh data
 
                     // Show or hide the empty cart image based on the cart items
                     if (cartItems?.isEmpty() == true) {
@@ -248,9 +249,9 @@ class CartFragment : Fragment() {
                     val cartItems = result.data // This is the List<CartItem>
 
 
-                //    prepareProductsForAdapter(cartItems?: emptyList())
-                    cartItemAdapter.updateCartItems(cartItems!!)
-                    cartItemAdapter.notifyDataSetChanged()  // Notify adapter to refresh data
+                    prepareProductsForAdapter(cartItems?: emptyList())
+//                    cartItemAdapter.updateCartItems(cartItems!!)
+//                    cartItemAdapter.notifyDataSetChanged()  // Notify adapter to refresh data
 
                     // Show or hide the empty cart image based on the cart items
 
