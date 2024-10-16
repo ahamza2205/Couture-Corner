@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.couturecorner.R
@@ -30,7 +31,10 @@ import com.example.couturecorner.setting.viewmodel.UserViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.UUID
 
 @AndroidEntryPoint
@@ -114,6 +118,12 @@ addressItemAdapter = AddressItemAdapter(this)
                         )
                     }
 
+                    findNavController().navigate(
+                        R.id.action_cartFragment_to_ordersFragment,null,
+                        NavOptions.Builder()
+                            .setPopUpTo(R.id.cartFragment, true)  // This ensures the cartFragment is removed from the backstack
+                            .build()
+                    )
                 }
                 is ApiState.Error -> {
                     // Show error message in UI

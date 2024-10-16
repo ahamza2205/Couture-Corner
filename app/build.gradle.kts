@@ -111,7 +111,7 @@ dependencies {
     implementation( "com.github.bumptech.glide:glide:4.16.0")
 
     implementation ("de.hdodenhof:circleimageview:3.1.0")
-
+    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
 
     implementation ("com.sun.mail:android-mail:1.6.7")
     implementation ("com.sun.mail:android-activation:1.6.7")
@@ -187,6 +187,8 @@ dependencies {
     testImplementation("com.apollographql.apollo3:apollo-mockserver:3.7.3")
     testImplementation ("org.mockito:mockito-core:4.2.0")
     testImplementation ("org.mockito:mockito-inline:4.2.0")
+
+
 
 
 }
