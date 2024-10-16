@@ -1,0 +1,26 @@
+query GetCustomerById($id: ID!) {
+    customer(id: $id) {
+        createdAt
+        displayName
+        email
+        firstName
+        id
+        lastName
+        phone
+        updatedAt
+        defaultAddress {
+            address1
+            address2
+            city
+            phone
+        }
+        addresses{
+
+    address1
+    address2
+    city
+    phone
+
+        }
+    }
+}

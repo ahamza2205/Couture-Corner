@@ -1,0 +1,11 @@
+mutation updateDraftOrderMetafields($input: DraftOrderInput!, $ownerId: ID!) {
+    draftOrderUpdate(input: $input, id: $ownerId) {
+        draftOrder {
+            id
+        }
+        userErrors {
+            message
+            field
+        }
+    }
+}

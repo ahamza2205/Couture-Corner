@@ -1,0 +1,27 @@
+mutation updateCustomerMetafields($input: CustomerInput!) {
+    customerUpdate(input: $input) {
+        customer {
+            id
+            metafields(first: 3) {
+                edges {
+                    node {
+                        id
+                        namespace
+                        key
+                        value
+                    }
+                }
+            }
+            addresses {
+                address1
+                address2
+                city
+                phone
+            }
+        }
+        userErrors {
+            message
+            field
+        }
+    }
+}

@@ -1,0 +1,13 @@
+query GetFavoriteProducts($customerId: ID!) {
+    customer(id: $customerId) {
+        metafields(first: 5) {
+            edges {
+                node {
+                    namespace
+                    key
+                    value
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,27 @@
+query GetProducts {
+    products(first: 50,query: null) {
+        edges {
+            node {
+                id
+                title
+                description
+                handle
+                images(first: 1) {
+                    edges {
+                        node {
+                            src
+                        }
+                    }
+                }
+                variants(first: 3) {
+                    edges {
+                        node {
+                            price
+                            sku
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,32 @@
+mutation AddFavoriteProduct($customerId: ID!, $productIds: String!) {
+    customerUpdate(
+        input: {
+            id: $customerId,
+            metafields: [
+                {
+                    namespace: "favorites"
+                    key: "wishlist"
+                    value: $productIds
+                    type: "json"
+                }
+            ]
+        }
+    ) {
+        customer {
+            id
+            metafields(first: 5) {
+                edges {
+                    node {
+                        namespace
+                        key
+                        value
+                    }
+                }
+            }
+        }
+        userErrors {
+            field
+            message
+        }
+    }
+}
