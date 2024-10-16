@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.apollographql.apollo3.api.Optional
 import com.example.couturecorner.Utility.CartItemMapper
+import com.example.couturecorner.data.local.SharedPreferenceImp
 import com.example.couturecorner.data.model.Address
 import com.example.couturecorner.data.model.ApiState
 import com.example.couturecorner.data.model.CartItem
@@ -18,13 +19,16 @@ import com.graphql.type.DraftOrderInput
 import com.graphql.type.DraftOrderLineItemInput
 import com.graphql.type.MailingAddressInput
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
 @HiltViewModel
 class CartViewModel @Inject constructor(
-    private val repo: Repo
+    private val repo: Repo,
+    val sharedPreference: SharedPreferenceImp
 ) : ViewModel() {
     private val _showInventoryExceededDialog = MutableLiveData<CartItem>()
     val showInventoryExceededDialog: LiveData<CartItem> get() = _showInventoryExceededDialog
@@ -49,6 +53,7 @@ class CartViewModel @Inject constructor(
 
     private val _updateCartStatus = MutableLiveData<ApiState<List<CartItem>>>()
     val updateCartStatus: LiveData<ApiState<List<CartItem>>> get() = _updateCartStatus
+
 
     private val cartItemMapper = CartItemMapper()
     private val user = FirebaseAuth.getInstance().currentUser
@@ -101,6 +106,8 @@ class CartViewModel @Inject constructor(
 
                             val mergedCartItems = mergeLocalAndRemoteCartItems(fetchedCartItems)
                             _cartItems.postValue(ApiState.Success(mergedCartItems))
+//                            prepareProductsForAdapter(mergedCartItems)
+//                            preparForAdapter(mergedCartItems)
                             _updateCartStatus.postValue(ApiState.Success(mergedCartItems))
 
 
@@ -119,27 +126,57 @@ class CartViewModel @Inject constructor(
 
 
 // Function to Merge Local and Remote Cart Items
-    private fun mergeLocalAndRemoteCartItems(remoteCartItems: List<CartItem>): List<CartItem> {
-        val updatedList = mutableListOf<CartItem>()
-        remoteCartItems.forEach { remoteItem ->
-            val localItem = cartItemList.find { it.id == remoteItem.id }
-            if (localItem != null) {
-                // Use the maximum quantity between local and remote
-                val newQuantity = maxOf(localItem.quantity ?: 0, remoteItem.inventoryQuantity ?: 0)
-                val updatedItem = localItem.copy(quantity = newQuantity)
-                updatedList.add(updatedItem)
-                cartItemList.remove(localItem) // Remove old item
-            } else {
-                updatedList.add(remoteItem)
-            }
+private fun mergeLocalAndRemoteCartItems(remoteCartItems: List<CartItem>): List<CartItem> {
+    val updatedList = mutableListOf<CartItem>()
+
+    remoteCartItems.forEach { remoteItem ->
+        val localItem = cartItemList.find { it.id == remoteItem.id }
+        if (localItem != null) {
+            // Always use the local quantity if it's been modified more recently
+            val newQuantity = localItem.quantity ?: remoteItem.inventoryQuantity ?: 0
+            val updatedItem = localItem.copy(quantity = newQuantity)
+            updatedList.add(updatedItem)
+            cartItemList.remove(localItem) // Remove the old local item
+        } else {
+            updatedList.add(remoteItem)
         }
-        // Add any remaining local items that were not in the remote list
-        updatedList.addAll(cartItemList)
-        return updatedList
     }
+    // Add remaining local items that were not in the remote list
+    updatedList.addAll(cartItemList)
+    return updatedList
+}
+
 
     // Increase quantity of a cart item
-    // Increase quantity of a cart item
+
+//    fun increaseQuantity(cartItem: CartItem) {
+//        val inventoryQuantity = cartItem.inventoryQuantity ?: 0
+//        val currentQuantity = cartItem.quantity ?: 0
+//        Log.i("increase", "Current inventory quantity: $inventoryQuantity")
+//        Log.i("increase", "Current cart quantity: $currentQuantity")
+//
+//        // Check if adding one more item will exceed the inventory
+//        if (currentQuantity + 1 > inventoryQuantity) {
+//            Log.i("increase", "Inventory limit reached: $inventoryQuantity")
+//            // Show dialog if the desired quantity exceeds the inventory
+//            _showInventoryExceededDialog.postValue(cartItem)
+//        } else {
+//            // Update the cart item quantity by incrementing it by 1
+//            val updatedItem = cartItem.copy(quantity = currentQuantity + 1)
+//            updateLocalCartItem(updatedItem)
+//
+//            // Ensure cartItemList is updated with the new item
+//            val updatedCartList = cartItemList.map {
+//                if (it.id == updatedItem.id) updatedItem else it
+//            }
+//
+//            updateShopifyDraftOrder(updatedCartList)
+//            Log.i("increase", "increaseQuantity: $updatedCartList")
+//            Log.i("increase", "Updated cart quantity: ${updatedItem.quantity}")
+//        }
+//    }
+
+
     fun increaseQuantity(cartItem: CartItem) {
         val inventoryQuantity = cartItem.inventoryQuantity ?: 0
         val currentQuantity = cartItem.quantity ?: 0
@@ -156,6 +193,7 @@ class CartViewModel @Inject constructor(
             val updatedItem = cartItem.copy(quantity = currentQuantity + 1)
             updateLocalCartItem(updatedItem)
             updateShopifyDraftOrder(cartItemList)
+            Log.i("increase", "increaseQuantity: "+cartItemList)
             Log.i("increase", "Updated cart quantity: ${updatedItem.quantity}")
         }
     }
@@ -175,9 +213,32 @@ class CartViewModel @Inject constructor(
     }
 
     fun onDeleteCartItem(cartItem: CartItem) {
-        // Remove the item from the local cart list
-        if (cartItemList.remove(cartItem)) {
+
+
+//        viewModelScope.launch {
+//            // Simulate or perform the delete API call if necessary
+//
+//            // Remove the item from the local cart list after confirmation
+//            if (cartItemList.remove(cartItem)) {
+//                _cartItems.postValue(ApiState.Success(cartItemList.toList()))
+//                calculateTotal()
+//                updateShopifyDraftOrder(cartItemList)  // Call after successful delete
+//
+//                // After the update, you can trigger the price conversion and update the adapter
+//              //  prepareProductsForAdapter(cartItemList)
+//            } else {
+//                Log.i("Cart", "Item not found in local cart: ${cartItem.id}")
+//            }
+//        }
+
+//
+
+//         Remove the item from the local cart list
+        val index = cartItemList.indexOfFirst { it.id == cartItem.id }
+        if (index != -1) {
+            cartItemList.removeAt(index)
             _cartItems.postValue(ApiState.Success(cartItemList.toList()))
+//            prepareProductsForAdapter(cartItemList.toList())
             calculateTotal()
             updateShopifyDraftOrder(cartItemList)
         } else {
@@ -195,6 +256,7 @@ class CartViewModel @Inject constructor(
             cartItemList.add(item)
         }
         _cartItems.postValue(ApiState.Success(cartItemList.toList())) // Post updated list to LiveData
+//        prepareProductsForAdapter(cartItemList.toList())
         calculateTotal() // Recalculate total price
     }
 
@@ -406,6 +468,10 @@ fun setDiscount(newDiscount: Double) {
                 }
             }
         }
+
+
+
+
 
 
 }

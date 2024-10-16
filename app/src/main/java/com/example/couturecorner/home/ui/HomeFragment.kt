@@ -99,7 +99,7 @@ class HomeFragment : Fragment(), OnItemClickListener {
 
         cuponsVeiwModel.getCupons()
 
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             cuponsVeiwModel.cupons.collect { state ->
                 when (state) {
                     is ApiState.Loading -> showLoading(true)
@@ -121,16 +121,38 @@ class HomeFragment : Fragment(), OnItemClickListener {
 
         sharedViewModel.getFavList()
 
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             sharedViewModel.favIdsList.collect {
                 if (it.isNotEmpty()) {
                     productsAdapter.favListUpdate(it.toMutableList())
-                    currencyViewModel.convertedCurrency.observe(viewLifecycleOwner) { convertedValue ->
-                        Log.d("HomeFragment", "Converted currency value: $convertedValue")
+                }
+            }
+        }
+
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.products.collect { state ->
+                when (state) {
+                    is ApiState.Loading -> showLoading(true)
+                    is ApiState.Success -> {
+                        val products = state.data?.data?.products?.edges
+                        showLoading(true)
+                    //    productsAdapter.submitList(products)
+                        prepareProductsForAdapter(products ?: emptyList())
+
+                        //productsAdapter.submitList(products)
+//                        currencyViewModel.convertedCurrency.observe(viewLifecycleOwner) { convertedValue ->
+//                            Log.d("HomeFragment", "Converted currency value: $convertedValue")
+//                        }
+                    }
+
+                    is ApiState.Error -> {
+                        Log.d("AmrApollo", "${state.message} ")
                     }
                 }
             }
         }
+
     }
 
     override fun onResume() {
@@ -141,7 +163,7 @@ class HomeFragment : Fragment(), OnItemClickListener {
         cuponsVeiwModel.getCupons()
 
 
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             cuponsVeiwModel.cupons.collect { state ->
                 when (state) {
                     is ApiState.Loading -> showLoading(true)
@@ -165,6 +187,7 @@ class HomeFragment : Fragment(), OnItemClickListener {
                     is ApiState.Success -> {
                         val products = state.data?.data?.products?.edges
                         showLoading(true)
+//                        productsAdapter.submitList(products)
                         prepareProductsForAdapter(products ?: emptyList())
 
                         //productsAdapter.submitList(products)
@@ -179,13 +202,10 @@ class HomeFragment : Fragment(), OnItemClickListener {
                 }
             }
         }
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             sharedViewModel.favIdsList.collect {
                 if (it.isNotEmpty()) {
                     productsAdapter.favListUpdate(it.toMutableList())
-                    currencyViewModel.convertedCurrency.observe(viewLifecycleOwner) { convertedValue ->
-                        Log.d("HomeFragment", "Converted currency value: $convertedValue")
-                    }
                 }
             }
         }
@@ -226,12 +246,16 @@ class HomeFragment : Fragment(), OnItemClickListener {
         }
     }
 
-    private fun isUserGuest(): Boolean {
+    override fun isUserGuest(): Boolean {
         val isLoggedIn = sharedPreference.isUserLoggedIn()
         Log.d("UserStatus", "User is logged in: $isLoggedIn")
         val isGuest = !isLoggedIn
         Log.d("UserStatus", "User is guest: $isGuest")
         return isGuest
+    }
+
+    override fun showDialog() {
+       showLoginRequiredDialog()
     }
 
 
@@ -303,7 +327,7 @@ class HomeFragment : Fragment(), OnItemClickListener {
         }
 
         // Observe currency conversion updates
-      lifecycleScope.launch {
+     viewLifecycleOwner.lifecycleScope.launch {
           sharedViewModel.convertedCurrency.collect { conversions ->
               val updatedList = updatedProducts.map { product ->
                   val productId = product?.node?.id

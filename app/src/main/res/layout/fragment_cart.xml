@@ -5,6 +5,14 @@
     android:orientation="vertical"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+
+
+<!--    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout-->
+<!--        android:id="@+id/swipeRefreshLayout"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="500dp">-->
+
+
     <ScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
@@ -23,12 +31,14 @@
                 android:layout_gravity="center"
                 android:indeterminateTint="@color/colorPrimary"
                 android:visibility="gone" />
+
             <ImageView
                 android:id="@+id/emptyCartImageView"
                 android:layout_width="match_parent"
                 android:layout_height="550dp"
                 android:visibility="gone"
                 android:src="@drawable/emptycart"/>
+
 
 
 
@@ -40,8 +50,13 @@
                 android:paddingStart="20dp"
                 android:paddingEnd="10dp" />
 
+
+
+
         </LinearLayout>
     </ScrollView>
+
+<!--    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>-->
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

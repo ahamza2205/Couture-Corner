@@ -7,5 +7,6 @@ interface OnItemClickListener {
     fun onItemClick(product: FilteredProductsQuery.Node?)
     fun deleteFavorite(productId: String)
     fun getcurrency(): String
-  //  fun isFavorite(productId: String): Boolean
+    fun isUserGuest(): Boolean
+    fun showDialog()
 }

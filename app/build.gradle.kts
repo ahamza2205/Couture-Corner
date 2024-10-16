@@ -133,6 +133,9 @@ dependencies {
 
     implementation ("com.google.android.material:material:1.8.0")
 
+    // refresh
+    implementation ("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
+
 // test
 
 // JUnit testing framework
