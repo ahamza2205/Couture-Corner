@@ -67,10 +67,9 @@ class CartFragment : Fragment() {
             }
         }
 
-        binding.swipeRefreshLayout.setOnRefreshListener {
-            cuponsVeiwModel.getCupons()
-            observeViewModel()
-        }
+//        binding.swipeRefreshLayout.setOnRefreshListener {
+//            observeViewModel()
+//        }
 
 
     }
@@ -181,7 +180,7 @@ class CartFragment : Fragment() {
 
                 is ApiState.Success -> {
                     binding.progressBar.visibility = View.GONE
-                    binding.swipeRefreshLayout.isRefreshing = false
+//                    binding.swipeRefreshLayouteshLayout.isRefreshing = false
                     val cartItems = apiState.data // This is the List<CartItem>
                   //  prepareProductsForAdapter(cartItems?: emptyList())
                     cartItemAdapter.updateCartItems(cartItems!!)
@@ -247,6 +246,7 @@ class CartFragment : Fragment() {
                 is ApiState.Success -> {
                     binding.progressBar.visibility = View.GONE
                     val cartItems = result.data // This is the List<CartItem>
+
 
                 //    prepareProductsForAdapter(cartItems?: emptyList())
                     cartItemAdapter.updateCartItems(cartItems!!)

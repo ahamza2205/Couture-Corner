@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.apollographql.apollo3.api.Optional
 import com.example.couturecorner.Utility.CartItemMapper
+import com.example.couturecorner.data.local.SharedPreferenceImp
 import com.example.couturecorner.data.model.Address
 import com.example.couturecorner.data.model.ApiState
 import com.example.couturecorner.data.model.CartItem
@@ -26,7 +27,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CartViewModel @Inject constructor(
-    private val repo: Repo
+    private val repo: Repo,
+    val sharedPreference: SharedPreferenceImp
 ) : ViewModel() {
     private val _showInventoryExceededDialog = MutableLiveData<CartItem>()
     val showInventoryExceededDialog: LiveData<CartItem> get() = _showInventoryExceededDialog
@@ -104,6 +106,8 @@ class CartViewModel @Inject constructor(
 
                             val mergedCartItems = mergeLocalAndRemoteCartItems(fetchedCartItems)
                             _cartItems.postValue(ApiState.Success(mergedCartItems))
+//                            prepareProductsForAdapter(mergedCartItems)
+//                            preparForAdapter(mergedCartItems)
                             _updateCartStatus.postValue(ApiState.Success(mergedCartItems))
 
 
@@ -122,27 +126,29 @@ class CartViewModel @Inject constructor(
 
 
 // Function to Merge Local and Remote Cart Items
-    private fun mergeLocalAndRemoteCartItems(remoteCartItems: List<CartItem>): List<CartItem> {
-        val updatedList = mutableListOf<CartItem>()
-        remoteCartItems.forEach { remoteItem ->
-            val localItem = cartItemList.find { it.id == remoteItem.id }
-            if (localItem != null) {
-                // Use the maximum quantity between local and remote
-                val newQuantity = maxOf(localItem.quantity ?: 0, remoteItem.inventoryQuantity ?: 0)
-                val updatedItem = localItem.copy(quantity = newQuantity)
-                updatedList.add(updatedItem)
-                cartItemList.remove(localItem) // Remove old item
-            } else {
-                updatedList.add(remoteItem)
-            }
+private fun mergeLocalAndRemoteCartItems(remoteCartItems: List<CartItem>): List<CartItem> {
+    val updatedList = mutableListOf<CartItem>()
+
+    remoteCartItems.forEach { remoteItem ->
+        val localItem = cartItemList.find { it.id == remoteItem.id }
+        if (localItem != null) {
+            // Always use the local quantity if it's been modified more recently
+            val newQuantity = localItem.quantity ?: remoteItem.inventoryQuantity ?: 0
+            val updatedItem = localItem.copy(quantity = newQuantity)
+            updatedList.add(updatedItem)
+            cartItemList.remove(localItem) // Remove the old local item
+        } else {
+            updatedList.add(remoteItem)
         }
-        // Add any remaining local items that were not in the remote list
-        updatedList.addAll(cartItemList)
-        return updatedList
     }
+    // Add remaining local items that were not in the remote list
+    updatedList.addAll(cartItemList)
+    return updatedList
+}
+
 
     // Increase quantity of a cart item
-    // Increase quantity of a cart item
+
     fun increaseQuantity(cartItem: CartItem) {
         val inventoryQuantity = cartItem.inventoryQuantity ?: 0
         val currentQuantity = cartItem.quantity ?: 0
@@ -159,6 +165,7 @@ class CartViewModel @Inject constructor(
             val updatedItem = cartItem.copy(quantity = currentQuantity + 1)
             updateLocalCartItem(updatedItem)
             updateShopifyDraftOrder(cartItemList)
+            Log.i("increase", "increaseQuantity: "+cartItemList)
             Log.i("increase", "Updated cart quantity: ${updatedItem.quantity}")
         }
     }
@@ -198,9 +205,10 @@ class CartViewModel @Inject constructor(
 
 //
 
-        // Remove the item from the local cart list
+//         Remove the item from the local cart list
         if (cartItemList.remove(cartItem)) {
             _cartItems.postValue(ApiState.Success(cartItemList.toList()))
+//            prepareProductsForAdapter(cartItemList.toList())
             calculateTotal()
             updateShopifyDraftOrder(cartItemList)
         } else {
@@ -218,6 +226,7 @@ class CartViewModel @Inject constructor(
             cartItemList.add(item)
         }
         _cartItems.postValue(ApiState.Success(cartItemList.toList())) // Post updated list to LiveData
+//        prepareProductsForAdapter(cartItemList.toList())
         calculateTotal() // Recalculate total price
     }
 
@@ -429,6 +438,51 @@ fun setDiscount(newDiscount: Double) {
                 }
             }
         }
+
+    fun prepareProductsForAdapter(cartItems: List<CartItem>) {
+        if (cartItems.isNotEmpty()) {
+            viewModelScope.launch {
+                val updatedProducts = cartItems.map { item ->
+                    val productId = item.id
+                    val originalPrice = item.price?.toDoubleOrNull() ?: 0.0
+                    val convertedPrice = convertCurrency("EGP", getSelectedCurrency() ?: "EGP", originalPrice)
+                    item.copy(price = convertedPrice.toString())
+                }
+                _cartItems.postValue(ApiState.Success(updatedProducts))
+            }
+        } else {
+            _cartItems.postValue(ApiState.Success(cartItems))
+        }
+    }
+
+    fun preparForAdapter(cartItems: List<CartItem>) {
+        if (cartItems.isNotEmpty()) {
+            viewModelScope.launch {
+                val updatedProducts = cartItems.map { item ->
+                    val productId = item.id
+                    val originalPrice = item.price?.toDoubleOrNull() ?: 0.0
+                    val convertedPrice = convertCurrency("EGP", getSelectedCurrency() ?: "EGP", originalPrice)
+                    item.copy(price = convertedPrice.toString())
+                }
+                _updateCartStatus.postValue(ApiState.Success(updatedProducts))
+            }
+        } else {
+            _updateCartStatus.postValue(ApiState.Success(cartItems))
+        }
+    }
+
+    suspend fun convertCurrency(from: String, to: String, amount: Double): Double {
+        return try {
+            val conversionResult = repo.convertCurrency(from, to, amount, "9eabc320c6-66b069c4e1-sl3z9w")
+            conversionResult?.result?.get(to) ?: amount
+        } catch (e: Exception) {
+            amount // return original price if conversion fails
+        }
+    }
+
+    fun getSelectedCurrency(): String? {
+        return sharedPreference.getSelectedCurrency()
+    }
 
 
 }
