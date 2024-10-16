@@ -111,19 +111,29 @@ addressItemAdapter = AddressItemAdapter(this)
                     Toast.makeText(requireContext(), state.data.toString(), Toast.LENGTH_SHORT).show()
                     //made confirm dalog here
 
-                    this.dismiss()
+//                    this.dismiss()
                     showConfirmationDialog(requireActivity(), "Your order has been placed!"){
-                        findNavController().navigate(
-                            R.id.action_cartFragment_to_homeFragment,
-                        )
-                    }
+//                        findNavController().navigate(
+//                            R.id.action_checkOutFragment_to_homeFragment,
+//                        )
 
-                    findNavController().navigate(
-                        R.id.action_cartFragment_to_ordersFragment,null,
+                        findNavController().navigate(
+                        R.id.action_cartFragment_to_homeFragment,null,
                         NavOptions.Builder()
                             .setPopUpTo(R.id.cartFragment, true)  // This ensures the cartFragment is removed from the backstack
                             .build()
                     )
+                        this@CheckOutFragment.dismiss()
+
+                    }
+
+
+//                    findNavController().navigate(
+//                        R.id.action_cartFragment_to_ordersFragment,null,
+//                        NavOptions.Builder()
+//                            .setPopUpTo(R.id.cartFragment, true)  // This ensures the cartFragment is removed from the backstack
+//                            .build()
+//                    )
                 }
                 is ApiState.Error -> {
                     // Show error message in UI
