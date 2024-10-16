@@ -8,16 +8,23 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.couturecorner.R
 import com.example.couturecorner.data.model.ApiState
+import com.example.couturecorner.data.model.CartItem
 import com.example.couturecorner.databinding.FragmentCartBinding
 import com.example.couturecorner.home.ui.MainActivity
 import com.example.couturecorner.home.viewmodel.CuponsVeiwModel
+import com.example.couturecorner.home.viewmodel.MainViewModel
 import com.example.couturecorner.setting.viewmodel.CartViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class CartFragment : Fragment() {
@@ -26,6 +33,7 @@ class CartFragment : Fragment() {
     private val cartViewModel: CartViewModel by viewModels()
     private lateinit var cartItemAdapter: CartItemAdapter
     private val cuponsVeiwModel: CuponsVeiwModel by viewModels()
+    private val sharedViewModel: MainViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -63,6 +71,7 @@ class CartFragment : Fragment() {
             cuponsVeiwModel.getCupons()
             observeViewModel()
         }
+
 
     }
 
@@ -141,7 +150,8 @@ class CartFragment : Fragment() {
                          negativeAction = {
                             Toast.makeText(requireContext(), "Item not deleted", Toast.LENGTH_SHORT).show()
                         }
-                    ) }
+                    ) },
+            getCurrency = {getCurrencySymbol(sharedViewModel.getSelectedCurrency()?: "EGP")}
         )
         binding.cartRecyclerView.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
@@ -173,11 +183,12 @@ class CartFragment : Fragment() {
                     binding.progressBar.visibility = View.GONE
                     binding.swipeRefreshLayout.isRefreshing = false
                     val cartItems = apiState.data // This is the List<CartItem>
+                  //  prepareProductsForAdapter(cartItems?: emptyList())
                     cartItemAdapter.updateCartItems(cartItems!!)
                     cartItemAdapter.notifyDataSetChanged()  // Notify adapter to refresh data
 
                     // Show or hide the empty cart image based on the cart items
-                    if (cartItems.isEmpty()) {
+                    if (cartItems?.isEmpty() == true) {
                         binding.emptyCartImageView.visibility =
                             View.VISIBLE // Show empty cart image
                     } else {
@@ -201,11 +212,29 @@ class CartFragment : Fragment() {
 
         // Observe subtotal
         cartViewModel.subtotal.observe(viewLifecycleOwner) { subtotal ->
-            binding.textViewSubtotalValue.text = "$${String.format("%.2f", subtotal)}"
+            sharedViewModel.convertCurrency("EGP", sharedViewModel.getSelectedCurrency() ?: "EGP", subtotal, "subTotal")
+//            binding.textViewSubtotalValue.text = "$${String.format("%.2f", subtotal)}"
         }
 
         cartViewModel.totalPrice.observe(viewLifecycleOwner) { subtotal ->
-            binding.textViewTotalValue.text = "$${String.format("%.2f", subtotal)}"
+            sharedViewModel.convertCurrency("EGP", sharedViewModel.getSelectedCurrency() ?: "EGP", subtotal, "total")
+//            binding.textViewTotalValue.text = "$${String.format("%.2f", subtotal)}"
+        }
+
+
+        lifecycleScope.launch {
+            sharedViewModel.convertedCurrency.collect { conversions ->
+                binding.textViewSubtotalValue.text = getString(
+                    R.string.price,
+                    conversions["subTotal"].toString(),
+                    sharedViewModel.getSelectedCurrency() ?: "EGP"
+                )
+                binding.textViewTotalValue.text = getString(
+                    R.string.price,
+                    conversions["total"].toString(),
+                    sharedViewModel.getSelectedCurrency() ?: "EGP"
+                )
+            }
         }
 
         // Observe cart update status
@@ -218,16 +247,20 @@ class CartFragment : Fragment() {
                 is ApiState.Success -> {
                     binding.progressBar.visibility = View.GONE
                     val cartItems = result.data // This is the List<CartItem>
+
+                //    prepareProductsForAdapter(cartItems?: emptyList())
                     cartItemAdapter.updateCartItems(cartItems!!)
                     cartItemAdapter.notifyDataSetChanged()  // Notify adapter to refresh data
 
                     // Show or hide the empty cart image based on the cart items
-                    if (cartItems.isEmpty()) {
-                        binding.emptyCartImageView.visibility =
-                            View.VISIBLE // Show empty cart image
-                    } else {
-                        binding.emptyCartImageView.visibility = View.GONE // Hide empty cart image
-                    }
+
+                        if (cartItems?.isEmpty() == true) {
+                            binding.emptyCartImageView.visibility =
+                                View.VISIBLE // Show empty cart image
+                        } else {
+                            binding.emptyCartImageView.visibility = View.GONE // Hide empty cart image
+                        }
+
                 }
 
                 is ApiState.Error -> {
@@ -257,4 +290,47 @@ class CartFragment : Fragment() {
             }
             .show()
     }
+
+
+
+
+
+
+    private fun prepareProductsForAdapter(cartItems: List<CartItem>) {
+     //   if (cartItems.isNotEmpty()) {
+            val updatedProducts = cartItems.map { item ->
+                val productId = item.id
+                val originalPrice = item.price?.toDoubleOrNull() ?: 0.0
+                sharedViewModel.convertCurrency("EGP", sharedViewModel.getSelectedCurrency() ?: "EGP", originalPrice, productId ?: "")
+                item
+            }
+
+            lifecycleScope.launch {
+
+                sharedViewModel.convertedCurrency.collect { conversions ->
+                    val updatedList = updatedProducts.map { item ->
+                        val productId = item.id
+                        val convertedPrice = conversions[productId] ?: item.price?.toDoubleOrNull() ?: 0.0
+                        item.copy(price = convertedPrice.toString())
+                    }
+
+                    cartItemAdapter.updateCartItems(updatedList)
+                }
+            }
+//        } else {
+//            cartItemAdapter.updateCartItems(cartItems)
+//        }
+    }
+
+    fun getCurrencySymbol(currency: String): String {
+        return when (currency) {
+            "USD" -> "$"
+            "EUR" -> "€"
+            "EGP" -> "EGP"
+            "SAR" -> "SAR"
+            "AED" -> "AED"
+            else -> ""
+        }
+    }
+
 }

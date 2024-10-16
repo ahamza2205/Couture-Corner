@@ -18,6 +18,8 @@ import com.graphql.type.DraftOrderInput
 import com.graphql.type.DraftOrderLineItemInput
 import com.graphql.type.MailingAddressInput
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -49,6 +51,7 @@ class CartViewModel @Inject constructor(
 
     private val _updateCartStatus = MutableLiveData<ApiState<List<CartItem>>>()
     val updateCartStatus: LiveData<ApiState<List<CartItem>>> get() = _updateCartStatus
+
 
     private val cartItemMapper = CartItemMapper()
     private val user = FirebaseAuth.getInstance().currentUser
@@ -175,6 +178,26 @@ class CartViewModel @Inject constructor(
     }
 
     fun onDeleteCartItem(cartItem: CartItem) {
+
+
+//        viewModelScope.launch {
+//            // Simulate or perform the delete API call if necessary
+//
+//            // Remove the item from the local cart list after confirmation
+//            if (cartItemList.remove(cartItem)) {
+//                _cartItems.postValue(ApiState.Success(cartItemList.toList()))
+//                calculateTotal()
+//                updateShopifyDraftOrder(cartItemList)  // Call after successful delete
+//
+//                // After the update, you can trigger the price conversion and update the adapter
+//              //  prepareProductsForAdapter(cartItemList)
+//            } else {
+//                Log.i("Cart", "Item not found in local cart: ${cartItem.id}")
+//            }
+//        }
+
+//
+
         // Remove the item from the local cart list
         if (cartItemList.remove(cartItem)) {
             _cartItems.postValue(ApiState.Success(cartItemList.toList()))

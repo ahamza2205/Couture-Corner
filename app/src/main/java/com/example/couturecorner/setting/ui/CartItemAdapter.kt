@@ -11,6 +11,7 @@ class CartItemAdapter(
     private val onIncreaseQuantity: (CartItem) -> Unit,
     private val onDecreaseQuantity: (CartItem) -> Unit,
     private val ondeleteItem: (CartItem) -> Unit,
+    private val getCurrency :()->String
 ) : RecyclerView.Adapter<CartItemAdapter.CartItemViewHolder>() {
 
     private val cartItems = mutableListOf<CartItem>()
@@ -28,6 +29,7 @@ class CartItemAdapter(
             binding.priceItem.text = cartItem.price.toString()
 
 //            binding.priceItem.text="${cartItem.price} ${getCurrency.invoke()}"
+            binding.priceItem.text="${cartItem.price} ${getCurrency.invoke()}"
             binding.quanityTextView.text = cartItem.quantity.toString()
             binding.itemSize.text = cartItem.size
             binding.itemColor.text = cartItem.color
