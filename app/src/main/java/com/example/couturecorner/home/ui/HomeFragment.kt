@@ -99,7 +99,7 @@ class HomeFragment : Fragment(), OnItemClickListener {
 
         cuponsVeiwModel.getCupons()
 
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             cuponsVeiwModel.cupons.collect { state ->
                 when (state) {
                     is ApiState.Loading -> showLoading(true)
@@ -121,7 +121,7 @@ class HomeFragment : Fragment(), OnItemClickListener {
 
         sharedViewModel.getFavList()
 
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             sharedViewModel.favIdsList.collect {
                 if (it.isNotEmpty()) {
                     productsAdapter.favListUpdate(it.toMutableList())
@@ -141,7 +141,7 @@ class HomeFragment : Fragment(), OnItemClickListener {
         cuponsVeiwModel.getCupons()
 
 
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             cuponsVeiwModel.cupons.collect { state ->
                 when (state) {
                     is ApiState.Loading -> showLoading(true)
@@ -179,7 +179,7 @@ class HomeFragment : Fragment(), OnItemClickListener {
                 }
             }
         }
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             sharedViewModel.favIdsList.collect {
                 if (it.isNotEmpty()) {
                     productsAdapter.favListUpdate(it.toMutableList())
