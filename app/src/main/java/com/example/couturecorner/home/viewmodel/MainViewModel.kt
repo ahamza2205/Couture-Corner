@@ -143,7 +143,7 @@ class MainViewModel @Inject constructor(
     fun convertCurrency(from: String, to: String, amount: Double, productId: String) {
         viewModelScope.launch {
             try {
-                val conversionResult = currencyRepo.convertCurrency(from, to, amount, "9eabc320c6-66b069c4e1-sl3z9w")
+                val conversionResult = currencyRepo.convertCurrency(from, to, amount, "f48a1a9677-68abaacec8-slhgsh")
                 val result = conversionResult?.result?.get(to)
                 _convertedCurrency.value = _convertedCurrency.value?.toMutableMap()?.apply {
                     put(productId, result)
@@ -158,7 +158,7 @@ class MainViewModel @Inject constructor(
     fun covertCurrencyWithoutId(from: String, to: String, amount: Double)
     {
         viewModelScope.launch {
-            val conversionResult = currencyRepo.convertCurrency(from, to, amount, "9eabc320c6-66b069c4e1-sl3z9w")
+            val conversionResult = currencyRepo.convertCurrency(from, to, amount, "f48a1a9677-68abaacec8-slhgsh")
             val result = conversionResult?.result?.get(to)
             _convertedCurrencyTotal.value= result?:0.0
         }
