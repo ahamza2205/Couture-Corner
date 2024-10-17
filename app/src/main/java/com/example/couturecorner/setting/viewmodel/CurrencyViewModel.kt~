@@ -32,7 +32,7 @@ class CurrencyViewModel @Inject constructor(
     fun convertCurrency(from: String, to: String, amount: Double, callback: (Double?) -> Unit) {
         viewModelScope.launch {
             try {
-                val conversionResult = currencyRepo.convertCurrency(from, to, amount, "f48a1a9677-68abaacec8-slhgsh")
+                val conversionResult = currencyRepo.convertCurrency(from, to, amount, "9eabc320c6-66b069c4e1-sl3z9w")
                 val result = conversionResult?.result?.get(to)
                 callback(result)
             } catch (e: Exception) {
